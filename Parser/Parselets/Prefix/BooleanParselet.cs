@@ -1,10 +1,10 @@
 ﻿namespace Parser.Parselets.Prefix
 {
-    internal class FloatParselet : LiteralParselet
+    internal class BooleanParselet : LiteralParselet
     {
         protected override object Parse(string tokenValue)
         {
-            return float.Parse(tokenValue);
+            return bool.Parse(tokenValue);
         }
     }
 }

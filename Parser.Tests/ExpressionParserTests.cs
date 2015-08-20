@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
 using AST;
+using AST.Expressions;
 using AST.Expressions.Arithmatic;
+using AST.Expressions.Comparison;
+using AST.Expressions.Logical;
 using Lexer;
-using Lexer.Tokeniser;
 using NUnit.Framework;
 
 namespace Parser.Tests
@@ -90,7 +91,8 @@ namespace Parser.Tests
                     {TypeCode.Single, "FLOAT"},
                     {TypeCode.Int16, "INTEGER"},
                     {TypeCode.Int32, "INTEGER"},
-                    {TypeCode.Int64, "INTEGER"}
+                    {TypeCode.Int64, "INTEGER"},
+                    {TypeCode.Boolean, "BOOLEAN"}
                 };
 
                 var typeCode = Type.GetTypeCode(value.GetType());
@@ -105,7 +107,16 @@ namespace Parser.Tests
                     {"/", "DIV"},
                     {"^", "POW"},
                     {"(", "LEFTPAREN"},
-                    {")", "RIGHTPAREN"}
+                    {")", "RIGHTPAREN"},
+                    {"==", "EQUALS"},
+                    {"!=", "NOTEQUALS"},
+                    {"<", "LT"},
+                    {">", "GT"},
+                    {"<=", "LTE"},
+                    {">=", "GTE"},
+                    {"&&", "BOOLEAN-AND"},
+                    {"||", "BOOLEAN-OR"},
+                    {"!", "BOOLEAN-NOT"}
                 };
 
                 return new Token(symbolToOp[value.ToString()], value.ToString(), 0, 0, 0);
@@ -333,6 +344,165 @@ namespace Parser.Tests
                 var result = parser.Parse();
 
                 Assert.AreEqual(typeof(MultExpr), result.GetType());
+            }
+
+            [Test]
+            public void EqualityTest()
+            {
+                var parser = new ExpressionParser(new FakeScanner(new[] { Get(2), Get("=="), Get(3) }));
+
+                var result = parser.Parse();
+
+                Assert.AreEqual(typeof(EqualsExpr), result.GetType());
+
+                var expr = (EqualsExpr)result;
+
+                Assert.AreEqual(typeof(ConstantExpr), expr.Left.GetType());
+                Assert.AreEqual(typeof(ConstantExpr), expr.Right.GetType());
+
+                Assert.AreEqual(2, ((ConstantExpr)expr.Left).Value);
+                Assert.AreEqual(3, ((ConstantExpr)expr.Right).Value);
+            }
+
+            [Test]
+            public void NotEqualsTest()
+            {
+                var parser = new ExpressionParser(new FakeScanner(new[] { Get(2), Get("!="), Get(3) }));
+
+                var result = parser.Parse();
+
+                Assert.AreEqual(typeof(NotEqualsExpr), result.GetType());
+
+                var expr = (NotEqualsExpr)result;
+
+                Assert.AreEqual(typeof(ConstantExpr), expr.Left.GetType());
+                Assert.AreEqual(typeof(ConstantExpr), expr.Right.GetType());
+
+                Assert.AreEqual(2, ((ConstantExpr)expr.Left).Value);
+                Assert.AreEqual(3, ((ConstantExpr)expr.Right).Value);
+            }
+
+            [Test]
+            public void GreaterThanTest()
+            {
+                var parser = new ExpressionParser(new FakeScanner(new[] { Get(2), Get(">"), Get(3) }));
+
+                var result = parser.Parse();
+
+                Assert.AreEqual(typeof(GreaterThanExpr), result.GetType());
+
+                var expr = (GreaterThanExpr)result;
+
+                Assert.AreEqual(typeof(ConstantExpr), expr.Left.GetType());
+                Assert.AreEqual(typeof(ConstantExpr), expr.Right.GetType());
+
+                Assert.AreEqual(2, ((ConstantExpr)expr.Left).Value);
+                Assert.AreEqual(3, ((ConstantExpr)expr.Right).Value);
+            }
+
+            [Test]
+            public void GreaterThanOrEqualToTest()
+            {
+                var parser = new ExpressionParser(new FakeScanner(new[] { Get(2), Get(">="), Get(3) }));
+
+                var result = parser.Parse();
+
+                Assert.AreEqual(typeof(GreaterThanOrEqualsExpr), result.GetType());
+
+                var expr = (GreaterThanOrEqualsExpr)result;
+
+                Assert.AreEqual(typeof(ConstantExpr), expr.Left.GetType());
+                Assert.AreEqual(typeof(ConstantExpr), expr.Right.GetType());
+
+                Assert.AreEqual(2, ((ConstantExpr)expr.Left).Value);
+                Assert.AreEqual(3, ((ConstantExpr)expr.Right).Value);
+            }
+
+            [Test]
+            public void LessThanTest()
+            {
+                var parser = new ExpressionParser(new FakeScanner(new[] { Get(2), Get("<"), Get(3) }));
+
+                var result = parser.Parse();
+
+                Assert.AreEqual(typeof(LessThanExpr), result.GetType());
+
+                var expr = (LessThanExpr)result;
+
+                Assert.AreEqual(typeof(ConstantExpr), expr.Left.GetType());
+                Assert.AreEqual(typeof(ConstantExpr), expr.Right.GetType());
+
+                Assert.AreEqual(2, ((ConstantExpr)expr.Left).Value);
+                Assert.AreEqual(3, ((ConstantExpr)expr.Right).Value);
+            }
+
+            [Test]
+            public void LessThanOrEqualToTest()
+            {
+                var parser = new ExpressionParser(new FakeScanner(new[] { Get(2), Get("<="), Get(3) }));
+
+                var result = parser.Parse();
+
+                Assert.AreEqual(typeof(LessThanOrEqualsExpr), result.GetType());
+
+                var expr = (LessThanOrEqualsExpr)result;
+
+                Assert.AreEqual(typeof(ConstantExpr), expr.Left.GetType());
+                Assert.AreEqual(typeof(ConstantExpr), expr.Right.GetType());
+
+                Assert.AreEqual(2, ((ConstantExpr)expr.Left).Value);
+                Assert.AreEqual(3, ((ConstantExpr)expr.Right).Value);
+            }
+
+            [Test]
+            public void LogicalAndTest()
+            {
+                var parser = new ExpressionParser(new FakeScanner(new[] { Get(true), Get("&&"), Get(false) }));
+
+                var result = parser.Parse();
+
+                Assert.AreEqual(typeof(AndExpr), result.GetType());
+
+                var expr = (AndExpr)result;
+
+                Assert.AreEqual(typeof(ConstantExpr), expr.Left.GetType());
+                Assert.AreEqual(typeof(ConstantExpr), expr.Right.GetType());
+
+                Assert.AreEqual(true, ((ConstantExpr)expr.Left).Value);
+                Assert.AreEqual(false, ((ConstantExpr)expr.Right).Value);
+            }
+
+            [Test]
+            public void LogicalOrTest()
+            {
+                var parser = new ExpressionParser(new FakeScanner(new[] { Get(true), Get("||"), Get(false) }));
+
+                var result = parser.Parse();
+
+                Assert.AreEqual(typeof(OrExpr), result.GetType());
+
+                var expr = (OrExpr)result;
+
+                Assert.AreEqual(typeof(ConstantExpr), expr.Left.GetType());
+                Assert.AreEqual(typeof(ConstantExpr), expr.Right.GetType());
+
+                Assert.AreEqual(true, ((ConstantExpr)expr.Left).Value);
+                Assert.AreEqual(false, ((ConstantExpr)expr.Right).Value);
+            }
+
+            [Test]
+            public void LogicalNotTest()
+            {
+                var parser = new ExpressionParser(new FakeScanner(new[] { Get("!"), Get(false) }));
+
+                var result = parser.Parse();
+
+                Assert.AreEqual(typeof(NotExpr), result.GetType());
+
+                var expr = (NotExpr)result;
+
+                Assert.AreEqual(typeof(ConstantExpr), expr.Right.GetType());
+                Assert.AreEqual(false, ((ConstantExpr)expr.Right).Value);
             }
         }
     }

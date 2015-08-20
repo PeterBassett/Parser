@@ -1,5 +1,4 @@
 ﻿using AST.Expressions.Arithmatic;
-using AST.Tests.Visitor;
 using AST.Visitor;
 using Moq;
 using NUnit.Framework;

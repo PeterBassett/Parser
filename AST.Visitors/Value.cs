@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AST.Visitor
 {
@@ -73,6 +69,14 @@ namespace AST.Visitor
                     return false;
             }
             return false;
+        }
+
+        public bool ToBoolean()
+        {
+            if (_value is bool)
+                return (bool)_value;
+
+            throw new InvalidCastException();
         }
 
         public override string ToString()

@@ -1,29 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using AST.Expressions;
+﻿using AST.Expressions;
 using AST.Expressions.Arithmatic;
+using AST.Expressions.Comparison;
+using AST.Expressions.Logical;
 
 namespace AST.Visitor
 {
     public interface IExpressionVisitor<T>
     {
-        T Visit(IdentifierExpr identifierExpr);
-        
-        T Visit(PlusExpr plusExpr);
-        
-        T Visit(ConstantExpr constantExpr);
-        
-        T Visit(DivExpr divExpr);
-        
-        T Visit(MinusExpr minusExpr);
-        
-        T Visit(MultExpr multExpr);
-        
-        T Visit(AssignmentExpr assignmentExpr);
-        
-        T Visit(PowExpr powExpr);
+        T Visit(IdentifierExpr expr);
+        T Visit(PlusExpr expr);
+        T Visit(ConstantExpr expr);
+        T Visit(DivExpr expr);
+        T Visit(MinusExpr expr);
+        T Visit(MultExpr expr);
+        T Visit(AssignmentExpr expr);
+        T Visit(PowExpr expr);
+        T Visit(EqualsExpr expr);
+        T Visit(NotEqualsExpr expr);
+        T Visit(GreaterThanExpr expr);
+        T Visit(LessThanExpr expr);
+        T Visit(GreaterThanOrEqualsExpr expr);
+        T Visit(LessThanOrEqualsExpr expr);
+        T Visit(AndExpr expr);
+        T Visit(OrExpr expr);
+        T Visit(NotExpr expr);
     }
 }

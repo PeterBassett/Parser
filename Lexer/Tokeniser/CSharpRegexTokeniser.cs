@@ -50,6 +50,7 @@ namespace Lexer.Tokeniser
                 new RegexTokeniser(@"\&", "BITWISE-AND"),
                 new RegexTokeniser(@"\&\&", "BOOLEAN-AND"),
                 new RegexTokeniser(@"~", "TILDE"),
+                new RegexTokeniser(@"!", "BOOLEAN-NOT")
 
             };
         }

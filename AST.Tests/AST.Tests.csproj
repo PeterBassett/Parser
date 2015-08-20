@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="10.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -8,7 +8,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>AST.Tests</RootNamespace>
     <AssemblyName>AST.Tests</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{3AC096D0-A1C2-E12C-1390-A8335801FDAB};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -66,6 +66,10 @@
     <Compile Include="Visitor\PrintVisitorTest.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\AST.Visitors\AST.Visitor.csproj">
+      <Project>{4A6AFBE0-A9DC-4606-8C35-BB5FDDE341EA}</Project>
+      <Name>AST.Visitor</Name>
+    </ProjectReference>
     <ProjectReference Include="..\AST\AST.csproj">
       <Project>{7383FE78-A76E-402F-BA2C-92BBFC064879}</Project>
       <Name>AST</Name>

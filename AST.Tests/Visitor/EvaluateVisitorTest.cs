@@ -1,11 +1,6 @@
-﻿
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Threading;
-using AST.Expressions;
+﻿using System.Linq;
 using AST.Expressions.Arithmatic;
 using AST.Visitor;
-using Lexer;
 using NUnit.Framework;
 
 namespace AST.Tests.Visitor
@@ -66,6 +61,18 @@ namespace AST.Tests.Visitor
                 Assert.AreEqual("12.34", actual.ToString());
             }
 
+            [TestCase(true)]
+            [TestCase(false)]
+            public void VisitBooleanConstantExpr(bool value)
+            {
+                var target = new EvaluateVisitor();
+
+                var expression = new ConstantExpr(value);
+
+                var actual = target.Visit(expression);
+
+                Assert.AreEqual(value.ToString(), actual.ToString());
+            }
 
             [Test]
             public void VisitPlusExpr()

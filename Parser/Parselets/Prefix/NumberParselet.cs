@@ -1,11 +1,10 @@
-﻿using System.Linq.Expressions;
-using AST;
+﻿using AST;
 using AST.Expressions.Arithmatic;
 using Lexer;
 
 namespace Parser.Parselets.Prefix
 {
-    internal abstract class NumberParselet : IPrefixParselet
+    internal abstract class LiteralParselet : IPrefixParselet
     {
         public IExpression Parse(Parser parser, Token token)
         {

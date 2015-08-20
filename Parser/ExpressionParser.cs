@@ -1,5 +1,8 @@
 ﻿using System;
+using AST.Expressions;
 using AST.Expressions.Arithmatic;
+using AST.Expressions.Comparison;
+using AST.Expressions.Logical;
 using Lexer;
 using Parser.Parselets.Infix;
 using Parser.Parselets.Prefix;
@@ -12,11 +15,25 @@ namespace Parser
         {
             RegisterParselet("INTEGER", new IntegerParselet());
             RegisterParselet("FLOAT", new FloatParselet());
+            RegisterParselet("BOOLEAN", new BooleanParselet());
             RegisterParselet("LEFTPAREN", new GroupParselet());
+
             InfixLeft<PlusExpr>("PLUS", Precedence.Sum);
             InfixLeft<MinusExpr>("MINUS", Precedence.Sum);
             InfixLeft<MultExpr>("MULT", Precedence.Product);
             InfixLeft<DivExpr>("DIV", Precedence.Product);
+
+            InfixLeft<EqualsExpr>("EQUALS", Precedence.Equality);
+            InfixLeft<NotEqualsExpr>("NOTEQUALS", Precedence.Equality);                
+            InfixLeft<LessThanExpr>("LT", Precedence.Comparison);
+            InfixLeft<LessThanOrEqualsExpr>("LTE", Precedence.Comparison);
+            InfixLeft<GreaterThanExpr>("GT", Precedence.Comparison);
+            InfixLeft<GreaterThanOrEqualsExpr>("GTE", Precedence.Comparison);
+
+            InfixLeft<OrExpr>("BOOLEAN-OR", Precedence.Logical);
+            InfixLeft<AndExpr>("BOOLEAN-AND", Precedence.Logical);
+            Prefix<NotExpr>("BOOLEAN-NOT", Precedence.Logical);
+
             InfixRight<PowExpr>("POW", Precedence.Exponent);
         }
 
@@ -35,6 +52,13 @@ namespace Parser
             var constructedType = typeof (BinaryOperatorParselet<>).MakeGenericType(new[] {typeof (T)});
 
             RegisterParselet(token, (IInfixParselet)Activator.CreateInstance(constructedType, new object[] { precedence, isRightAssociative }));
+        }
+
+        public void Prefix<T>(string token, Precedence precedence)
+        {
+            var constructedType = typeof(UnaryOperatorParselet<>).MakeGenericType(new[] { typeof(T) });
+
+            RegisterParselet(token, (IPrefixParselet)Activator.CreateInstance(constructedType, new object[] { precedence }));
         }
     }
 }

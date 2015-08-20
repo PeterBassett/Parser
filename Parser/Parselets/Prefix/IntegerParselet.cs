@@ -1,10 +1,6 @@
-﻿using System.Linq.Expressions;
-using AST;
-using Lexer;
-
-namespace Parser.Parselets.Prefix
+﻿namespace Parser.Parselets.Prefix
 {
-    internal class IntegerParselet : NumberParselet
+    internal class IntegerParselet : LiteralParselet
     {
         protected override object Parse(string tokenValue)
         {

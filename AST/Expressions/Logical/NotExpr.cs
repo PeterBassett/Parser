@@ -1,13 +1,14 @@
 ﻿using AST.Visitor;
 
-namespace AST.Expressions.Arithmatic
+namespace AST.Expressions.Logical
 {
-    public class MinusExpr : BinaryOperatorExpr
+    public class NotExpr : UnaryOperatorExpr
     {
-        public MinusExpr(IExpression lhs, IExpression rhs)
-            : base(lhs, rhs)
+        public NotExpr(IExpression rhs)
+            : base(rhs)
         {
         }
+
         public override T Accept<T>(IExpressionVisitor<T> visitor)
         {
             return visitor.Visit(this);

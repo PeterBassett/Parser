@@ -1,7 +1,7 @@
 ﻿using System;
 using AST.Visitor;
 
-namespace AST.Expressions.Arithmatic
+namespace AST.Expressions
 {
     public abstract class BinaryOperatorExpr : IExpression
     {
