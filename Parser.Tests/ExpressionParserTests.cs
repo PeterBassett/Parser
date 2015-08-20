@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
+using AST;
 using AST.Expressions.Arithmatic;
 using Lexer;
 using Lexer.Tokeniser;
@@ -16,6 +18,44 @@ namespace Parser.Tests
             public void ThrowsOnNullLexer()
             {
                 new ExpressionParser(null);
+            }
+        }
+
+        [TestFixture]
+        public class ExpressionParserStructure
+        {
+            [Test]
+            public void ImplementsIParser()
+            {
+                Assert.IsTrue(typeof(IParser).IsAssignableFrom(typeof(ExpressionParser)));
+            }
+
+            [Test]
+            public void ImplementsParse()
+            {                
+                IParser target = new ExpressionParser(new FakeScanner(new []{ Token.Empty }));
+                try
+                {
+                    IExpression actual = target.Parse();
+                    Assert.Fail("No tokens to parse");
+                }
+                catch (ParseException)
+                {                    
+                }                
+            }
+
+            [Test]
+            public void ImplementsParseWithPrecedence()
+            {
+                IParser target = new ExpressionParser(new FakeScanner(new[] { Token.Empty }));
+                try
+                {
+                    IExpression actual = target.Parse(0);
+                    Assert.Fail("No tokens to parse");
+                }
+                catch (ParseException)
+                {
+                }          
             }
         }
 
@@ -62,7 +102,10 @@ namespace Parser.Tests
                     {"+", "PLUS"},
                     {"-", "MINUS"},
                     {"*", "MULT"},
-                    {"/", "DIV"}
+                    {"/", "DIV"},
+                    {"^", "POW"},
+                    {"(", "LEFTPAREN"},
+                    {")", "RIGHTPAREN"}
                 };
 
                 return new Token(symbolToOp[value.ToString()], value.ToString(), 0, 0, 0);
@@ -138,6 +181,158 @@ namespace Parser.Tests
 
                 Assert.AreEqual(10, ((ConstantExpr)expr.Left).Value);
                 Assert.AreEqual(5, ((ConstantExpr)expr.Right).Value);
+            }
+
+            [Test]
+            public void SimplePower()
+            {
+                var parser = new ExpressionParser(new FakeScanner(new[] { Get(3), Get("^"), Get(2) }));
+
+                var result = parser.Parse();
+
+                Assert.AreEqual(typeof(PowExpr), result.GetType());
+
+                var expr = (PowExpr)result;
+
+                Assert.AreEqual(typeof(ConstantExpr), expr.Left.GetType());
+                Assert.AreEqual(typeof(ConstantExpr), expr.Right.GetType());
+
+                Assert.AreEqual(3, ((ConstantExpr)expr.Left).Value);
+                Assert.AreEqual(2, ((ConstantExpr)expr.Right).Value);
+            }
+
+            [Test]
+            public void PlusMinusOperatorPrecedence()
+            {
+                var parser = new ExpressionParser(new FakeScanner(new[] { Get(3), Get("+"), Get(2), Get("-"), Get(5) }));
+
+                var result = parser.Parse();
+
+                Assert.AreEqual(typeof(MinusExpr), result.GetType());
+            }
+
+            [Test]
+            public void MinusPlusOperatorPrecedence()
+            {
+                var parser = new ExpressionParser(new FakeScanner(new[] { Get(3), Get("-"), Get(2), Get("+"), Get(5) }));
+
+                var result = parser.Parse();
+
+                Assert.AreEqual(typeof(PlusExpr), result.GetType());
+            }
+
+            [Test]
+            public void MultPlusOperatorPrecedence()
+            {
+                var parser = new ExpressionParser(new FakeScanner(new[] { Get(3), Get("*"), Get(2), Get("+"), Get(5) }));
+
+                var result = parser.Parse();
+
+                Assert.AreEqual(typeof(PlusExpr), result.GetType());
+            }
+
+            [Test]
+            public void PlusMultOperatorPrecedence()
+            {
+                var parser = new ExpressionParser(new FakeScanner(new[] { Get(3), Get("+"), Get(2), Get("*"), Get(5) }));
+
+                var result = parser.Parse();
+
+                Assert.AreEqual(typeof(PlusExpr), result.GetType());
+            }
+
+            [Test]
+            public void DivPlusOperatorPrecedence()
+            {
+                var parser = new ExpressionParser(new FakeScanner(new[] { Get(3), Get("/"), Get(2), Get("+"), Get(5) }));
+
+                var result = parser.Parse();
+
+                Assert.AreEqual(typeof(PlusExpr), result.GetType());
+            }
+
+            [Test]
+            public void PlusDivOperatorPrecedence()
+            {
+                var parser = new ExpressionParser(new FakeScanner(new[] { Get(3), Get("+"), Get(2), Get("/"), Get(5) }));
+
+                var result = parser.Parse();
+
+                Assert.AreEqual(typeof(PlusExpr), result.GetType());
+            }
+
+            [Test]
+            public void DivPowOperatorPrecedence()
+            {
+                var parser = new ExpressionParser(new FakeScanner(new[] { Get(3), Get("/"), Get(2), Get("^"), Get(5) }));
+
+                var result = parser.Parse();
+
+                Assert.AreEqual(typeof(DivExpr), result.GetType());
+            }
+
+            [Test]
+            public void PowDivOperatorPrecedence()
+            {
+                var parser = new ExpressionParser(new FakeScanner(new[] { Get(3), Get("^"), Get(2), Get("/"), Get(5) }));
+
+                var result = parser.Parse();
+
+                Assert.AreEqual(typeof(DivExpr), result.GetType());
+            }
+
+            [Test]
+            public void SimpleParenthesis()
+            {
+                var parser = new ExpressionParser(new FakeScanner(new[] { Get("("), Get(1), Get(")") }));
+
+                var result = parser.Parse();
+
+                Assert.AreEqual(typeof(ConstantExpr), result.GetType());
+
+                var expr = (ConstantExpr) result;
+
+                Assert.AreEqual(1, expr.Value);
+            }
+
+            [Test]
+            public void ParenthesisOperatorPrecedence()
+            {
+                var parser = new ExpressionParser(new FakeScanner(new[] { Get(3), Get("^"), Get("("), Get(2), Get("*"), Get(5), Get(")") }));
+
+                var result = parser.Parse();
+
+                Assert.AreEqual(typeof(PowExpr), result.GetType());
+            }
+
+            [Test]
+            public void ParenthesisDefalutOperatorPrecedence()
+            {
+                var parser = new ExpressionParser(new FakeScanner(new[] { Get("("), Get(3), Get("^"), Get(2), Get(")"), Get("*"), Get(5) }));
+
+                var result = parser.Parse();
+
+                Assert.AreEqual(typeof(MultExpr), result.GetType());
+            }
+
+            [Test]
+            public void NestedParenthesisOperatorPrecedence()
+            {
+                var parser = new ExpressionParser(new FakeScanner(new[] { Get("("), Get(2), Get("^"), Get("("), Get(3), Get("*"), Get(4), Get(")"), Get(")") }));
+
+                var result = parser.Parse();
+
+                Assert.AreEqual(typeof(PowExpr), result.GetType());
+            }
+
+            [Test]
+            public void DefaultOperatorPrecedenceAsCounterExampleToAbove()
+            {
+                var parser = new ExpressionParser(new FakeScanner(new[] { Get(2), Get("^"), Get(3), Get("*"), Get(4) }));
+
+                var result = parser.Parse();
+
+                Assert.AreEqual(typeof(MultExpr), result.GetType());
             }
         }
     }

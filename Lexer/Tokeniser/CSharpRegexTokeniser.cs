@@ -31,6 +31,7 @@ namespace Lexer.Tokeniser
                 new RegexTokeniser(@"\*", "MULT"),
                 new RegexTokeniser(@"/", "DIV"),
                 new RegexTokeniser(@"%", "MOD"),
+                new RegexTokeniser(@"^", "POW"),
                 new RegexTokeniser(@":", "COLON"),
                 new RegexTokeniser(@";", "SEMICOLON"),
                 new RegexTokeniser(@"=", "ASSIGNMENT"),
