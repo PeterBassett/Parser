@@ -48,17 +48,6 @@ namespace AST.Tests.Expressions.Arithmatic
 
                 Assert.AreSame(rhs, target.Right);
             }
-
-            [Test]
-            public void OperatorPropertyReturnMultSymbol()
-            {
-                var lhs = new ConstantExpr(1);
-                var rhs = new ConstantExpr(2);
-
-                var target = new MultExpr(lhs, rhs);
-
-                Assert.AreEqual("*", target.Operator);
-            }
         }
 
         [TestFixture]

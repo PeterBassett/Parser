@@ -13,7 +13,7 @@ namespace AST.Visitor
 
         public string Visit(PlusExpr expr)
         {
-            return expr.Left.Accept(this) + expr.Operator + expr.Right.Accept(this);
+            return expr.Left.Accept(this) + "+" + expr.Right.Accept(this);
         }
 
         public string Visit(ConstantExpr constantExpr)
@@ -23,27 +23,27 @@ namespace AST.Visitor
 
         public string Visit(DivExpr expr)
         {
-            return expr.Left.Accept(this) + expr.Operator + expr.Right.Accept(this);
+            return expr.Left.Accept(this) + "/" + expr.Right.Accept(this);
         }
 
         public string Visit(MinusExpr expr)
         {
-            return expr.Left.Accept(this) + expr.Operator + expr.Right.Accept(this);
+            return expr.Left.Accept(this) + "-" + expr.Right.Accept(this);
         }
 
         public string Visit(MultExpr expr)
         {
-            return expr.Left.Accept(this) + expr.Operator + expr.Right.Accept(this);
+            return expr.Left.Accept(this) + "*" + expr.Right.Accept(this);
         }
 
         public string Visit(AssignmentExpr expr)
         {
-            return expr.Left.Accept(this) + expr.Operator + expr.Right.Accept(this);
+            return expr.Left.Accept(this) + "=" + expr.Right.Accept(this);
         }
 
         public string Visit(PowExpr expr)
         {
-            return expr.Left.Accept(this) + expr.Operator + expr.Right.Accept(this);
+            return expr.Left.Accept(this) + "^" + expr.Right.Accept(this);
         }
     }
 }

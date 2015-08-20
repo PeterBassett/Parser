@@ -22,6 +22,5 @@ namespace AST.Expressions.Arithmatic
         public abstract T Accept<T>(IExpressionVisitor<T> visitor);
         public IExpression Left { get { return _lhs; } }
         public IExpression Right { get { return _rhs; } }
-        public abstract string Operator { get; }
     }
 }

@@ -17,10 +17,5 @@ namespace AST.Expressions.Arithmatic
         {
             return visitor.Visit(this);
         }
-
-        public override string Operator
-        {
-            get { return "-"; }
-        }
     }
 }
