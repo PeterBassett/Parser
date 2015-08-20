@@ -1,5 +1,4 @@
-﻿using System.Text;
-using AST.Expressions;
+﻿using AST.Expressions;
 using AST.Expressions.Arithmatic;
 
 namespace AST.Visitor

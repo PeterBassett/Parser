@@ -53,7 +53,7 @@
     <Compile Include="SyntaxTree.cs" />
     <Compile Include="Visitor\IExpressionVisitor.cs" />
     <Compile Include="Visitor\EvaluateVisitor.cs" />
-    <Compile Include="Visitor\PrettyPrintVisitor.cs" />
+    <Compile Include="Visitor\PrintVisitor.cs" />
     <Compile Include="Visitor\Value.cs" />
   </ItemGroup>
   <ItemGroup>
