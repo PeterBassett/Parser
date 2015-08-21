@@ -30,46 +30,7 @@ namespace AST.Visitor
                 return Convert.ToDecimal(_value);
 
             throw new InvalidCastException();
-        }
-
-        public bool IsNumericType()
-        {
-            if (_value == null)
-                return false;
-
-            return IsNumericType(_value.GetType());
-        }
-
-        public static bool IsNumericType(Type type)
-        {
-            if (type == null)
-            {
-                return false;
-            }
-
-            switch (Type.GetTypeCode(type))
-            {
-                case TypeCode.Byte:
-                case TypeCode.Decimal:
-                case TypeCode.Double:
-                case TypeCode.Int16:
-                case TypeCode.Int32:
-                case TypeCode.Int64:
-                case TypeCode.SByte:
-                case TypeCode.Single:
-                case TypeCode.UInt16:
-                case TypeCode.UInt32:
-                case TypeCode.UInt64:
-                    return true;
-                case TypeCode.Object:
-                    if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
-                    {
-                        return IsNumericType(Nullable.GetUnderlyingType(type));
-                    }
-                    return false;
-            }
-            return false;
-        }
+        }        
 
         public bool ToBoolean()
         {
@@ -77,6 +38,19 @@ namespace AST.Visitor
                 return (bool)_value;
 
             throw new InvalidCastException();
+        }
+
+        public bool IsNumericType()
+        {
+            if (_value == null)
+                return false;
+
+            return _value.GetType().IsNumericType();
+        }
+
+        public object ToObject()
+        {
+            return _value;
         }
 
         public override string ToString()

@@ -14,7 +14,7 @@ namespace AST.Expressions
             _rhs = rhs;
         }
 
-        public abstract T Accept<T>(IExpressionVisitor<T> visitor);
+        public abstract T Accept<T,C>(IExpressionVisitor<T,C> visitor, C context);
         public IExpression Right { get { return _rhs; } }
     }
 }

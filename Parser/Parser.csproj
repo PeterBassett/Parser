@@ -43,7 +43,9 @@
     <Compile Include="IParser.cs" />
     <Compile Include="ParseException.cs" />
     <Compile Include="Parselets\Infix\BinaryOperatorParselet.cs" />
+    <Compile Include="Parselets\Infix\ConditionalParselet.cs" />
     <Compile Include="Parselets\Prefix\BooleanParselet.cs" />
+    <Compile Include="Parselets\Prefix\StringParselet.cs" />
     <Compile Include="Parselets\Prefix\UnaryOperatorParselet.cs" />
     <Compile Include="Parselets\Prefix\GroupParselet.cs" />
     <Compile Include="Parselets\Prefix\FloatParselet.cs" />

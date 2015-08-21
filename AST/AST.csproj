@@ -39,6 +39,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Expressions\Arithmatic\NegationExpr.cs" />
     <Compile Include="Expressions\BinaryOperatorExpr.cs" />
     <Compile Include="Expressions\Arithmatic\ConstantExpr.cs" />
     <Compile Include="Expressions\Arithmatic\MinusExpr.cs" />
@@ -47,6 +48,7 @@
     <Compile Include="Expressions\Arithmatic\PowExpr.cs" />
     <Compile Include="Expressions\Arithmatic\PlusExpr.cs" />
     <Compile Include="Expressions\AssignmentExpr.cs" />
+    <Compile Include="Expressions\ConditionalExpr.cs" />
     <Compile Include="Expressions\UnaryOperatorExpr.cs" />
     <Compile Include="Expressions\IdentifierExpr.cs" />
     <Compile Include="Expressions\Comparison\NotEqualsExpr.cs" />

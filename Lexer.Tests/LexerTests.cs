@@ -148,7 +148,7 @@ namespace Lexer.Tests
                     new[] { "MOD" },
                     new[] { "%" })]
             [TestCase("!",
-                    new[] { "NOT" },
+                    new[] { "BOOLEAN-NOT" },
                     new[] { "!" })]
             [TestCase("=",
                     new[] { "ASSIGNMENT" },
@@ -198,6 +198,12 @@ namespace Lexer.Tests
             [TestCase("&&",
                     new[] { "BOOLEAN-AND" },
                     new[] { "&&" })]
+            [TestCase("^",
+                    new[] { "POW" },
+                    new[] { "^" })]
+            [TestCase("7^5",
+                    new[] { "INTEGER", "POW", "INTEGER"},
+                    new[] { "7","^","5" })]
             [TestCase("(1+2*7/4) == 4.5 && this.GetDay() != \"Tuesday\"",
                     new[]
                     {
@@ -218,6 +224,16 @@ namespace Lexer.Tests
                         "IDENTIFIER", "ASSIGNMENT", "IDENTIFIER", "EQUALS", "IDENTIFIER"                        
                     },
                     new[] { "one", "=", "two", "==", "three" })]
+            [TestCase("true",
+                    new[] { "BOOLEAN" },
+                    new[] { "true"})]
+            [TestCase("false",
+                    new[] { "BOOLEAN" },
+                    new[] { "false" })]
+
+            [TestCase("false && true",
+                    new[] { "BOOLEAN", "WHITESPACE", "BOOLEAN-AND", "WHITESPACE", "BOOLEAN" },
+                    new[] { "false", " ", "&&", " ", "true" })]
             public void TestTokenisation(string source, string[] types, string[] lexemes)
             {
                 var generatedTokens = GenerateTokens(source);

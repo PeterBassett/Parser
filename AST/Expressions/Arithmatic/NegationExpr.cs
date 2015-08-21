@@ -2,10 +2,10 @@
 
 namespace AST.Expressions.Logical
 {
-    public class OrExpr : BinaryOperatorExpr
+    public class NegationExpr : UnaryOperatorExpr
     {
-        public OrExpr(IExpression lhs, IExpression rhs)
-            : base(lhs, rhs)
+        public NegationExpr(IExpression rhs)
+            : base(rhs)
         {
         }
 

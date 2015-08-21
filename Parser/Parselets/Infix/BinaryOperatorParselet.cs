@@ -1,7 +1,6 @@
 ﻿using System;
 using AST;
 using AST.Expressions;
-using AST.Expressions.Arithmatic;
 using Lexer;
 
 namespace Parser.Parselets.Infix

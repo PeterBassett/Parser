@@ -36,11 +36,11 @@ namespace AST.Tests.Expressions.Arithmatic
         public void AcceptMethodCallsVisitOnVisitorWithThis()
         {
             var target = new ConstantExpr(1357);
-            var visitor = new Mock<IExpressionVisitor<string>>();
+            var visitor = new Mock<IExpressionVisitor<string, int>>();
 
-            target.Accept(visitor.Object);
+            target.Accept(visitor.Object, 0);
 
-            visitor.Verify(x => x.Visit(target), Times.Once);
+            visitor.Verify(x => x.Visit(target, 0), Times.Once);
         }
 
         [Test]
@@ -48,10 +48,10 @@ namespace AST.Tests.Expressions.Arithmatic
         {
             var target = new ConstantExpr(1357);
             // throw exception is any other methods called other than the ConstantExpr overload.
-            var visitor = new Mock<IExpressionVisitor<string>>(MockBehavior.Strict);
-            visitor.Setup(x => x.Visit(It.IsAny<ConstantExpr>())).Returns("");
+            var visitor = new Mock<IExpressionVisitor<string, int>>(MockBehavior.Strict);
+            visitor.Setup(x => x.Visit(It.IsAny<ConstantExpr>(), It.IsAny<int>())).Returns("");
 
-            target.Accept(visitor.Object);
+            target.Accept(visitor.Object, 0);
         }
     }
 }

@@ -5,24 +5,26 @@ using AST.Expressions.Logical;
 
 namespace AST.Visitor
 {
-    public interface IExpressionVisitor<T>
+    public interface IExpressionVisitor<out T, in C>
     {
-        T Visit(IdentifierExpr expr);
-        T Visit(PlusExpr expr);
-        T Visit(ConstantExpr expr);
-        T Visit(DivExpr expr);
-        T Visit(MinusExpr expr);
-        T Visit(MultExpr expr);
-        T Visit(AssignmentExpr expr);
-        T Visit(PowExpr expr);
-        T Visit(EqualsExpr expr);
-        T Visit(NotEqualsExpr expr);
-        T Visit(GreaterThanExpr expr);
-        T Visit(LessThanExpr expr);
-        T Visit(GreaterThanOrEqualsExpr expr);
-        T Visit(LessThanOrEqualsExpr expr);
-        T Visit(AndExpr expr);
-        T Visit(OrExpr expr);
-        T Visit(NotExpr expr);
+        T Visit(IdentifierExpr expr, C context);
+        T Visit(PlusExpr expr, C context);
+        T Visit(ConstantExpr expr, C context);
+        T Visit(DivExpr expr, C context);
+        T Visit(MinusExpr expr, C context);
+        T Visit(MultExpr expr, C context);
+        T Visit(AssignmentExpr expr, C context);
+        T Visit(PowExpr expr, C context);
+        T Visit(EqualsExpr expr, C context);
+        T Visit(NotEqualsExpr expr, C context);
+        T Visit(GreaterThanExpr expr, C context);
+        T Visit(LessThanExpr expr, C context);
+        T Visit(GreaterThanOrEqualsExpr expr, C context);
+        T Visit(LessThanOrEqualsExpr expr, C context);
+        T Visit(AndExpr expr, C context);
+        T Visit(OrExpr expr, C context);
+        T Visit(NotExpr expr, C context);
+        T Visit(ConditionalExpr expr, C context);
+        T Visit(NegationExpr expr, C context);
     }
 }

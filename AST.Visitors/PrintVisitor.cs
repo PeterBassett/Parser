@@ -1,95 +1,106 @@
 ﻿using AST.Expressions;
 using AST.Expressions.Arithmatic;
 using AST.Expressions.Comparison;
+using AST.Expressions.Logical;
 
 namespace AST.Visitor
 {
-    public class PrintVisitor : IExpressionVisitor<string>
-    {     
-        public string Visit(IdentifierExpr identifierExpr)
+    public class PrintVisitor : IExpressionVisitor<string, Scope>
+    {
+        public string Visit(IdentifierExpr expr, Scope scope)
         {
-            return identifierExpr.Name;
+            return expr.Name;
         }
 
-        public string Visit(PlusExpr expr)
+        public string Visit(PlusExpr expr, Scope scope)
         {
-            return expr.Left.Accept(this) + "+" + expr.Right.Accept(this);
+            return expr.Left.Accept(this, scope) + "+" + expr.Right.Accept(this, scope);
         }
 
-        public string Visit(ConstantExpr constantExpr)
+        public string Visit(ConstantExpr expr, Scope scope)
         {
-            return constantExpr.Value.ToString();
+            return expr.Value.ToString();
         }
 
-        public string Visit(DivExpr expr)
+        public string Visit(DivExpr expr, Scope scope)
         {
-            return expr.Left.Accept(this) + "/" + expr.Right.Accept(this);
+            return expr.Left.Accept(this, scope) + "/" + expr.Right.Accept(this, scope);
         }
 
-        public string Visit(MinusExpr expr)
+        public string Visit(MinusExpr expr, Scope scope)
         {
-            return expr.Left.Accept(this) + "-" + expr.Right.Accept(this);
+            return expr.Left.Accept(this, scope) + "-" + expr.Right.Accept(this, scope);
         }
 
-        public string Visit(MultExpr expr)
+        public string Visit(MultExpr expr, Scope scope)
         {
-            return expr.Left.Accept(this) + "*" + expr.Right.Accept(this);
+            return expr.Left.Accept(this, scope) + "*" + expr.Right.Accept(this, scope);
         }
 
-        public string Visit(AssignmentExpr expr)
+        public string Visit(AssignmentExpr expr, Scope scope)
         {
-            return expr.Left.Accept(this) + "=" + expr.Right.Accept(this);
+            return expr.Left.Accept(this, scope) + "=" + expr.Right.Accept(this, scope);
         }
 
-        public string Visit(PowExpr expr)
+        public string Visit(PowExpr expr, Scope scope)
         {
-            return expr.Left.Accept(this) + "^" + expr.Right.Accept(this);
+            return expr.Left.Accept(this, scope) + "^" + expr.Right.Accept(this, scope);
         }
 
-        public string Visit(EqualsExpr expr)
+        public string Visit(EqualsExpr expr, Scope scope)
         {
-            return expr.Left.Accept(this) + " == " + expr.Right.Accept(this); 
+            return expr.Left.Accept(this, scope) + " == " + expr.Right.Accept(this, scope); 
         }
 
-        public string Visit(NotEqualsExpr expr)
+        public string Visit(NotEqualsExpr expr, Scope scope)
         {
-            return expr.Left.Accept(this) + " != " + expr.Right.Accept(this);
+            return expr.Left.Accept(this, scope) + " != " + expr.Right.Accept(this, scope);
         }
 
-        public string Visit(GreaterThanExpr expr)
+        public string Visit(GreaterThanExpr expr, Scope scope)
         {
-            return expr.Left.Accept(this) + " > " + expr.Right.Accept(this);
+            return expr.Left.Accept(this, scope) + " > " + expr.Right.Accept(this, scope);
         }
 
-        public string Visit(LessThanExpr expr)
+        public string Visit(LessThanExpr expr, Scope scope)
         {
-            return expr.Left.Accept(this) + " < " + expr.Right.Accept(this);
+            return expr.Left.Accept(this, scope) + " < " + expr.Right.Accept(this, scope);
         }
 
-        public string Visit(GreaterThanOrEqualsExpr expr)
+        public string Visit(GreaterThanOrEqualsExpr expr, Scope scope)
         {
-            return expr.Left.Accept(this) + " >= " + expr.Right.Accept(this);
+            return expr.Left.Accept(this, scope) + " >= " + expr.Right.Accept(this, scope);
         }
 
-        public string Visit(LessThanOrEqualsExpr expr)
+        public string Visit(LessThanOrEqualsExpr expr, Scope scope)
         {
-            return expr.Left.Accept(this) + " <= " + expr.Right.Accept(this);
+            return expr.Left.Accept(this, scope) + " <= " + expr.Right.Accept(this, scope);
         }
 
 
-        public string Visit(Expressions.Logical.AndExpr expr)
+        public string Visit(AndExpr expr, Scope scope)
         {
-            throw new System.NotImplementedException();
+            return expr.Left.Accept(this, scope) + " && " + expr.Right.Accept(this, scope);
         }
 
-        public string Visit(Expressions.Logical.OrExpr expr)
+        public string Visit(OrExpr expr, Scope scope)
         {
-            throw new System.NotImplementedException();
+            return expr.Left.Accept(this, scope) + " || " + expr.Right.Accept(this, scope);
         }
 
-        public string Visit(Expressions.Logical.NotExpr expr)
+        public string Visit(NotExpr expr, Scope scope)
         {
-            throw new System.NotImplementedException();
+            return "!" + expr.Right.Accept(this, scope);
+        }
+
+        public string Visit(ConditionalExpr expr, Scope scope)
+        {
+            return expr.Condition.Accept(this, scope) + " ? " + expr.ThenExpression.Accept(this, scope) + " : " + expr.ElseExpression.Accept(this, scope);
+        }
+
+        public string Visit(NegationExpr expr, Scope scope)
+        {
+            return "-" + expr.Right.Accept(this, scope);
         }
     }
 }

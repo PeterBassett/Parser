@@ -17,6 +17,8 @@ namespace Parser
             RegisterParselet("FLOAT", new FloatParselet());
             RegisterParselet("BOOLEAN", new BooleanParselet());
             RegisterParselet("LEFTPAREN", new GroupParselet());
+            RegisterParselet("QUESTIONMARK", new ConditionalParselet());
+            RegisterParselet("QUOTED-STRING", new StringParselet());
 
             InfixLeft<PlusExpr>("PLUS", Precedence.Sum);
             InfixLeft<MinusExpr>("MINUS", Precedence.Sum);
@@ -30,9 +32,11 @@ namespace Parser
             InfixLeft<GreaterThanExpr>("GT", Precedence.Comparison);
             InfixLeft<GreaterThanOrEqualsExpr>("GTE", Precedence.Comparison);
 
-            InfixLeft<OrExpr>("BOOLEAN-OR", Precedence.Logical);
-            InfixLeft<AndExpr>("BOOLEAN-AND", Precedence.Logical);
-            Prefix<NotExpr>("BOOLEAN-NOT", Precedence.Logical);
+            InfixRight<OrExpr>("BOOLEAN-OR", Precedence.Logical);
+            InfixRight<AndExpr>("BOOLEAN-AND", Precedence.Logical);
+
+            Prefix<NotExpr>("BOOLEAN-NOT", Precedence.Unary);
+            Prefix<NegationExpr>("MINUS", Precedence.Unary);
 
             InfixRight<PowExpr>("POW", Precedence.Exponent);
         }

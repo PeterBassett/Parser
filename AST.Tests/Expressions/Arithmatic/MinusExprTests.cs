@@ -60,11 +60,11 @@ namespace AST.Tests.Expressions.Arithmatic
                 var rhs = new ConstantExpr(2);
 
                 var target = new MinusExpr(lhs, rhs);
-                var visitor = new Mock<IExpressionVisitor<string>>();
+                var visitor = new Mock<IExpressionVisitor<string, int>>();
 
-                target.Accept(visitor.Object);
+                target.Accept(visitor.Object,0);
 
-                visitor.Verify(x => x.Visit(target), Times.Once);
+                visitor.Verify(x => x.Visit(target,0), Times.Once);
             }
 
             [Test]
@@ -75,10 +75,10 @@ namespace AST.Tests.Expressions.Arithmatic
 
                 var target = new MinusExpr(lhs, rhs);
                 // throw exception is any other methods called other than the MinusExpr overload.
-                var visitor = new Mock<IExpressionVisitor<string>>(MockBehavior.Strict);
-                visitor.Setup(x => x.Visit(It.IsAny<MinusExpr>())).Returns("");
+                var visitor = new Mock<IExpressionVisitor<string, int>>(MockBehavior.Strict);
+                visitor.Setup(x => x.Visit(It.IsAny<MinusExpr>(), It.IsAny<int>())).Returns("");
 
-                target.Accept(visitor.Object);
+                target.Accept(visitor.Object,0);
             }
         }
     }

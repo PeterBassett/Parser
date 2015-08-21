@@ -13,6 +13,8 @@ namespace Lexer.Tokeniser
             {
                 new RegexTokeniser(@"\d+", "INTEGER"),
                 new RegexTokeniser(@"\d*\.\d+([eE][-+]?\d+)?", "FLOAT"),
+                new RegexTokeniser(@"true|false", "BOOLEAN"),
+
                 new RegexTokeniser(new Regex("/\\*(.*?)\\*/", RegexOptions.Singleline), "COMMENT"),    
                 
                 new RegexTokeniser(@"([""])(?:\\\1|.)*?\1", "QUOTED-STRING"),
@@ -25,13 +27,12 @@ namespace Lexer.Tokeniser
                 new RegexTokeniser(@"\)", "RIGHTPAREN"),
                 new RegexTokeniser(@"{", "LEFTBRACE"),
                 new RegexTokeniser(@"}", "RIGHTBRACE"),
-                new RegexTokeniser(@"!", "NOT"),
                 new RegexTokeniser(@"\+", "PLUS"),
                 new RegexTokeniser(@"-", "MINUS"),
                 new RegexTokeniser(@"\*", "MULT"),
                 new RegexTokeniser(@"/", "DIV"),
                 new RegexTokeniser(@"%", "MOD"),
-                new RegexTokeniser(@"^", "POW"),
+                new RegexTokeniser(@"\^", "POW"),
                 new RegexTokeniser(@":", "COLON"),
                 new RegexTokeniser(@";", "SEMICOLON"),
                 new RegexTokeniser(@"=", "ASSIGNMENT"),

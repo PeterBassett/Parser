@@ -116,7 +116,9 @@ namespace Parser.Tests
                     {">=", "GTE"},
                     {"&&", "BOOLEAN-AND"},
                     {"||", "BOOLEAN-OR"},
-                    {"!", "BOOLEAN-NOT"}
+                    {"!", "BOOLEAN-NOT"},
+                    {"?", "QUESTIONMARK"},
+                    {":", "COLON"}
                 };
 
                 return new Token(symbolToOp[value.ToString()], value.ToString(), 0, 0, 0);
@@ -503,6 +505,148 @@ namespace Parser.Tests
 
                 Assert.AreEqual(typeof(ConstantExpr), expr.Right.GetType());
                 Assert.AreEqual(false, ((ConstantExpr)expr.Right).Value);
+            }
+
+            [Test]
+            public void LogicalNotPrecedenceTest()
+            {
+                var parser = new ExpressionParser(new FakeScanner(new[] { Get(true), Get("&&"), Get("!"), Get(false) }));
+
+                var result = parser.Parse();
+
+                Assert.AreEqual(typeof(AndExpr), result.GetType());
+
+                var expr = (AndExpr)result;
+
+                Assert.AreEqual(typeof(ConstantExpr), expr.Left.GetType());
+                Assert.AreEqual(typeof(NotExpr), expr.Right.GetType());                
+            }
+
+            [Test]
+            public void ConditionalExpressionTest()
+            {
+                var parser = new ExpressionParser(new FakeScanner(new[] { Get(true), Get("?"), Get(1234), Get(":"), Get(5678) }));
+
+                var result = parser.Parse();
+
+                Assert.AreEqual(typeof(ConditionalExpr), result.GetType());
+
+                var expr = (ConditionalExpr)result;
+
+                Assert.AreEqual(typeof(ConstantExpr), expr.Condition.GetType());
+                Assert.AreEqual(typeof(ConstantExpr), expr.ThenExpression.GetType());
+                Assert.AreEqual(typeof(ConstantExpr), expr.ElseExpression.GetType());
+
+                Assert.AreEqual(true, ((ConstantExpr)expr.Condition).Value);
+                Assert.AreEqual(1234, ((ConstantExpr)expr.ThenExpression).Value);
+                Assert.AreEqual(5678, ((ConstantExpr)expr.ElseExpression).Value);
+            }
+
+            [Test]
+            public void SubExpressionInConditionTest()
+            {
+                var parser = new ExpressionParser(new FakeScanner(new[] { Get(true), Get("&&"), Get(false), Get("?"), Get(1234), Get(":"), Get(5678) }));
+
+                var result = parser.Parse();
+
+                Assert.AreEqual(typeof(ConditionalExpr), result.GetType());
+
+                var expr = (ConditionalExpr)result;
+
+                Assert.AreEqual(typeof(AndExpr), expr.Condition.GetType());
+                Assert.AreEqual(typeof(ConstantExpr), expr.ThenExpression.GetType());
+                Assert.AreEqual(typeof(ConstantExpr), expr.ElseExpression.GetType());
+            }
+
+            [Test]
+            public void SubExpressionInAllPositionsTest()
+            {
+                var parser = new ExpressionParser(new FakeScanner(new[] { Get(true), Get("&&"), Get(false), Get("?"), Get(1234), Get("+"), Get(2345), Get(":"), Get(3), Get("^"), Get(2) }));
+
+                var result = parser.Parse();
+
+                Assert.AreEqual(typeof(ConditionalExpr), result.GetType());
+
+                var expr = (ConditionalExpr)result;
+
+                Assert.AreEqual(typeof(AndExpr), expr.Condition.GetType());
+                Assert.AreEqual(typeof(PlusExpr), expr.ThenExpression.GetType());
+                Assert.AreEqual(typeof(PowExpr), expr.ElseExpression.GetType());
+            }
+
+            [Test]
+            public void NegationExpressionTest()
+            {
+                var parser = new ExpressionParser(new FakeScanner(new[] { Get("-"), Get(5)}));
+
+                var result = parser.Parse();
+
+                Assert.AreEqual(typeof(NegationExpr), result.GetType());
+
+                var expr = (NegationExpr)result;
+
+                Assert.AreEqual(typeof(ConstantExpr), expr.Right.GetType());
+                Assert.AreEqual(5, ((ConstantExpr)expr.Right).Value);
+            }
+
+            [Test]
+            public void AndOrPrecedenceTest1()
+            {
+                var parser = new ExpressionParser(new FakeScanner(new[] { Get(true), Get("||"), Get(true), Get("&&"), Get(false) }));
+
+                var result = parser.Parse();
+
+                Assert.AreEqual(typeof(OrExpr), result.GetType());
+            }
+
+            [Test]
+            public void AndOrPrecedenceTest2()
+            {
+                var parser = new ExpressionParser(new FakeScanner(new[] {   Get("("), Get(true), Get("||"), Get(true), Get(")"), Get("&&"), Get(false) }));
+
+                var result = parser.Parse();
+
+                Assert.AreEqual(typeof(AndExpr), result.GetType());
+            }
+
+            [Test]
+            public void AndOrPrecedenceTest3()
+            {
+                var parser = new ExpressionParser(new FakeScanner(new[] { Get(true), Get("||"), Get("("), Get(true), Get("&&"), Get(false), Get(")")}));
+
+                var result = parser.Parse();
+
+                Assert.AreEqual(typeof(OrExpr), result.GetType());
+            }
+
+            [Test]
+            public void AndOrPrecedenceTest4()
+            {
+                var parser = new ExpressionParser(new FakeScanner(new[] { Get(true), Get("&&"), Get(true), Get("||"), Get(false) }));
+
+                var result = parser.Parse();
+
+                Assert.AreEqual(typeof(AndExpr), result.GetType());
+            }
+
+            [Test]
+            public void AndOrPrecedenceTest5()
+            {
+                var parser = new ExpressionParser(new FakeScanner(new[] { Get("("), Get(true), Get("&&"), Get(true), Get(")"), Get("||"), Get(false) }));
+
+                var result = parser.Parse();
+
+                Assert.AreEqual(typeof(OrExpr), result.GetType());
+            }
+
+            [Test]
+            public void AndOrPrecedenceTest6()
+            {
+                var parser = new ExpressionParser(new FakeScanner(new[] { Get(true), Get("&&"), Get("("), Get(true), Get("||"), Get(false), Get(")") }));
+
+                var result = parser.Parse();
+
+                Assert.AreEqual(typeof(AndExpr), result.GetType());
             }
         }
     }

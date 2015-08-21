@@ -60,11 +60,11 @@ namespace AST.Tests.Expressions.Arithmatic
                 var rhs = new ConstantExpr(2);
 
                 var target = new DivExpr(lhs, rhs);
-                var visitor = new Mock<IExpressionVisitor<string>>();
+                var visitor = new Mock<IExpressionVisitor<string, int>>();
 
-                target.Accept(visitor.Object);
+                target.Accept(visitor.Object,5);
 
-                visitor.Verify(x => x.Visit(target), Times.Once);
+                visitor.Verify(x => x.Visit(target,5), Times.Once);
             }
 
             [Test]
@@ -75,10 +75,10 @@ namespace AST.Tests.Expressions.Arithmatic
 
                 var target = new DivExpr(lhs, rhs);
                 // throw exception is any other methods called other than the DivExpr overload.
-                var visitor = new Mock<IExpressionVisitor<string>>(MockBehavior.Strict);
-                visitor.Setup(x => x.Visit(It.IsAny<DivExpr>())).Returns("");
+                var visitor = new Mock<IExpressionVisitor<string, int>>(MockBehavior.Strict);
+                visitor.Setup(x => x.Visit(It.IsAny<DivExpr>(), It.IsAny<int>())).Returns("");
 
-                target.Accept(visitor.Object);
+                target.Accept(visitor.Object, 2);
             }
         }
     }

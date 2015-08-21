@@ -10,9 +10,9 @@ namespace AST.Expressions.Arithmatic
             _value = value;
         }
 
-        public T Accept<T>(IExpressionVisitor<T> visitor)
+        public T Accept<T,C>(IExpressionVisitor<T,C> visitor, C context)
         {
-            return visitor.Visit(this);
+            return visitor.Visit(this, context);
         }
 
         public object Value

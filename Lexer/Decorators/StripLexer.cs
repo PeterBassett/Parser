@@ -2,7 +2,7 @@
 
 namespace Lexer.Decorators
 {
-    class StripLexer : ILexer
+    public class StripLexer : ILexer
     {
         private readonly ILexer _lexer;
         public StripLexer(ILexer lexer)
