@@ -138,8 +138,8 @@ namespace AST.Visitor
 
         private Type BinaryOpTypeCoersion(Type l, Type r)
         {
-            var lhs = GetTypeCode(l);
-            var rhs = GetTypeCode(r);
+            var lhs = Type.GetTypeCode(l);
+            var rhs = Type.GetTypeCode(r);
 
             if (l.IsNumericType() != r.IsNumericType())
                 throw new TypeCheckException("Cannot combine numeric and non numeric types in operators. Type Type casting to the appropriate type.");
@@ -149,44 +149,6 @@ namespace AST.Visitor
 
             // types are different.
             return typeof (object);
-        }
-
-        private TypeCode GetTypeCode(Type type)
-        {
-            switch (Type.GetTypeCode(type))
-            {
-                case TypeCode.Empty:
-                    return TypeCode.Empty;
-                case TypeCode.Object:                    
-                case TypeCode.DBNull:
-                    return TypeCode.Object;
-                case TypeCode.Boolean:
-                    return TypeCode.Boolean;
-                case TypeCode.Char:
-                    return TypeCode.Char;
-
-                case TypeCode.SByte:
-                case TypeCode.Byte:
-                case TypeCode.Int16:
-                case TypeCode.UInt16:
-                case TypeCode.Int32:
-                case TypeCode.UInt32:
-                case TypeCode.Int64:
-                case TypeCode.UInt64:
-                    return TypeCode.Int32;
-
-                case TypeCode.Single:
-                case TypeCode.Double:                    
-                case TypeCode.Decimal:
-                    return TypeCode.Double;
-
-                case TypeCode.DateTime:
-                    return TypeCode.DateTime;
-                case TypeCode.String:
-                    return TypeCode.String;
-                default:
-                    throw new InvalidOperationException();
-            }
         }
 
         public Type Visit(ConditionalExpr expr, Scope scope)

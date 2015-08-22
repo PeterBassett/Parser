@@ -10,6 +10,11 @@ namespace Parser.Parselets.Prefix
         {
             var value = current.Lexeme;
 
+            if (!value.StartsWith("\"") || !value.EndsWith("\""))
+                throw new ParseException("String literal found without surrounding quotes.");
+
+            value = value.Substring(1, value.Length - 2);
+
             return new ConstantExpr(value);
         }
     }

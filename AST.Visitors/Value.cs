@@ -16,28 +16,56 @@ namespace AST.Visitor
             _value = value._value;
         }
 
-        public int ToInt()
+        public TypeCode GetTypeCode()
         {
-            if (_value is int)
-                return (int) _value;
+            switch (Type.GetTypeCode(_value.GetType()))
+            {
+                /* case TypeCode.Empty:
+                     return TypeCode.Empty;
+                 case TypeCode.Object:
+                 case TypeCode.DBNull:
+                     return TypeCode.Object;
+                 case TypeCode.Char:
+                     return TypeCode.Char;
+                 case TypeCode.DateTime:
+                     return TypeCode.DateTime;
+                      * */
 
-            throw new InvalidCastException();
+                case TypeCode.Boolean:
+                    return TypeCode.Boolean;
+                case TypeCode.SByte:
+                case TypeCode.Byte:
+                case TypeCode.Int16:
+                case TypeCode.UInt16:
+                case TypeCode.Int32:
+                case TypeCode.UInt32:
+                case TypeCode.Int64:
+                case TypeCode.UInt64:
+                    return TypeCode.Int64;
+                case TypeCode.Single:
+                case TypeCode.Double:
+                case TypeCode.Decimal:
+                    return TypeCode.Double;
+                case TypeCode.String:
+                    return TypeCode.String;
+                default:
+                    throw new NotSupportedException("Invalid type {0}" + _value.GetType().Name);
+            }
         }
 
-        public decimal ToNumeric()
+        public long ToInt()
         {
-            if (IsNumericType())
-                return Convert.ToDecimal(_value);
+            return Convert.ToInt64(_value);
+        }
 
-            throw new InvalidCastException();
+        public double ToDouble()
+        {
+            return Convert.ToDouble(_value);
         }        
 
         public bool ToBoolean()
         {
-            if (_value is bool)
-                return (bool)_value;
-
-            throw new InvalidCastException();
+            return Convert.ToBoolean(_value);
         }
 
         public bool IsNumericType()

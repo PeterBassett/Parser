@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 using AST.Expressions;
 using AST.Expressions.Arithmatic;
 using AST.Expressions.Comparison;
@@ -7,7 +8,7 @@ using AST.Expressions.Logical;
 namespace AST.Visitor
 {
     public class EvaluateVisitor : IExpressionVisitor<Value, Scope>
-    {        
+    {
         public Value Visit(IdentifierExpr expr, Scope scope)
         {
             return new Value(expr.Name);
@@ -15,84 +16,152 @@ namespace AST.Visitor
 
         public Value Visit(PlusExpr expr, Scope scope)
         {
-            return new Value(expr.Left.Accept(this, scope).ToNumeric() + expr.Right.Accept(this, scope).ToNumeric());
+            return PerformOperation(expr.Left.Accept(this, scope),
+                                    expr.Right.Accept(this, scope),
+                                    (a, b) => a + b,
+                                    (a, b) => a + b,
+                                    (a, b) => { throw new InvalidOperationException(); },
+                                    (a, b) => a + b);
         }
 
         public Value Visit(ConstantExpr expr, Scope scope)
         {
-            return new Value(new Value(expr.Value));
+            return new Value(expr.Value);
         }
 
         public Value Visit(DivExpr expr, Scope scope)
         {
-            return new Value(expr.Left.Accept(this, scope).ToNumeric() / expr.Right.Accept(this, scope).ToNumeric());
+            return PerformOperation(expr.Left.Accept(this, scope),
+                                    expr.Right.Accept(this, scope),
+                                    (a, b) => a / b,
+                                    (a, b) => a / b,
+                                    (a, b) => { throw new InvalidOperationException(); },
+                                    (a, b) => { throw new InvalidOperationException(); });
         }
 
         public Value Visit(MinusExpr expr, Scope scope)
         {
-            return new Value(expr.Left.Accept(this, scope).ToNumeric() - expr.Right.Accept(this, scope).ToNumeric());
+            return PerformOperation(expr.Left.Accept(this, scope),
+                                    expr.Right.Accept(this, scope),
+                                    (a, b) => a - b,
+                                    (a, b) => a - b,
+                                    (a, b) => { throw new InvalidOperationException(); },
+                                    (a, b) => { throw new InvalidOperationException(); });
         }
 
         public Value Visit(MultExpr expr, Scope scope)
         {
-            return new Value(expr.Left.Accept(this, scope).ToNumeric() * expr.Right.Accept(this, scope).ToNumeric());
+            return PerformOperation(expr.Left.Accept(this, scope),
+                                    expr.Right.Accept(this, scope),
+                                    (a, b) => a * b,
+                                    (a, b) => a * b,
+                                    (a, b) => { throw new InvalidOperationException(); },
+                                    (a, b) => { throw new InvalidOperationException(); });
         }
 
         public Value Visit(AssignmentExpr expr, Scope scope)
         {
-            return new Value(expr.Right.Accept(this, scope).ToNumeric());
+            return new Value(expr.Right.Accept(this, scope));
         }
 
         public Value Visit(PowExpr expr, Scope scope)
         {
-            return new Value(Math.Pow((double)expr.Left.Accept(this, scope).ToNumeric(), (double)expr.Right.Accept(this, scope).ToNumeric()));
+            return PerformOperation(expr.Left.Accept(this, scope),
+                                    expr.Right.Accept(this, scope),
+                                    (a, b) => Math.Pow(a, b),
+                                    (a, b) => Math.Pow(a, b),
+                                    (a, b) => { throw new InvalidOperationException(); },
+                                    (a, b) => { throw new InvalidOperationException(); });
         }
 
         public Value Visit(EqualsExpr expr, Scope scope)
         {
-            //return new Value(expr.Left.Accept(this, scope).ToBoolean() == expr.Right.Accept(this, scope).ToBoolean());
-            return new Value(expr.Left.Accept(this, scope).ToObject().Equals(expr.Right.Accept(this, scope).ToObject()));
+            return PerformOperation(expr.Left.Accept(this, scope),
+                                    expr.Right.Accept(this, scope),
+                                    (a, b) => a.Equals(b),
+                                    (a, b) => a == b,
+                                    (a, b) => a == b,
+                                    (a, b) => a == b);
         }
 
         public Value Visit(NotEqualsExpr expr, Scope scope)
         {
-            return new Value(expr.Left.Accept(this, scope).ToBoolean() != expr.Right.Accept(this, scope).ToBoolean());
+            return PerformOperation(expr.Left.Accept(this, scope),
+                                    expr.Right.Accept(this, scope),
+                                    (a, b) => !a.Equals(b),
+                                    (a, b) => a != b,
+                                    (a, b) => a != b,
+                                    (a, b) => a != b);
         }
 
         public Value Visit(GreaterThanExpr expr, Scope scope)
         {
-            return new Value(expr.Left.Accept(this, scope).ToNumeric() > expr.Right.Accept(this, scope).ToNumeric());
+            return PerformOperation(expr.Left.Accept(this, scope),
+                                    expr.Right.Accept(this, scope),
+                                    (a, b) => a > b,
+                                    (a, b) => a > b,
+                                    (a, b) => { throw new InvalidOperationException(); },
+                                    (a, b) => string.CompareOrdinal(a, b) > 0);
         }
 
         public Value Visit(LessThanExpr expr, Scope scope)
         {
-            return new Value(expr.Left.Accept(this, scope).ToNumeric() < expr.Right.Accept(this, scope).ToNumeric());
+            return PerformOperation(expr.Left.Accept(this, scope),
+                                    expr.Right.Accept(this, scope),
+                                    (a, b) => a < b,
+                                    (a, b) => a < b,
+                                    (a, b) => { throw new InvalidOperationException(); },
+                                    (a, b) => string.CompareOrdinal(a, b) < 0);
         }
 
         public Value Visit(GreaterThanOrEqualsExpr expr, Scope scope)
         {
-            return new Value(expr.Left.Accept(this, scope).ToNumeric() >= expr.Right.Accept(this, scope).ToNumeric());
+            return PerformOperation(expr.Left.Accept(this, scope),
+                                    expr.Right.Accept(this, scope),
+                                    (a, b) => a >= b,
+                                    (a, b) => a >= b,
+                                    (a, b) => { throw new InvalidOperationException(); },
+                                    (a, b) => string.CompareOrdinal(a, b) >= 0);
         }
 
         public Value Visit(LessThanOrEqualsExpr expr, Scope scope)
         {
-            return new Value(expr.Left.Accept(this, scope).ToNumeric() <= expr.Right.Accept(this, scope).ToNumeric());
+            return PerformOperation(expr.Left.Accept(this, scope),
+                                    expr.Right.Accept(this, scope),
+                                    (a, b) => a <= b,
+                                    (a, b) => a <= b,
+                                    (a, b) => { throw new InvalidOperationException(); },
+                                    (a, b) => string.CompareOrdinal(a, b) <= 0);
         }
-
 
         public Value Visit(AndExpr expr, Scope scope)
         {
-            return new Value(expr.Left.Accept(this, scope).ToBoolean() && expr.Right.Accept(this, scope).ToBoolean());
+            return PerformOperation(expr.Left.Accept(this, scope),
+                                    expr.Right.Accept(this, scope),
+                                    (a, b) => { throw new InvalidOperationException(); },
+                                    (a, b) => { throw new InvalidOperationException(); },
+                                    (a, b) => a && b,
+                                    (a, b) => { throw new InvalidOperationException(); });
         }
 
         public Value Visit(OrExpr expr, Scope scope)
         {
-            return new Value(expr.Left.Accept(this, scope).ToBoolean() || expr.Right.Accept(this, scope).ToBoolean());
+            return PerformOperation(expr.Left.Accept(this, scope),
+                                    expr.Right.Accept(this, scope),
+                                    (a, b) => { throw new InvalidOperationException(); },
+                                    (a, b) => { throw new InvalidOperationException(); },
+                                    (a, b) => a || b,
+                                    (a, b) => { throw new InvalidOperationException(); });
         }
 
         public Value Visit(NotExpr expr, Scope scope)
         {
-            return new Value(!expr.Right.Accept(this, scope).ToBoolean());
+            return PerformOperation(new Value(true),
+                                    expr.Right.Accept(this, scope),
+                                    (a, b) => { throw new InvalidOperationException(); },
+                                    (a, b) => { throw new InvalidOperationException(); },
+                                    (a, b) => !b,
+                                    (a, b) => { throw new InvalidOperationException(); });
         }
 
         public Value Visit(ConditionalExpr expr, Scope scope)
@@ -101,13 +170,69 @@ namespace AST.Visitor
 
             if (condition)
                 return expr.ThenExpression.Accept(this, scope);
-            else
-                return expr.ElseExpression.Accept(this, scope);
+
+            return expr.ElseExpression.Accept(this, scope);
         }
 
         public Value Visit(NegationExpr expr, Scope scope)
         {
-            return new Value(-expr.Right.Accept(this, scope).ToNumeric());
+            return PerformOperation(new Value(0), 
+                                    expr.Right.Accept(this, scope),
+                                    (a, b) => -b ,
+                                    (a, b) => -b ,
+                                    (a, b) => { throw new InvalidOperationException(); },
+                                    (a, b) => { throw new InvalidOperationException(); });
+        }
+
+        static TypeCode PromoteToType(Value lhs, Value rhs)
+        {
+            var l = lhs.GetTypeCode();
+            var r = rhs.GetTypeCode();
+
+            if (lhs.IsNumericType() != rhs.IsNumericType())
+                throw new InvalidCastException();
+
+            if (lhs.IsNumericType() && rhs.IsNumericType())
+            {
+                if (l == TypeCode.Double || r == TypeCode.Double)
+                    return TypeCode.Double;
+
+                if (l == TypeCode.Int64 || r == TypeCode.Int64)
+                    return TypeCode.Int64;
+
+                throw new InvalidOperationException();
+            }
+
+            if (l == TypeCode.String && r == TypeCode.String)
+                return TypeCode.String;
+
+            if (l == TypeCode.Boolean && r == TypeCode.Boolean)
+                return TypeCode.Boolean;
+
+            throw new InvalidOperationException();
+        }
+
+        private static Value PerformOperation(Value lhs, Value rhs,
+            Func<double, double, object> DoubleOp,
+            Func<long, long, object> IntOp,
+            Func<bool, bool, object> BoolOp,
+            Func<string, string, object> StringOp)
+        {
+            var typeCode = PromoteToType(lhs, rhs);
+
+            switch (typeCode)
+            {
+                case TypeCode.Double:
+                    return new Value(DoubleOp(lhs.ToDouble(), rhs.ToDouble()));
+                case TypeCode.Int64:
+                    return new Value(IntOp(lhs.ToInt(), rhs.ToInt()));
+                case TypeCode.Boolean:
+                    return new Value(BoolOp(lhs.ToBoolean(), rhs.ToBoolean()));
+                case TypeCode.String:
+                    return new Value(StringOp(lhs.ToString(), rhs.ToString()));
+                default:
+                    throw new InvalidCastException();
+            }
         }
     }
 }

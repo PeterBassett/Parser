@@ -4,7 +4,7 @@
     {
         protected override object Parse(string tokenValue)
         {
-            return int.Parse(tokenValue);
+            return long.Parse(tokenValue);
         }
     }
 }

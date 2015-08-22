@@ -42,7 +42,7 @@
     <Compile Include="Scope.cs" />
     <Compile Include="TypeCheckException.cs" />
     <Compile Include="TypeExtensions.cs" />
-    <Compile Include="UnefinedIdentifierException.cs" />
+    <Compile Include="UndefinedIdentifierException.cs" />
     <Compile Include="Value.cs" />
   </ItemGroup>
   <ItemGroup>
