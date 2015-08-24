@@ -52,6 +52,7 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="StatementParserTests.cs" />
     <Compile Include="FullExpressionParserTests.cs" />
     <Compile Include="ExpressionParserTests.cs" />
     <Compile Include="FakeScanner.cs" />

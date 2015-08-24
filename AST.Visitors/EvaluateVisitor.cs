@@ -166,9 +166,12 @@ namespace AST.Visitor
 
         public Value Visit(ConditionalExpr expr, Scope scope)
         {
-            var condition = expr.Condition.Accept(this, scope).ToBoolean();
+            var condition = expr.Condition.Accept(this, scope);
 
-            if (condition)
+            if(condition.GetTypeCode() != TypeCode.Boolean)
+                throw new InvalidCastException();
+
+            if (condition.ToBoolean())
                 return expr.ThenExpression.Accept(this, scope);
 
             return expr.ElseExpression.Accept(this, scope);
@@ -233,6 +236,21 @@ namespace AST.Visitor
                 default:
                     throw new InvalidCastException();
             }
+        }
+
+        public Value Visit(Statements.Loops.WhileStmt stmt, Scope context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Value Visit(Statements.IfStmt stmt, Scope context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Value Visit(Statements.BlockStmt stmt, Scope context)
+        {
+            throw new NotImplementedException();
         }
     }
 }

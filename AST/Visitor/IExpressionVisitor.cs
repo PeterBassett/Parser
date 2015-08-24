@@ -2,6 +2,8 @@
 using AST.Expressions.Arithmatic;
 using AST.Expressions.Comparison;
 using AST.Expressions.Logical;
+using AST.Statements;
+using AST.Statements.Loops;
 
 namespace AST.Visitor
 {
@@ -26,5 +28,8 @@ namespace AST.Visitor
         T Visit(NotExpr expr, C context);
         T Visit(ConditionalExpr expr, C context);
         T Visit(NegationExpr expr, C context);
+        T Visit(WhileStmt stmt, C context);
+        T Visit(IfStmt stmt, C context);
+        T Visit(BlockStmt stmt, C context);
     }
 }

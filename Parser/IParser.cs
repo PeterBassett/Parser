@@ -1,4 +1,5 @@
 ﻿using AST;
+using Lexer;
 
 namespace Parser
 {
@@ -6,5 +7,6 @@ namespace Parser
     {
         IExpression Parse();
         IExpression Parse(int precedence);
+        Token Current { get; }    
     }
 }

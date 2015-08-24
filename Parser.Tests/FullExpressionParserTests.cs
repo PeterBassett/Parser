@@ -105,7 +105,7 @@ namespace Parser.Tests
             [TestCase("\"a\" && \"a\"", null, ExpectedException = typeof(InvalidOperationException))]
             [TestCase("\"a\" || \"a\"", null, ExpectedException = typeof(InvalidOperationException))]
             [TestCase("!\"a\"", null, ExpectedException = typeof(InvalidOperationException))]
-            [TestCase("\"a\"?1:2", null, ExpectedException = typeof(FormatException))]
+            [TestCase("\"a\"?1:2", null, ExpectedException = typeof(InvalidCastException))]
             public void EvaluateExpression(string source, object expected)
             {
                 var expression = CreateExpression(source);

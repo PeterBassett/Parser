@@ -182,11 +182,30 @@ namespace AST.Visitor.Tests
             }
 
             [Test]
-            public void VisitMathExpressionTree()
+            public void VisitMathExpressionUsingIntegerDivisionTree()
             {
                 var target = new EvaluateVisitor();
 
                 var one = new ConstantExpr(1);
+                var two = new ConstantExpr(2);
+                var three = new ConstantExpr(3);
+                var four = new ConstantExpr(4);
+                var five = new ConstantExpr(5);
+                var six = new ConstantExpr(6);
+
+                var expr = new DivExpr(new MultExpr(three, six), new MultExpr(new MinusExpr(five, one), new PlusExpr(four, two)));
+
+                var actual = target.Visit(expr, scope);
+
+                Assert.AreEqual("0", actual.ToString());
+            }
+
+            [Test]
+            public void VisitMathExpressionUsingFloatingPointDivisionTree()
+            {
+                var target = new EvaluateVisitor();
+
+                var one = new ConstantExpr(1.0);
                 var two = new ConstantExpr(2);
                 var three = new ConstantExpr(3);
                 var four = new ConstantExpr(4);
@@ -264,7 +283,7 @@ namespace AST.Visitor.Tests
 
                 var actual = target.Visit(expr, scope);
 
-                Assert.AreEqual(expected, actual.ToNumeric());
+                Assert.AreEqual(expected, actual.ToObject());
             }
 
             [TestCase(true)]
@@ -299,7 +318,7 @@ namespace AST.Visitor.Tests
 
                 var actual = target.Visit(expr, scope);
 
-                Assert.AreEqual(expected, actual.ToNumeric());
+                Assert.AreEqual(expected, actual.ToObject());
             }
 
             [Test]
@@ -339,7 +358,7 @@ namespace AST.Visitor.Tests
             }
 
             [TestCase(1, 1, true)]
-            [TestCase(1, 1.0, false)]
+            [TestCase(1, 1.0, true)]
             [TestCase(1, 2, false)]
             [TestCase(true, true, true)]
             [TestCase(true, false, false)]

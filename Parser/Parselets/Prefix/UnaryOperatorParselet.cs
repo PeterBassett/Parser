@@ -16,7 +16,7 @@ namespace Parser.Parselets.Prefix
 
         public IExpression Parse(Parser parser, Token token)
         {           
-            var right = parser.Parse(_precedence);
+            var right = parser.ParseExpression(_precedence);
 
             return (IExpression)Activator.CreateInstance(typeof(T), new object[] { right });
         }

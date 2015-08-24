@@ -1,4 +1,5 @@
-﻿using AST.Expressions;
+﻿using System;
+using AST.Expressions;
 using AST.Expressions.Arithmatic;
 using AST.Expressions.Comparison;
 using AST.Expressions.Logical;
@@ -101,6 +102,24 @@ namespace AST.Visitor
         public string Visit(NegationExpr expr, Scope scope)
         {
             return "-" + expr.Right.Accept(this, scope);
+        }
+
+        public string Visit(Statements.Loops.WhileStmt stmt, Scope context)
+        {
+            //HACK
+            throw new ApplicationException(); //; System.NotImplementedException();
+        }
+
+        public string Visit(Statements.IfStmt stmt, Scope context)
+        {
+            //HACK
+            throw new ApplicationException(); //; System.NotImplementedException();
+        }
+
+        public string Visit(Statements.BlockStmt stmt, Scope context)
+        {
+            //HACK
+            throw new ApplicationException(); //; System.NotImplementedException();
         }
     }
 }

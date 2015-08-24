@@ -18,7 +18,7 @@ namespace Parser.Parselets.Infix
 
         public IExpression Parse(Parser parser, IExpression left, Token token)
         {           
-            var right = parser.Parse(_precedence - (_isRightAssociative ? 1 : 0));
+            var right = parser.ParseExpression(_precedence - (_isRightAssociative ? 1 : 0));
 
             return (IExpression)Activator.CreateInstance(typeof(T), new object[] { left, right });
         }

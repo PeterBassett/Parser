@@ -24,7 +24,7 @@ namespace AST.Expressions
             _elseExpression = elseExpression;
         }
 
-        public T Accept<T,C>(IExpressionVisitor<T,C> visitor, C context)
+        public virtual T Accept<T,C>(IExpressionVisitor<T,C> visitor, C context)
         {
             return visitor.Visit(this, context);
         }

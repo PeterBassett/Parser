@@ -171,5 +171,20 @@ namespace AST.Visitor
 
             return type;
         }
+
+        public Type Visit(Statements.Loops.WhileStmt stmt, Scope context)
+        {
+            return typeof (void);
+        }
+
+        public Type Visit(Statements.IfStmt stmt, Scope context)
+        {
+            return typeof(void);
+        }
+
+        public Type Visit(Statements.BlockStmt stmt, Scope context)
+        {
+            return typeof(void);
+        }
     }
 }

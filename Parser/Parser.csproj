@@ -39,12 +39,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Parselets\Prefix\IdentifierParselet.cs" />
+    <Compile Include="StatementParser.cs" />
     <Compile Include="ExpressionParser.cs" />
     <Compile Include="IParser.cs" />
     <Compile Include="ParseException.cs" />
     <Compile Include="Parselets\Infix\BinaryOperatorParselet.cs" />
     <Compile Include="Parselets\Infix\ConditionalParselet.cs" />
     <Compile Include="Parselets\Prefix\BooleanParselet.cs" />
+    <Compile Include="Parselets\StatementParselets\IStatementParselet.cs" />
+    <Compile Include="Parselets\StatementParselets\StatementParser.cs" />
+    <Compile Include="Parselets\StatementParselets\WhileParselet.cs" />
     <Compile Include="Parselets\Prefix\StringParselet.cs" />
     <Compile Include="Parselets\Prefix\UnaryOperatorParselet.cs" />
     <Compile Include="Parselets\Prefix\GroupParselet.cs" />

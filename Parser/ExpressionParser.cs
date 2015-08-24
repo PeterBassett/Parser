@@ -18,7 +18,7 @@ namespace Parser
             RegisterParselet("BOOLEAN", new BooleanParselet());
             RegisterParselet("LEFTPAREN", new GroupParselet());
             RegisterParselet("QUESTIONMARK", new ConditionalParselet());
-            RegisterParselet("QUOTED-STRING", new StringParselet());
+            RegisterParselet("QUOTED-STRING", new StringParselet());            
 
             InfixLeft<PlusExpr>("PLUS", Precedence.Sum);
             InfixLeft<MinusExpr>("MINUS", Precedence.Sum);
@@ -39,26 +39,26 @@ namespace Parser
             Prefix<NegationExpr>("MINUS", Precedence.Unary);
 
             InfixRight<PowExpr>("POW", Precedence.Exponent);
-        }
+        }        
 
-        private void InfixLeft<T>(string token, Precedence precedence)
+        protected void InfixLeft<T>(string token, Precedence precedence)
         {
             RegisterBinaryOperatorParselet<T>(token, precedence, false);
         }
 
-        public void InfixRight<T>(string token, Precedence precedence)
+        protected void InfixRight<T>(string token, Precedence precedence)
         {
             RegisterBinaryOperatorParselet<T>(token, precedence, true);
         }
 
-        private void RegisterBinaryOperatorParselet<T>(string token, Precedence precedence, bool isRightAssociative)
+        protected void RegisterBinaryOperatorParselet<T>(string token, Precedence precedence, bool isRightAssociative)
         {
             var constructedType = typeof (BinaryOperatorParselet<>).MakeGenericType(new[] {typeof (T)});
 
             RegisterParselet(token, (IInfixParselet)Activator.CreateInstance(constructedType, new object[] { precedence, isRightAssociative }));
         }
 
-        public void Prefix<T>(string token, Precedence precedence)
+        protected void Prefix<T>(string token, Precedence precedence)
         {
             var constructedType = typeof(UnaryOperatorParselet<>).MakeGenericType(new[] { typeof(T) });
 
