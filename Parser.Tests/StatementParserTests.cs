@@ -44,8 +44,8 @@ namespace Parser.Tests
                     Assert.Fail("No tokens to parse");
                 }
                 catch (ParseException)
-                {                    
-                }                
+                {
+                }
             }
 
             [Test]
@@ -59,7 +59,7 @@ namespace Parser.Tests
                 }
                 catch (ParseException)
                 {
-                }          
+                }
             }
         }
 
@@ -69,13 +69,13 @@ namespace Parser.Tests
             [Test]
             public void IntegersAreParsedToAConstExpression()
             {
-                var parser = new StatementParser(new FakeScanner(new [] { new Token("INTEGER", "1", 0, 0, 0) }));
+                var parser = new StatementParser(new FakeScanner(new[] { new Token("INTEGER", "1", 0, 0, 0) }));
 
                 var result = parser.Parse();
 
                 Assert.AreEqual(typeof(ConstantExpr), result.GetType());
             }
-        
+
             [Test]
             public void FloatsAreParsedToAConstExpression()
             {
@@ -106,6 +106,8 @@ namespace Parser.Tests
                 {
                     {"a", "IDENTIFIER"},
                     {"b", "IDENTIFIER"},
+                    {"c", "IDENTIFIER"},
+                    {"d", "IDENTIFIER"},
                     {"+", "PLUS"},
                     {"-", "MINUS"},
                     {"*", "MULT"},
@@ -129,6 +131,8 @@ namespace Parser.Tests
                     {";", "SEMICOLON"},
                     {"while", "WHILE"},
                     {"=", "ASSIGNMENT"},
+                    {"if", "IF"},
+                    {"else", "ELSE"},
                 };
 
                 return new Token(symbolToOp[value.ToString()], value.ToString(), 0, 0, 0);
@@ -137,7 +141,7 @@ namespace Parser.Tests
             [Test]
             public void SimpleAddition()
             {
-                var parser = new StatementParser(new FakeScanner(new[] { Get(2), Get("+"), Get(3)}));
+                var parser = new StatementParser(new FakeScanner(new[] { Get(2), Get("+"), Get(3) }));
 
                 var result = parser.Parse();
 
@@ -161,7 +165,7 @@ namespace Parser.Tests
 
                 Assert.AreEqual(typeof(MultExpr), result.GetType());
 
-                var expr = (MultExpr) result;
+                var expr = (MultExpr)result;
 
                 Assert.AreEqual(typeof(ConstantExpr), expr.Left.GetType());
                 Assert.AreEqual(typeof(ConstantExpr), expr.Right.GetType());
@@ -313,7 +317,7 @@ namespace Parser.Tests
 
                 Assert.AreEqual(typeof(ConstantExpr), result.GetType());
 
-                var expr = (ConstantExpr) result;
+                var expr = (ConstantExpr)result;
 
                 Assert.AreEqual(1, expr.Value);
             }
@@ -529,7 +533,7 @@ namespace Parser.Tests
                 var expr = (AndExpr)result;
 
                 Assert.AreEqual(typeof(ConstantExpr), expr.Left.GetType());
-                Assert.AreEqual(typeof(NotExpr), expr.Right.GetType());                
+                Assert.AreEqual(typeof(NotExpr), expr.Right.GetType());
             }
 
             [Test]
@@ -587,7 +591,7 @@ namespace Parser.Tests
             [Test]
             public void NegationExpressionTest()
             {
-                var parser = new StatementParser(new FakeScanner(new[] { Get("-"), Get(5)}));
+                var parser = new StatementParser(new FakeScanner(new[] { Get("-"), Get(5) }));
 
                 var result = parser.Parse();
 
@@ -612,7 +616,7 @@ namespace Parser.Tests
             [Test]
             public void AndOrPrecedenceTest2()
             {
-                var parser = new StatementParser(new FakeScanner(new[] {   Get("("), Get(true), Get("||"), Get(true), Get(")"), Get("&&"), Get(false) }));
+                var parser = new StatementParser(new FakeScanner(new[] { Get("("), Get(true), Get("||"), Get(true), Get(")"), Get("&&"), Get(false) }));
 
                 var result = parser.Parse();
 
@@ -622,7 +626,7 @@ namespace Parser.Tests
             [Test]
             public void AndOrPrecedenceTest3()
             {
-                var parser = new StatementParser(new FakeScanner(new[] { Get(true), Get("||"), Get("("), Get(true), Get("&&"), Get(false), Get(")")}));
+                var parser = new StatementParser(new FakeScanner(new[] { Get(true), Get("||"), Get("("), Get(true), Get("&&"), Get(false), Get(")") }));
 
                 var result = parser.Parse();
 
@@ -662,12 +666,12 @@ namespace Parser.Tests
             [Test]
             public void SimpleAssignment()
             {
-                var parser = new StatementParser(new FakeScanner(new[] {Get("a"), Get("="), Get("b"), Get("+"), Get(1)}));
+                var parser = new StatementParser(new FakeScanner(new[] { Get("a"), Get("="), Get("b"), Get("+"), Get(1) }));
 
                 var result = parser.Parse();
 
-                Assert.AreEqual(typeof (AssignmentExpr), result.GetType());
-                var expr = (AssignmentExpr) result;
+                Assert.AreEqual(typeof(AssignmentExpr), result.GetType());
+                var expr = (AssignmentExpr)result;
 
                 Assert.AreEqual(typeof(IdentifierExpr), expr.Left.GetType());
                 Assert.AreEqual(typeof(PlusExpr), expr.Right.GetType());
@@ -689,7 +693,7 @@ namespace Parser.Tests
             }
 
             [Test]
-            public void WhileStatement()
+            public void WhileStatementWithBlock()
             {
                 var parser = new StatementParser(new FakeScanner(new[] { Get("while"), Get("("), Get(1), Get("!="), Get(3), Get(")"), Get("{"), Get("a"), Get("="), Get("b"), Get("+"), Get(1), Get(";"), Get("}") }));
 
@@ -705,6 +709,150 @@ namespace Parser.Tests
                 var block = (BlockStmt)expr.Block;
                 Assert.AreEqual(1, block.Statements.Count());
                 Assert.AreEqual(typeof(AssignmentExpr), block.Statements.ElementAt(0).GetType());
+            }
+
+            [Test]
+            public void WhileStatementSingle()
+            {
+                var parser = new StatementParser(new FakeScanner(new[] { Get("while"), Get("("), Get(1), Get("!="), Get(3), Get(")"), Get("a"), Get("="), Get("b"), Get("+"), Get(1), Get(";") }));
+
+                var result = parser.Parse();
+
+                Assert.AreEqual(typeof(WhileStmt), result.GetType());
+
+                var expr = (WhileStmt)result;
+
+                Assert.AreEqual(typeof(NotEqualsExpr), expr.Condition.GetType());
+                Assert.AreEqual(typeof(AssignmentExpr), expr.Block.GetType());
+            }
+
+            [TestCase(ExpectedException=typeof(ParseException))]
+            public void WhileStatementWithExpression()
+            {
+                var parser = new StatementParser(new FakeScanner(new[] { Get("while"), Get("("), Get(1), Get("!="), Get(3), Get(")"), Get("b"), Get("+"), Get(1), Get(";") }));
+
+                parser.Parse();
+            }
+
+            [TestCase(ExpectedException = typeof(ParseException))]
+            public void WhileStatementWithExpressionBlock()
+            {
+                var parser = new StatementParser(new FakeScanner(new[] { Get("while"), Get("("), Get(1), Get("!="), Get(3), Get(")"), Get("{"), Get("b"), Get("+"), Get(1), Get(";"), Get("}") }));
+
+                parser.Parse();
+            }
+
+            [Test]
+            public void BlockStatement()
+            {
+                var parser = new StatementParser(new FakeScanner(new[] { Get("{"), Get("a"), Get("="), Get("b"), Get("+"), Get(1), Get(";"), Get("}") }));
+
+                var result = parser.Parse();
+
+                Assert.AreEqual(typeof(BlockStmt), result.GetType());
+            }
+
+            [Test]
+            public void IfStatementWithBlock()
+            {
+                var parser = new StatementParser(new FakeScanner(new[]
+                {
+                    Get("if"), Get("("), Get(1), Get("!="), Get(3), Get(")"), 
+                    Get("{"), 
+                        Get("a"), Get("="), Get("b"), Get("+"), Get(1), Get(";"), 
+                    Get("}")
+                }));
+
+                var result = parser.Parse();
+
+                Assert.AreEqual(typeof(IfStmt), result.GetType());
+
+                var stmt = (IfStmt) result;
+
+                Assert.AreEqual(typeof(NotEqualsExpr), stmt.Condition.GetType());
+                Assert.AreEqual(typeof(BlockStmt), stmt.ThenExpression.GetType());
+                Assert.AreEqual(typeof(NoOpStatement), stmt.ElseExpression.GetType());
+            }
+
+            [Test]
+            public void IfElseStatementWithBlock()
+            {
+                var parser = new StatementParser(new FakeScanner(new[]
+                {
+                    Get("if"), Get("("), Get(1), Get("!="), Get(3), Get(")"), 
+                    Get("{"), 
+                        Get("a"), Get("="), Get("b"), Get("+"), Get(1), Get(";"), 
+                    Get("}"),
+                    Get("else"),
+                    Get("{"), 
+                        Get("c"), Get("="), Get("d"), Get("+"), Get(2), Get(";"), 
+                    Get("}")
+                }));
+
+                var result = parser.Parse();
+
+                Assert.AreEqual(typeof(IfStmt), result.GetType());
+
+                var stmt = (IfStmt)result;
+
+                Assert.AreEqual(typeof(NotEqualsExpr), stmt.Condition.GetType());
+                Assert.AreEqual(typeof(BlockStmt), stmt.ThenExpression.GetType());
+                Assert.AreEqual(typeof(BlockStmt), stmt.ElseExpression.GetType());
+
+                Assert.AreNotSame(stmt.ThenExpression, stmt.ElseExpression);
+            }
+
+            [Test]
+            public void IfElseStatementNoBlock()
+            {
+                var parser = new StatementParser(new FakeScanner(new[]
+                {
+                    Get("if"), Get("("), Get(1), Get("!="), Get(3), Get(")"), 
+                        Get("a"), Get("="), Get("b"), Get("+"), Get(1), Get(";"), 
+                    Get("else"),
+                        Get("c"), Get("="), Get("d"), Get("+"), Get(2), Get(";"), 
+                }));
+
+                var result = parser.Parse();
+
+                Assert.AreEqual(typeof(IfStmt), result.GetType());
+
+                var stmt = (IfStmt)result;
+
+                Assert.AreEqual(typeof(NotEqualsExpr), stmt.Condition.GetType());
+                Assert.AreEqual(typeof(AssignmentExpr), stmt.ThenExpression.GetType());
+                Assert.AreEqual(typeof(AssignmentExpr), stmt.ElseExpression.GetType());
+
+                Assert.AreNotSame(stmt.ThenExpression, stmt.ElseExpression);
+            }
+
+            [Test]
+            public void IfIfElseStatementNoBlocks()
+            {
+                var parser = new StatementParser(new FakeScanner(new[]
+                {
+                    Get("if"), Get("("), Get(true), Get(")"),                     
+                        Get("if"), Get("("), Get(false), Get(")"), 
+                            Get("a"), Get("="), Get("b"), Get("+"), Get(1), Get(";"), 
+                        Get("else"),
+                            Get("c"), Get("="), Get("d"), Get("+"), Get(2), Get(";"), 
+                }));
+
+                var result = parser.Parse();
+
+                Assert.AreEqual(typeof(IfStmt), result.GetType());
+
+                var stmt = (IfStmt)result;
+
+                Assert.AreEqual(typeof(ConstantExpr), stmt.Condition.GetType());
+                Assert.AreEqual(true, ((ConstantExpr)stmt.Condition).Value);
+                
+                Assert.AreEqual(typeof(IfStmt), stmt.ThenExpression.GetType());
+                Assert.AreEqual(typeof(NoOpStatement), stmt.ElseExpression.GetType());
+
+                var innerIf = (IfStmt)stmt.ThenExpression;
+                Assert.AreEqual(typeof(ConstantExpr), innerIf.Condition.GetType());
+                Assert.AreEqual(false, ((ConstantExpr)innerIf.Condition).Value);                
             }
         }
     }

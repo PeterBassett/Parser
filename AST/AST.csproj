@@ -64,9 +64,11 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Statements\BlockStmt.cs" />
     <Compile Include="Statements\DeclarationStmt.cs" />
+    <Compile Include="Statements\IBlockStatement.cs" />
     <Compile Include="Statements\IfStmt.cs" />
     <Compile Include="Statements\IStatement.cs" />
     <Compile Include="Statements\Loops\WhileStmt.cs" />
+    <Compile Include="Statements\NoOpStatement.cs" />
     <Compile Include="SyntaxTree.cs" />
     <Compile Include="Visitor\IExpressionVisitor.cs" />
   </ItemGroup>

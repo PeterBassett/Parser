@@ -4,6 +4,8 @@ using AST.Expressions;
 using AST.Expressions.Arithmatic;
 using AST.Expressions.Comparison;
 using AST.Expressions.Logical;
+using AST.Statements;
+using AST.Statements.Loops;
 
 namespace AST.Visitor
 {
@@ -238,19 +240,42 @@ namespace AST.Visitor
             }
         }
 
-        public Value Visit(Statements.Loops.WhileStmt stmt, Scope context)
+        public Value Visit(WhileStmt stmt, Scope scope)
         {
-            throw new NotImplementedException();
+            while (stmt.Accept(this, scope).ToBoolean())
+            {
+                stmt.Block.Accept(this, scope);
+            }
+
+            return new Value(null);
         }
 
-        public Value Visit(Statements.IfStmt stmt, Scope context)
+        public Value Visit(IfStmt stmt, Scope scope)
         {
-            throw new NotImplementedException();
+            var condition = stmt.Accept(this, scope);
+
+            if (condition.GetTypeCode() != TypeCode.Boolean)
+                throw new InvalidCastException();
+
+            if (condition.ToBoolean())
+                return stmt.ThenExpression.Accept(this, scope);
+            
+            return stmt.ElseExpression.Accept(this, scope);
         }
 
-        public Value Visit(Statements.BlockStmt stmt, Scope context)
+        public Value Visit(BlockStmt stmt, Scope scope)
         {
-            throw new NotImplementedException();
+            foreach (var statement in stmt.Statements)
+            {
+                statement.Accept(this, scope);
+            }
+
+            return new Value(null);
+        }
+
+        public Value Visit(NoOpStatement stmt, Scope scope)
+        {
+            return new Value(null);
         }
     }
 }

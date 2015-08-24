@@ -1,11 +1,10 @@
-﻿using System.Collections.Generic;
-using AST;
+﻿using System;
 using AST.Statements;
 using AST.Statements.Loops;
 
-namespace Parser.Parselets.Prefix.Statements
+namespace Parser.Parselets.StatementParselets
 {
-    class WhileParselet : StatementParser
+    class WhileParselet : StatementParselet
     {
         public override IStatement Parse(Parser parser, Lexer.Token current)
         {
@@ -13,9 +12,12 @@ namespace Parser.Parselets.Prefix.Statements
             var condition = parser.ParseExpression(0);
             parser.Consume("RIGHTPAREN");
 
-            var block = Block(parser, current, "LEFTBRACE", "RIGHTBRACE");
+            var block = parser.Parse();
 
-            return new WhileStmt(condition, block);
+            if (!(block is IStatement))
+                throw new ParseException("Invalid statement in block.");
+
+            return new WhileStmt(condition, block as IStatement);
         }        
     }
 }

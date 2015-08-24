@@ -51,7 +51,7 @@ namespace AST.Visitor.Tests
                                    where method.Name == "Visit"
                                    select method;
 
-                var target = new PrintVisitor();
+                var target = new EvaluateVisitor();
 
                 var errors = new List<string>();
                 foreach (var method in visitMethods)
@@ -62,7 +62,7 @@ namespace AST.Visitor.Tests
 
                     try
                     {
-                        method.Invoke(target, new object[] { null });
+                        method.Invoke(target, new object[] { null, null });
                     }
                     catch (TargetParameterCountException)
                     {

@@ -18,7 +18,8 @@ namespace Parser
             RegisterParselet("BOOLEAN", new BooleanParselet());
             RegisterParselet("LEFTPAREN", new GroupParselet());
             RegisterParselet("QUESTIONMARK", new ConditionalParselet());
-            RegisterParselet("QUOTED-STRING", new StringParselet());            
+            RegisterParselet("QUOTED-STRING", new StringParselet());
+            RegisterParselet("IDENTIFIER", new IdentifierParselet());
 
             InfixLeft<PlusExpr>("PLUS", Precedence.Sum);
             InfixLeft<MinusExpr>("MINUS", Precedence.Sum);

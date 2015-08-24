@@ -146,6 +146,19 @@ namespace Parser
             Consume();
         }
 
+        public bool ConsumeOptional(string expected)
+        {
+            var token = LookAhead();
+
+            if (token.Type == expected)
+            {
+                Consume();
+                return true;
+            }
+
+            return false;
+        }
+
         private int GetPrecedence()
         {
             var type = LookAhead().Type;

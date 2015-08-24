@@ -5,7 +5,7 @@ using System.Text;
 
 namespace AST.Statements
 {
-    public class BlockStmt : IStatement
+    public class BlockStmt : IBlockStatement
     {
         private readonly IStatement [] _statements;
 

@@ -6,6 +6,7 @@ using System.Reflection;
 using AST.Expressions;
 using AST.Expressions.Arithmatic;
 using AST.Expressions.Logical;
+using AST.Statements;
 using NUnit.Framework;
 
 namespace AST.Visitor.Tests
@@ -453,6 +454,18 @@ namespace AST.Visitor.Tests
                 }
 
                 Assert.AreEqual(expectedType, actual);
+            }
+
+            [Test]
+            public void VisitNoOpExpr()
+            {
+                var target = new TypeCheckingVisitor();
+
+                var expression = new NoOpStatement();
+
+                var actual = target.Visit(expression, scope);
+
+                Assert.AreEqual(typeof(void), actual);
             }
         }
     }

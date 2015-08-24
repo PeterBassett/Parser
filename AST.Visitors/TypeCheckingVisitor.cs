@@ -3,6 +3,8 @@ using AST.Expressions;
 using AST.Expressions.Arithmatic;
 using AST.Expressions.Comparison;
 using AST.Expressions.Logical;
+using AST.Statements;
+using AST.Statements.Loops;
 
 namespace AST.Visitor
 {
@@ -172,19 +174,24 @@ namespace AST.Visitor
             return type;
         }
 
-        public Type Visit(Statements.Loops.WhileStmt stmt, Scope context)
+        public Type Visit(WhileStmt stmt, Scope scope)
         {
             return typeof (void);
         }
 
-        public Type Visit(Statements.IfStmt stmt, Scope context)
+        public Type Visit(IfStmt stmt, Scope scope)
         {
             return typeof(void);
         }
 
-        public Type Visit(Statements.BlockStmt stmt, Scope context)
+        public Type Visit(BlockStmt stmt, Scope scope)
         {
             return typeof(void);
+        }
+
+        public Type Visit(NoOpStatement stmt, Scope scope)
+        {
+            return typeof (void);
         }
     }
 }

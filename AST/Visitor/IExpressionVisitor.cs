@@ -31,5 +31,6 @@ namespace AST.Visitor
         T Visit(WhileStmt stmt, C context);
         T Visit(IfStmt stmt, C context);
         T Visit(BlockStmt stmt, C context);
+        T Visit(NoOpStatement stmt, C context);
     }
 }

@@ -1,12 +1,6 @@
-﻿using System;
-using AST.Expressions;
-using AST.Expressions.Arithmatic;
-using AST.Expressions.Comparison;
-using AST.Expressions.Logical;
+﻿using AST.Expressions;
 using Lexer;
-using Parser.Parselets.Infix;
-using Parser.Parselets.Prefix;
-using Parser.Parselets.Prefix.Statements;
+using Parser.Parselets.StatementParselets;
 
 namespace Parser
 {
@@ -15,8 +9,9 @@ namespace Parser
         public StatementParser(ILexer lexer)
             : base(lexer)
         {
-            RegisterParselet("IDENTIFIER", new IdentifierParselet());
+            RegisterParselet("LEFTBRACE", new BlockParselet("RIGHTBRACE"));
             RegisterParselet("WHILE", new WhileParselet());
+            RegisterParselet("IF", new IfParselet());
             InfixRight<AssignmentExpr>("ASSIGNMENT", Precedence.Assignment);
         }        
     }

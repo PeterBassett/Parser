@@ -8,9 +8,9 @@ namespace AST.Statements.Loops
     public class WhileStmt : IStatement
     {
         private readonly IExpression _condition;
-        private readonly BlockStmt _block;
+        private readonly IStatement _block;
 
-        public WhileStmt(IExpression condition, BlockStmt block)
+        public WhileStmt(IExpression condition, IStatement block)
         {
             if (condition == null)
                 throw new ArgumentNullException("condition");
@@ -27,6 +27,6 @@ namespace AST.Statements.Loops
         }
 
         public IExpression Condition { get { return _condition; } }
-        public BlockStmt Block { get { return _block; } }
+        public IStatement Block { get { return _block; } }
     }
 }

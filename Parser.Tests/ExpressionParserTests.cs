@@ -118,7 +118,9 @@ namespace Parser.Tests
                     {"||", "BOOLEAN-OR"},
                     {"!", "BOOLEAN-NOT"},
                     {"?", "QUESTIONMARK"},
-                    {":", "COLON"}
+                    {":", "COLON"},
+                    {"a", "IDENTIFIER"},
+                    {"b", "IDENTIFIER"}
                 };
 
                 return new Token(symbolToOp[value.ToString()], value.ToString(), 0, 0, 0);
@@ -647,6 +649,54 @@ namespace Parser.Tests
                 var result = parser.Parse();
 
                 Assert.AreEqual(typeof(AndExpr), result.GetType());
+            }
+
+            [Test]
+            public void SimpleIdentifier()
+            {
+                var parser = new StatementParser(new FakeScanner(new[]
+                {
+                    Get("b")
+                }));
+
+                var result = parser.Parse();
+
+                Assert.AreEqual(typeof(IdentifierExpr), result.GetType());
+                var expr = (IdentifierExpr)result;
+
+                Assert.AreEqual("b", expr.Name);
+            }
+
+            [Test]
+            public void SimpleIdentifierExpression()
+            {
+                var parser = new StatementParser(new FakeScanner(new[]
+                {
+                    Get("b"), Get("+"), Get(1)
+                }));
+
+                var result = parser.Parse();
+
+                Assert.AreEqual(typeof(PlusExpr), result.GetType());
+                var expr = (PlusExpr)result;
+
+                Assert.AreEqual(typeof(IdentifierExpr), expr.Left.GetType());
+                Assert.AreEqual(typeof(ConstantExpr), expr.Right.GetType());
+            }
+
+            [Test]
+            public void MoreComplexIdentifierExpression()
+            {
+                var parser = new StatementParser(new FakeScanner(new[] { Get("a"), Get("+"), Get(1), Get("*"), Get("b"), Get("-"), Get(4) }));
+
+                var result = parser.Parse();
+
+                Assert.AreEqual(typeof(MinusExpr), result.GetType());
+
+                var expr = (MinusExpr)result;
+
+                Assert.AreEqual(typeof(PlusExpr), expr.Left.GetType());
+                Assert.AreEqual(typeof(ConstantExpr), expr.Right.GetType());
             }
         }
     }
