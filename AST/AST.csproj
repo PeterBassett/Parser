@@ -49,6 +49,8 @@
     <Compile Include="Expressions\Arithmatic\PlusExpr.cs" />
     <Compile Include="Expressions\AssignmentExpr.cs" />
     <Compile Include="Expressions\ConditionalExpr.cs" />
+    <Compile Include="Expressions\Function\ReturnExpr.cs" />
+    <Compile Include="Expressions\Function\FunctionExpr.cs" />
     <Compile Include="Expressions\UnaryOperatorExpr.cs" />
     <Compile Include="Expressions\IdentifierExpr.cs" />
     <Compile Include="Expressions\Comparison\NotEqualsExpr.cs" />

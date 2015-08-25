@@ -2,6 +2,7 @@
 using AST.Expressions;
 using AST.Expressions.Arithmatic;
 using AST.Expressions.Comparison;
+using AST.Expressions.Function;
 using AST.Expressions.Logical;
 using AST.Statements;
 using AST.Statements.Loops;
@@ -22,7 +23,7 @@ namespace AST.Visitor
             if(!identifier.IsDefined)
                 throw new UndefinedIdentifierException(expr.Name);
 
-            return identifier.GetCurrentValue().GetType();
+            return identifier.Value.GetType();
         }
 
         public Type Visit(ConstantExpr expr, Scope scope)
@@ -197,6 +198,16 @@ namespace AST.Visitor
         public Type Visit(DoWhileStmt stmt, Scope context)
         {
             return typeof(void);
+        }
+
+        public Type Visit(FunctionExpr expr, Scope context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Type Visit(ReturnExpr returnExpr, Scope context)
+        {
+            throw new NotImplementedException();
         }
     }
 }

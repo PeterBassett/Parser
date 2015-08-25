@@ -150,5 +150,15 @@ namespace AST.Visitor
                 stmt.Block.Accept(this, scope),
                 stmt.Condition.Accept(this, scope));
         }
+
+        public string Visit(Expressions.Function.FunctionExpr expr, Scope context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string Visit(Expressions.Function.ReturnExpr returnExpr, Scope context)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

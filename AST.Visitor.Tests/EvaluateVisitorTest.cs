@@ -632,7 +632,6 @@ namespace AST.Visitor.Tests
             {
                 var target = new EvaluateVisitor();
 
-                var conditionExecuted = false;
                 var condition = new Mock<IExpression>();
                 condition.Setup(c => c.Accept(It.IsAny<IExpressionVisitor<Value, Scope>>(), It.IsAny<Scope>()))
                     .Returns<IExpressionVisitor<Value, Scope>, Scope>((v, s) => new Value(conditionValue));
@@ -653,7 +652,6 @@ namespace AST.Visitor.Tests
             {
                 var target = new EvaluateVisitor();
 
-                var conditionExecuted = false;
                 var condition = new Mock<IExpression>();
                 condition.Setup(c => c.Accept(It.IsAny<IExpressionVisitor<Value, Scope>>(), It.IsAny<Scope>()))
                     .Returns<IExpressionVisitor<Value, Scope>, Scope>((v, s) => new Value(conditionValue));

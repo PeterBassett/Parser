@@ -1,6 +1,7 @@
 ﻿using AST.Expressions;
 using AST.Expressions.Arithmatic;
 using AST.Expressions.Comparison;
+using AST.Expressions.Function;
 using AST.Expressions.Logical;
 using AST.Statements;
 using AST.Statements.Loops;
@@ -33,5 +34,7 @@ namespace AST.Visitor
         T Visit(BlockStmt stmt, C context);
         T Visit(NoOpStatement stmt, C context);
         T Visit(DoWhileStmt stmt, C context);
+        T Visit(FunctionExpr expr, C context);
+        T Visit(ReturnExpr returnExpr, C context);
     }
 }

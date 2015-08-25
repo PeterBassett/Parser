@@ -3,6 +3,7 @@ using System.CodeDom;
 using AST.Expressions;
 using AST.Expressions.Arithmatic;
 using AST.Expressions.Comparison;
+using AST.Expressions.Function;
 using AST.Expressions.Logical;
 using AST.Statements;
 using AST.Statements.Loops;
@@ -286,6 +287,16 @@ namespace AST.Visitor
             } while (stmt.Condition.Accept(this, scope).ToBoolean());
 
             return new Value();
+        }
+
+        public Value Visit(FunctionExpr expr, Scope context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Value Visit(ReturnExpr returnExpr, Scope context)
+        {
+            throw new NotImplementedException();
         }
     }
 }
