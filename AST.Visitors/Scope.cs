@@ -1,13 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using AST.Statements;
+using AST.Expressions.Arithmatic;
 
 namespace AST.Visitor
 {
-    public class Scope
+    public class Scope : IDisposable
     {
         private readonly Scope _parent;
         private readonly Dictionary<string, Identifier> _values;
-        public Scope() : this(null)
-        {                
+
+        public Scope()
+            : this(null)
+        {
         }
 
         public Scope(Scope parent)
@@ -20,33 +25,36 @@ namespace AST.Visitor
         {
             public static Identifier Undefined = new Identifier(false);
 
-            private readonly string _name;
-            private readonly Value _value;
+            private readonly VarDefinitionStmt _definition;
             private readonly bool _isDefined;
-            private Identifier(bool unused) : this()
+            private Value _value;
+
+            private Identifier(bool unused)
+                : this()
             {
-                _name = null;
-                _value = null;
+                _definition = null;
                 _isDefined = false;
+                _value = null;
             }
 
-            public Identifier(string name, Value value)
+            public Identifier(VarDefinitionStmt definition, Value value)
             {
-                _name = name;
+                _definition = definition;
                 _value = value;
                 _isDefined = true;
             }
 
-            public string Name { get { return _name; } }
+            public string Name { get { return _definition.Name.Name; } }
+            public VarDefinitionStmt Definition { get { return _definition; } }
             public Value Value { get { return _value; } }
             public bool IsDefined { get { return _isDefined; } }
         }
 
-        private Scope Parent { get { return _parent;  } }
+        private Scope Parent { get { return _parent; } }
 
-        public void DefineIdentifier(string name, Value value)
-        {            
-            _values.Add(name, new Identifier(name, value));
+        public void DefineIdentifier(VarDefinitionStmt definition, Value value)
+        {
+            _values.Add(definition.Name.Name, new Identifier(definition, value));
         }
 
         public Identifier FindIdentifier(string name)
@@ -60,6 +68,43 @@ namespace AST.Visitor
             }
 
             return Identifier.Undefined;
+        }
+
+        public void Dispose()
+        {
+            PopScope();
+        }
+
+        public Scope PushArguments(VarDefinitionStmt[] arguments, Value[] values)
+        {
+            var newScope = PushScope();
+
+            for (int i = 0; i < arguments.Length; i++)
+            {
+                newScope.DefineIdentifier(arguments[i], values[i]);
+            }
+
+            return newScope;
+        }
+
+        public Scope PushScope()
+        {
+            return new Scope(this);
+        }
+
+        public Scope PopScope()
+        {
+            return _parent;
+        }
+
+        internal void DefineIdentifier(Expressions.Function.FunctionDefinitionExpr expr)
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void DefineIdentifier(VarDefinitionStmt stmt)
+        {
+            throw new NotImplementedException();
         }
     }
 }

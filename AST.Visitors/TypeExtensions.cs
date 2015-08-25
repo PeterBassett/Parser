@@ -1,38 +1,17 @@
-﻿using System;
-
-namespace AST.Visitor
+﻿namespace AST.Visitor
 {
     public static class TypeExtensions
     {
-        public static bool IsNumericType(this Type type)
+        public static bool IsNumericType(this ValueType type)
         {
-            if (type == null)
+            switch (type)
             {
-                return false;
-            }
-
-            switch (Type.GetTypeCode(type))
-            {
-                case TypeCode.Byte:
-                case TypeCode.Decimal:
-                case TypeCode.Double:
-                case TypeCode.Int16:
-                case TypeCode.Int32:
-                case TypeCode.Int64:
-                case TypeCode.SByte:
-                case TypeCode.Single:
-                case TypeCode.UInt16:
-                case TypeCode.UInt32:
-                case TypeCode.UInt64:
+                case ValueType.Int:
+                case ValueType.Float:
                     return true;
-                case TypeCode.Object:
-                    if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Nullable<>))
-                    {
-                        return IsNumericType(Nullable.GetUnderlyingType(type));
-                    }
+                default:
                     return false;
             }
-            return false;
         }
     }
 }

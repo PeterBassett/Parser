@@ -1,5 +1,6 @@
 ﻿using System;
 using System.CodeDom;
+using System.Linq;
 using AST.Expressions;
 using AST.Expressions.Arithmatic;
 using AST.Expressions.Comparison;
@@ -29,7 +30,7 @@ namespace AST.Visitor
 
         public Value Visit(ConstantExpr expr, Scope scope)
         {
-            return new Value(expr.Value);
+            return Value.FromObject(expr.Value);
         }
 
         public Value Visit(DivExpr expr, Scope scope)
@@ -171,7 +172,7 @@ namespace AST.Visitor
         {
             var condition = expr.Condition.Accept(this, scope);
 
-            if(condition.GetTypeCode() != TypeCode.Boolean)
+            if(condition.Type != ValueType.Boolean)
                 throw new InvalidCastException();
 
             if (condition.ToBoolean())
@@ -190,30 +191,30 @@ namespace AST.Visitor
                                     (a, b) => { throw new InvalidOperationException(); });
         }
 
-        static TypeCode PromoteToType(Value lhs, Value rhs)
+        static ValueType PromoteToType(Value lhs, Value rhs)
         {
-            var l = lhs.GetTypeCode();
-            var r = rhs.GetTypeCode();
+            var l = lhs.Type;
+            var r = rhs.Type;
 
             if (lhs.IsNumericType() != rhs.IsNumericType())
                 throw new InvalidCastException();
 
             if (lhs.IsNumericType() && rhs.IsNumericType())
             {
-                if (l == TypeCode.Double || r == TypeCode.Double)
-                    return TypeCode.Double;
+                if (l == ValueType.Float || r == ValueType.Float)
+                    return ValueType.Float;
 
-                if (l == TypeCode.Int64 || r == TypeCode.Int64)
-                    return TypeCode.Int64;
+                if (l == ValueType.Int || r == ValueType.Int)
+                    return ValueType.Int;
 
                 throw new InvalidOperationException();
             }
 
-            if (l == TypeCode.String && r == TypeCode.String)
-                return TypeCode.String;
+            if (l == ValueType.String && r == ValueType.String)
+                return ValueType.String;
 
-            if (l == TypeCode.Boolean && r == TypeCode.Boolean)
-                return TypeCode.Boolean;
+            if (l == ValueType.Boolean && r == ValueType.Boolean)
+                return ValueType.Boolean;
 
             throw new InvalidOperationException();
         }
@@ -228,14 +229,14 @@ namespace AST.Visitor
 
             switch (typeCode)
             {
-                case TypeCode.Double:
-                    return new Value(DoubleOp(lhs.ToDouble(), rhs.ToDouble()));
-                case TypeCode.Int64:
-                    return new Value(IntOp(lhs.ToInt(), rhs.ToInt()));
-                case TypeCode.Boolean:
-                    return new Value(BoolOp(lhs.ToBoolean(), rhs.ToBoolean()));
-                case TypeCode.String:
-                    return new Value(StringOp(lhs.ToString(), rhs.ToString()));
+                case ValueType.Float:
+                    return Value.FromObject(DoubleOp(lhs.ToDouble(), rhs.ToDouble()));
+                case ValueType.Int:
+                    return Value.FromObject(IntOp(lhs.ToInt(), rhs.ToInt()));
+                case ValueType.Boolean:
+                    return Value.FromObject(BoolOp(lhs.ToBoolean(), rhs.ToBoolean()));
+                case ValueType.String:
+                    return Value.FromObject(StringOp(lhs.ToString(), rhs.ToString()));
                 default:
                     throw new InvalidCastException();
             }
@@ -255,7 +256,7 @@ namespace AST.Visitor
         {
             var condition = stmt.Condition.Accept(this, scope);
 
-            if (condition.GetTypeCode() != TypeCode.Boolean)
+            if (condition.Type != ValueType.Boolean)
                 throw new InvalidCastException();
 
             if (condition.ToBoolean())
@@ -266,9 +267,12 @@ namespace AST.Visitor
 
         public Value Visit(BlockStmt stmt, Scope scope)
         {
-            foreach (var statement in stmt.Statements)
+            using (scope = scope.PushScope())
             {
-                statement.Accept(this, scope);
+                foreach (var statement in stmt.Statements)
+                {
+                    statement.Accept(this, scope);
+                }
             }
 
             return new Value();
@@ -289,14 +293,45 @@ namespace AST.Visitor
             return new Value();
         }
 
-        public Value Visit(FunctionExpr expr, Scope context)
+        public Value Visit(FunctionDefinitionExpr expr, Scope scope)
         {
-            throw new NotImplementedException();
+            scope.DefineIdentifier(expr);
+            return new Value( expr );
         }
 
-        public Value Visit(ReturnExpr returnExpr, Scope context)
+        public Value Visit(ReturnExpr expr, Scope scope)
         {
-            throw new NotImplementedException();
+            throw new ReturnStatementException(expr.Accept(this, scope));
+        }
+
+        public Value Visit(VarDefinitionStmt stmt, Scope scope)
+        {
+            scope.DefineIdentifier(stmt);
+            return Value.FromObject(stmt.InitialValue.Value);
+        }
+
+        public Value Visit(FunctionCallExpr expr, Scope scope)
+        {
+            var function = scope.FindIdentifier(expr.FunctionName.Name);
+
+            var func = (FunctionDefinitionExpr)function.Value.ToObject();
+
+            var arguments = from argument in expr.Arguments
+                            select argument.Accept(this, scope);
+
+            using (scope = scope.PushArguments(func.Arguments, arguments.ToArray()))
+            {
+                try
+                {
+                    func.Body.Accept(this, scope);
+                }
+                catch (ReturnStatementException returnStatement)
+                {
+                    return returnStatement.Value;
+                }
+            }
+
+            return new Value();
         }
     }
 }

@@ -6,6 +6,7 @@ using AST.Expressions.Comparison;
 using AST.Expressions.Logical;
 using AST.Statements;
 using AST.Statements.Loops;
+using AST.Expressions.Function;
 
 namespace AST.Visitor
 {
@@ -151,12 +152,23 @@ namespace AST.Visitor
                 stmt.Condition.Accept(this, scope));
         }
 
-        public string Visit(Expressions.Function.FunctionExpr expr, Scope context)
+        public string Visit(FunctionDefinitionExpr expr, Scope context)
         {
             throw new NotImplementedException();
         }
 
-        public string Visit(Expressions.Function.ReturnExpr returnExpr, Scope context)
+        public string Visit(ReturnExpr returnExpr, Scope context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public string Visit(VarDefinitionStmt varDefinitionStmt, Scope context)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        public string Visit(FunctionCallExpr functionCallExpr, Scope context)
         {
             throw new NotImplementedException();
         }

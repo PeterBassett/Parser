@@ -34,7 +34,9 @@ namespace AST.Visitor
         T Visit(BlockStmt stmt, C context);
         T Visit(NoOpStatement stmt, C context);
         T Visit(DoWhileStmt stmt, C context);
-        T Visit(FunctionExpr expr, C context);
+        T Visit(FunctionDefinitionExpr expr, C context);
         T Visit(ReturnExpr returnExpr, C context);
+        T Visit(VarDefinitionStmt varDefinitionStmt, C context);
+        T Visit(FunctionCallExpr functionCallExpr, C context);
     }
 }

@@ -9,49 +9,49 @@ using AST.Statements.Loops;
 
 namespace AST.Visitor
 {
-    public class TypeCheckingVisitor : IExpressionVisitor<Type, Scope>
+    public class TypeCheckingVisitor : IExpressionVisitor<ValueType, Scope>
     {        
-        public Type Visit(IdentifierExpr expr, Scope scope)
+        public ValueType Visit(IdentifierExpr expr, Scope scope)
         {
             return LookupTypeOfVar(expr, scope);
         }
 
-        private Type LookupTypeOfVar(IdentifierExpr expr, Scope scope)
+        private ValueType LookupTypeOfVar(IdentifierExpr expr, Scope scope)
         {
             var identifier = scope.FindIdentifier(expr.Name);
 
             if(!identifier.IsDefined)
                 throw new UndefinedIdentifierException(expr.Name);
 
-            return identifier.Value.GetType();
+            return identifier.Value.Type;
         }
 
-        public Type Visit(ConstantExpr expr, Scope scope)
+        public ValueType Visit(ConstantExpr expr, Scope scope)
         {
-            return expr.Value.GetType();
+            return Value.GetValueType(expr.Value);
         }
 
-        public Type Visit(PlusExpr expr, Scope scope)
+        public ValueType Visit(PlusExpr expr, Scope scope)
         {
             return BinaryOperatorTypeCheck(expr, scope);
         }
 
-        public Type Visit(DivExpr expr, Scope scope)
+        public ValueType Visit(DivExpr expr, Scope scope)
         {
             return BinaryOperatorTypeCheck(expr, scope, numericTypesOnly: true);
         }
 
-        public Type Visit(MinusExpr expr, Scope scope)
+        public ValueType Visit(MinusExpr expr, Scope scope)
         {
             return BinaryOperatorTypeCheck(expr, scope, numericTypesOnly:true);
         }
 
-        public Type Visit(MultExpr expr, Scope scope)
+        public ValueType Visit(MultExpr expr, Scope scope)
         {
             return BinaryOperatorTypeCheck(expr, scope, numericTypesOnly: true);
         }
 
-        public Type Visit(AssignmentExpr expr, Scope scope)
+        public ValueType Visit(AssignmentExpr expr, Scope scope)
         {
             if (!(expr.Left is IdentifierExpr))
                 throw new TypeCheckException("Assignement target must be an identifier");            
@@ -59,62 +59,62 @@ namespace AST.Visitor
             return expr.Right.Accept(this, scope);
         }
 
-        public Type Visit(PowExpr expr, Scope scope)
+        public ValueType Visit(PowExpr expr, Scope scope)
         {
             return BinaryOperatorTypeCheck(expr, scope, numericTypesOnly: true);
         }
 
-        public Type Visit(EqualsExpr expr, Scope scope)
+        public ValueType Visit(EqualsExpr expr, Scope scope)
         {
             return BinaryOperatorTypeCheck(expr, scope);
         }
 
-        public Type Visit(NotEqualsExpr expr, Scope scope)
+        public ValueType Visit(NotEqualsExpr expr, Scope scope)
         {
             return BinaryOperatorTypeCheck(expr, scope);
         }
 
-        public Type Visit(GreaterThanExpr expr, Scope scope)
+        public ValueType Visit(GreaterThanExpr expr, Scope scope)
         {
             return BinaryOperatorTypeCheck(expr, scope);
         }
 
-        public Type Visit(LessThanExpr expr, Scope scope)
+        public ValueType Visit(LessThanExpr expr, Scope scope)
         {
             return BinaryOperatorTypeCheck(expr, scope);
         }
 
-        public Type Visit(GreaterThanOrEqualsExpr expr, Scope scope)
+        public ValueType Visit(GreaterThanOrEqualsExpr expr, Scope scope)
         {
             return BinaryOperatorTypeCheck(expr, scope);
         }
 
-        public Type Visit(LessThanOrEqualsExpr expr, Scope scope)
+        public ValueType Visit(LessThanOrEqualsExpr expr, Scope scope)
         {
             return BinaryOperatorTypeCheck(expr, scope);
         }
 
-        public Type Visit(AndExpr expr, Scope scope)
+        public ValueType Visit(AndExpr expr, Scope scope)
         {
             return BinaryOperatorTypeCheck(expr, scope);
         }
 
-        public Type Visit(OrExpr expr, Scope scope)
+        public ValueType Visit(OrExpr expr, Scope scope)
         {
             return BinaryOperatorTypeCheck(expr, scope);
         }
 
-        public Type Visit(NotExpr expr, Scope scope)
+        public ValueType Visit(NotExpr expr, Scope scope)
         {
             var type = expr.Right.Accept(this, scope);
             
-            if (type != typeof(bool))
+            if (type != ValueType.Boolean)
                 throw new TypeCheckException("Not operator must have a boolean condition");
 
             return type;
         }
 
-        private Type BinaryOperatorTypeCheck(BinaryOperatorExpr expr, Scope scope, bool numericTypesOnly = false)
+        private ValueType BinaryOperatorTypeCheck(BinaryOperatorExpr expr, Scope scope, bool numericTypesOnly = false)
         {
             var lhs = expr.Left.Accept(this, scope);
             var rhs = expr.Right.Accept(this, scope);
@@ -131,7 +131,7 @@ namespace AST.Visitor
             return BinaryOperatorTypeCheck(lhs, rhs);
         }
 
-        private Type BinaryOperatorTypeCheck(Type lhs, Type rhs)
+        private ValueType BinaryOperatorTypeCheck(ValueType lhs, ValueType rhs)
         {
             if (lhs == rhs)
                 return lhs;
@@ -139,33 +139,30 @@ namespace AST.Visitor
             return BinaryOpTypeCoersion(lhs, rhs);
         }
 
-        private Type BinaryOpTypeCoersion(Type l, Type r)
+        private ValueType BinaryOpTypeCoersion(ValueType lhs, ValueType rhs)
         {
-            var lhs = Type.GetTypeCode(l);
-            var rhs = Type.GetTypeCode(r);
-
-            if (l.IsNumericType() != r.IsNumericType())
+            if (lhs.IsNumericType() != rhs.IsNumericType())
                 throw new TypeCheckException("Cannot combine numeric and non numeric types in operators. Type Type casting to the appropriate type.");
 
-            if (lhs == TypeCode.Int32 || lhs == TypeCode.Double || rhs == TypeCode.Int32 || rhs == TypeCode.Double)
-                return typeof(double);            
+            if (lhs == ValueType.Int || lhs == ValueType.Float || rhs == ValueType.Int || rhs == ValueType.Float)
+                return ValueType.Float;            
 
             // types are different.
-            return typeof (object);
+            return ValueType.Unit;
         }
 
-        public Type Visit(ConditionalExpr expr, Scope scope)
+        public ValueType Visit(ConditionalExpr expr, Scope scope)
         {
             var condition = expr.Condition.Accept(this, scope);
 
-            if (condition != typeof (bool))
+            if (condition != ValueType.Boolean)
                 throw new TypeCheckException("Conditional operator must have a boolean condition");
 
             return BinaryOperatorTypeCheck(expr.ThenExpression.Accept(this, scope), 
                                            expr.ElseExpression.Accept(this, scope));
         }
 
-        public Type Visit(NegationExpr expr, Scope scope)
+        public ValueType Visit(NegationExpr expr, Scope scope)
         {
             var type = expr.Right.Accept(this, scope);
 
@@ -175,37 +172,47 @@ namespace AST.Visitor
             return type;
         }
 
-        public Type Visit(WhileStmt stmt, Scope scope)
+        public ValueType Visit(WhileStmt stmt, Scope scope)
         {
-            return typeof (void);
+            return ValueType.Unit;
         }
 
-        public Type Visit(IfStmt stmt, Scope scope)
+        public ValueType Visit(IfStmt stmt, Scope scope)
         {
-            return typeof(void);
+            return ValueType.Unit;
         }
 
-        public Type Visit(BlockStmt stmt, Scope scope)
+        public ValueType Visit(BlockStmt stmt, Scope scope)
         {
-            return typeof(void);
+            return ValueType.Unit;
         }
 
-        public Type Visit(NoOpStatement stmt, Scope scope)
+        public ValueType Visit(NoOpStatement stmt, Scope scope)
         {
-            return typeof (void);
+            return ValueType.Unit;
         }
 
-        public Type Visit(DoWhileStmt stmt, Scope context)
+        public ValueType Visit(DoWhileStmt stmt, Scope context)
         {
-            return typeof(void);
+            return ValueType.Unit;
         }
 
-        public Type Visit(FunctionExpr expr, Scope context)
+        public ValueType Visit(FunctionDefinitionExpr expr, Scope context)
         {
             throw new NotImplementedException();
         }
 
-        public Type Visit(ReturnExpr returnExpr, Scope context)
+        public ValueType Visit(ReturnExpr returnExpr, Scope context)
+        {
+            throw new NotImplementedException();
+        }
+        
+        public ValueType Visit(VarDefinitionStmt varDefinitionStmt, Scope context)
+        {
+            throw new NotImplementedException();
+        }
+
+        public ValueType Visit(FunctionCallExpr functionCallExpr, Scope context)
         {
             throw new NotImplementedException();
         }

@@ -391,10 +391,10 @@ namespace AST.Visitor.Tests
                 var stmt = new BlockStmt(new[] { statement1.Object, statement2.Object, statement3.Object });
 
                 target.Visit(stmt, scope);
-                
-                statement1.Verify(s => s.Accept(target, scope), Times.Once);
-                statement2.Verify(s => s.Accept(target, scope), Times.Once);
-                statement3.Verify(s => s.Accept(target, scope), Times.Once);
+
+                statement1.Verify(s => s.Accept(target, It.IsAny<Scope>()), Times.Once);
+                statement2.Verify(s => s.Accept(target, It.IsAny<Scope>()), Times.Once);
+                statement3.Verify(s => s.Accept(target, It.IsAny<Scope>()), Times.Once);
             }
 
 
@@ -469,7 +469,7 @@ namespace AST.Visitor.Tests
                 target.Visit(expr, scope);
 
                 condition.Verify(c => c.Accept(target, scope), Times.Exactly(totalLoopIteration + 1));
-                statement.Verify( s => s.Accept(target, scope), Times.Exactly(totalLoopIteration) );                
+                statement.Verify( s => s.Accept(target, It.IsAny<Scope>()), Times.Exactly(totalLoopIteration) );                
             }
 
             [Test]
@@ -526,7 +526,7 @@ namespace AST.Visitor.Tests
                 target.Visit(expr, scope);
 
                 condition.Verify(c => c.Accept(target, scope), Times.Exactly(2));
-                statement.Verify(s => s.Accept(target, scope), Times.Once);
+                statement.Verify(s => s.Accept(target, It.IsAny<Scope>()), Times.Once);
             }
 
 
@@ -554,7 +554,7 @@ namespace AST.Visitor.Tests
                 target.Visit(expr, scope);
 
                 condition.Verify(c => c.Accept(target, scope), Times.Exactly(totalLoopIteration));
-                statement.Verify(s => s.Accept(target, scope), Times.Exactly(totalLoopIteration));
+                statement.Verify(s => s.Accept(target, It.IsAny<Scope>()), Times.Exactly(totalLoopIteration));
             }
 
             [Test]
@@ -577,7 +577,7 @@ namespace AST.Visitor.Tests
                 target.Visit(expr, scope);
 
                 condition.Verify(c => c.Accept(target, scope), Times.Exactly(1));
-                statement.Verify(s => s.Accept(target, scope), Times.Once);
+                statement.Verify(s => s.Accept(target, It.IsAny<Scope>()), Times.Once);
             }
 
             [Test]
@@ -610,7 +610,7 @@ namespace AST.Visitor.Tests
                 target.Visit(expr, scope);
 
                 condition.Verify(c => c.Accept(target, scope), Times.Once);
-                statement.Verify(s => s.Accept(target, scope), Times.Once);
+                statement.Verify(s => s.Accept(target, It.IsAny<Scope>()), Times.Once);
             }
 
             [TestCase(true, true, true)]

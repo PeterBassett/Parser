@@ -35,6 +35,8 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ValueType.cs" />
+    <Compile Include="ReturnStatementException.cs" />
     <Compile Include="TypeCheckingVisitor.cs" />
     <Compile Include="EvaluateVisitor.cs" />
     <Compile Include="PrintVisitor.cs" />

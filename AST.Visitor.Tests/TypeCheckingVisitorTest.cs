@@ -98,7 +98,7 @@ namespace AST.Visitor.Tests
 
                 var actual = target.Visit(expression, scope);
 
-                Assert.AreEqual(typeof(int), actual);
+                Assert.AreEqual(ValueType.Int, actual);
             }
 
             [Test]
@@ -110,7 +110,7 @@ namespace AST.Visitor.Tests
 
                 var actual = target.Visit(expression, scope);
 
-                Assert.AreEqual(typeof(double), actual);
+                Assert.AreEqual(ValueType.Float, actual);
             }
 
             [TestCase(true)]
@@ -123,7 +123,7 @@ namespace AST.Visitor.Tests
 
                 var actual = target.Visit(expression, scope);
 
-                Assert.AreEqual(typeof(bool), actual);
+                Assert.AreEqual(ValueType.Boolean, actual);
             }
 
             [Test]
@@ -137,7 +137,7 @@ namespace AST.Visitor.Tests
 
                 var actual = target.Visit(expression, scope);
 
-                Assert.AreEqual(typeof(int), actual);
+                Assert.AreEqual(ValueType.Int, actual);
             }
 
             [Test]
@@ -151,7 +151,7 @@ namespace AST.Visitor.Tests
 
                 var actual = target.Visit(expression, scope);
 
-                Assert.AreEqual(typeof(double), actual);
+                Assert.AreEqual(ValueType.Float, actual);
             }
 
             [Test]
@@ -165,7 +165,7 @@ namespace AST.Visitor.Tests
 
                 var actual = target.Visit(expression, scope);
 
-                Assert.AreEqual(typeof(double), actual);
+                Assert.AreEqual(ValueType.Float, actual);
             }
 
             [Test]
@@ -179,7 +179,7 @@ namespace AST.Visitor.Tests
 
                 var actual = target.Visit(expression, scope);
 
-                Assert.AreEqual(typeof(double), actual);
+                Assert.AreEqual(ValueType.Float, actual);
             }
 
             [Test]
@@ -193,7 +193,7 @@ namespace AST.Visitor.Tests
 
                 var actual = target.Visit(expression, scope);
 
-                Assert.AreEqual(typeof(int), actual);
+                Assert.AreEqual(ValueType.Int, actual);
             }
 
             [Test]
@@ -207,7 +207,7 @@ namespace AST.Visitor.Tests
 
                 var actual = target.Visit(expression, scope);
 
-                Assert.AreEqual(typeof(int), actual);
+                Assert.AreEqual(ValueType.Int, actual);
             }
 
             [Test]
@@ -221,7 +221,7 @@ namespace AST.Visitor.Tests
 
                 var actual = target.Visit(expression, scope);
 
-                Assert.AreEqual(typeof(int), actual);
+                Assert.AreEqual(ValueType.Int, actual);
             }
 
             [Test]
@@ -240,14 +240,14 @@ namespace AST.Visitor.Tests
 
                 var actual = target.Visit(expr, scope);
 
-                Assert.AreEqual(typeof(int), actual);
+                Assert.AreEqual(ValueType.Int, actual);
             }
 
-            [TestCase(true, true, typeof(bool))]
-            [TestCase(false, true, typeof(bool))]
-            [TestCase(true, false, typeof(bool))]
-            [TestCase(false, false, typeof(bool))]
-            public void VisitBooleanAndExpr(bool a, bool b, Type expected)
+            [TestCase(true, true, ValueType.Boolean)]
+            [TestCase(false, true, ValueType.Boolean)]
+            [TestCase(true, false, ValueType.Boolean)]
+            [TestCase(false, false, ValueType.Boolean)]
+            public void VisitBooleanAndExpr(bool a, bool b, ValueType expected)
             {
                 var target = new TypeCheckingVisitor();
 
@@ -260,11 +260,11 @@ namespace AST.Visitor.Tests
                 Assert.AreEqual(expected, actual);
             }
 
-            [TestCase(true, true, typeof(bool))]
-            [TestCase(false, true, typeof(bool))]
-            [TestCase(true, false, typeof(bool))]
-            [TestCase(false, false, typeof(bool))]
-            public void VisitBooleanOrExpr(bool a, bool b, Type expected)
+            [TestCase(true, true, ValueType.Boolean)]
+            [TestCase(false, true, ValueType.Boolean)]
+            [TestCase(true, false, ValueType.Boolean)]
+            [TestCase(false, false, ValueType.Boolean)]
+            public void VisitBooleanOrExpr(bool a, bool b, ValueType expected)
             {
                 var target = new TypeCheckingVisitor();
 
@@ -277,9 +277,9 @@ namespace AST.Visitor.Tests
                 Assert.AreEqual(expected, actual);
             }
 
-            [TestCase(true, typeof(bool))]
-            [TestCase(false, typeof(bool))]
-            public void VisitBooleanNotExpr(bool a, Type expected)
+            [TestCase(true, ValueType.Boolean)]
+            [TestCase(false, ValueType.Boolean)]
+            public void VisitBooleanNotExpr(bool a, ValueType expected)
             {
                 var target = new TypeCheckingVisitor();
 
@@ -291,11 +291,11 @@ namespace AST.Visitor.Tests
                 Assert.AreEqual(expected, actual);
             }
 
-            [TestCase(true, 1, 2, typeof(int))]
-            [TestCase(false, 1.0, 2, typeof(double))]
-            [TestCase(true, 1234, 5678.0, typeof(double))]
-            [TestCase(false, false, false, typeof(bool))]
-            public void VisitConditionalExpr(bool condition, object thenValue, object elseValue, Type expected)
+            [TestCase(true, 1, 2, ValueType.Int)]
+            [TestCase(false, 1.0, 2, ValueType.Float)]
+            [TestCase(true, 1234, 5678.0, ValueType.Float)]
+            [TestCase(false, false, false, ValueType.Boolean)]
+            public void VisitConditionalExpr(bool condition, object thenValue, object elseValue, ValueType expected)
             {
                 var target = new TypeCheckingVisitor();
 
@@ -328,12 +328,12 @@ namespace AST.Visitor.Tests
                 target.Visit(expr, scope);
             }
 
-            [TestCase(5, typeof(int))]
-            [TestCase(-5, typeof(int))]
-            [TestCase(-5.45, typeof(double))]
-            [TestCase(5.45, typeof(double))]
-            [TestCase(0, typeof(int))]
-            [TestCase(-0, typeof(int))]
+            [TestCase(5, ValueType.Int)]
+            [TestCase(-5, ValueType.Int)]
+            [TestCase(-5.45, ValueType.Float)]
+            [TestCase(5.45, ValueType.Float)]
+            [TestCase(0, ValueType.Int)]
+            [TestCase(-0, ValueType.Int)]
             [TestCase(true, null, ExpectedException = typeof(TypeCheckException))]
             [TestCase("invalid condition", null, ExpectedException = typeof(TypeCheckException))]
             public void NegationExpressionTest(object value, object expected)
@@ -356,7 +356,7 @@ namespace AST.Visitor.Tests
 
                 var actual = target.Visit(expr, scope);
 
-                Assert.AreEqual(typeof(bool), actual);
+                Assert.AreEqual(ValueType.Boolean, actual);
             }
 
             [Test]
@@ -368,7 +368,7 @@ namespace AST.Visitor.Tests
 
                 var actual = target.Visit(expr, scope);
 
-                Assert.AreEqual(typeof(bool), actual);
+                Assert.AreEqual(ValueType.Boolean, actual);
             }
 
             [Test]
@@ -380,7 +380,7 @@ namespace AST.Visitor.Tests
 
                 var actual = target.Visit(expr, scope);
 
-                Assert.AreEqual(typeof(bool), actual);
+                Assert.AreEqual(ValueType.Boolean, actual);
             }
 
             [Test]
@@ -392,7 +392,7 @@ namespace AST.Visitor.Tests
 
                 var actual = target.Visit(expr, scope);
 
-                Assert.AreEqual(typeof(int), actual);
+                Assert.AreEqual(ValueType.Int, actual);
             }
 
             [TestCase(ExpectedException=typeof(TypeCheckException))]
@@ -405,31 +405,31 @@ namespace AST.Visitor.Tests
                 target.Visit(expr, scope);
             }
 
-            [TestCase(1, 2, typeof(PlusExpr), typeof(int))]
-            [TestCase(1.0, 2, typeof(PlusExpr), typeof(double))]
-            [TestCase(1, 2.0, typeof(PlusExpr), typeof(double))]
-            [TestCase("1", "2", typeof(PlusExpr), typeof(string))]
+            [TestCase(1, 2, typeof(PlusExpr), ValueType.Int)]
+            [TestCase(1.0, 2, typeof(PlusExpr), ValueType.Float)]
+            [TestCase(1, 2.0, typeof(PlusExpr), ValueType.Float)]
+            [TestCase("1", "2", typeof(PlusExpr), ValueType.String)]
             [TestCase("1.0", 2, typeof(PlusExpr), null, ExpectedException = typeof(TypeCheckException))]
             [TestCase("1.0", 2.0, typeof(PlusExpr), null, ExpectedException = typeof(TypeCheckException))]
             [TestCase(1, "2", typeof(PlusExpr), null, ExpectedException = typeof(TypeCheckException))]
             [TestCase(1.0, "2", typeof(PlusExpr), null, ExpectedException = typeof(TypeCheckException))]            
-            [TestCase(1, 2, typeof(MinusExpr), typeof(int))]
-            [TestCase(1.0, 2, typeof(MinusExpr), typeof(double))]
-            [TestCase(1, 2.0, typeof(MinusExpr), typeof(double))]
+            [TestCase(1, 2, typeof(MinusExpr), ValueType.Int)]
+            [TestCase(1.0, 2, typeof(MinusExpr), ValueType.Float)]
+            [TestCase(1, 2.0, typeof(MinusExpr), ValueType.Float)]
             [TestCase("1", "2", typeof(MinusExpr), null, ExpectedException = typeof(TypeCheckException))]
-            [TestCase(1, 2, typeof(MultExpr), typeof(int))]
-            [TestCase(1.0, 2, typeof(MultExpr), typeof(double))]
-            [TestCase(1, 2.0, typeof(MultExpr), typeof(double))]
+            [TestCase(1, 2, typeof(MultExpr), ValueType.Int)]
+            [TestCase(1.0, 2, typeof(MultExpr), ValueType.Float)]
+            [TestCase(1, 2.0, typeof(MultExpr), ValueType.Float)]
             [TestCase("1", "2", typeof(MultExpr), null, ExpectedException = typeof(TypeCheckException))]
-            [TestCase(1, 2, typeof(DivExpr), typeof(int))]
-            [TestCase(1.0, 2, typeof(DivExpr), typeof(double))]
-            [TestCase(1, 2.0, typeof(DivExpr), typeof(double))]
+            [TestCase(1, 2, typeof(DivExpr), ValueType.Int)]
+            [TestCase(1.0, 2, typeof(DivExpr), ValueType.Float)]
+            [TestCase(1, 2.0, typeof(DivExpr), ValueType.Float)]
             [TestCase("1", "2", typeof(DivExpr), null, ExpectedException = typeof(TypeCheckException))]
-            [TestCase(1, 2, typeof(PowExpr), typeof(int))]
-            [TestCase(1.0, 2, typeof(PowExpr), typeof(double))]
-            [TestCase(1, 2.0, typeof(PowExpr), typeof(double))]
+            [TestCase(1, 2, typeof(PowExpr), ValueType.Int)]
+            [TestCase(1.0, 2, typeof(PowExpr), ValueType.Float)]
+            [TestCase(1, 2.0, typeof(PowExpr), ValueType.Float)]
             [TestCase("1", "2", typeof(PowExpr), null, ExpectedException = typeof(TypeCheckException))]
-            public void VisitBinaryOperatorTest(object a, object b, Type expressionType, Type expectedType)
+            public void VisitBinaryOperatorTest(object a, object b, Type expressionType, ValueType expectedType)
             {
                 var target = new TypeCheckingVisitor();
 
@@ -442,11 +442,11 @@ namespace AST.Visitor.Tests
                     typeof(TypeCheckingVisitor).GetMethods()
                         .First(m => m.Name == "Visit" && m.GetParameters().ElementAt(0).ParameterType == expressionType);
 
-                Type actual = null;
+                ValueType actual;
 
                 try
                 {
-                    actual = (Type)method.Invoke(target, new object[] { expression, scope });
+                    actual = (ValueType)method.Invoke(target, new object[] { expression, scope });
                 }
                 catch (TargetInvocationException ex)
                 {
@@ -465,7 +465,7 @@ namespace AST.Visitor.Tests
 
                 var actual = target.Visit(expression, scope);
 
-                Assert.AreEqual(typeof(void), actual);
+                Assert.AreEqual(ValueType.Unit, actual);
             }
         }
     }
