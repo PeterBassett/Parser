@@ -67,6 +67,8 @@
     <Compile Include="Statements\IBlockStatement.cs" />
     <Compile Include="Statements\IfStmt.cs" />
     <Compile Include="Statements\IStatement.cs" />
+    <Compile Include="Statements\Loops\ConditionAndBlockStmt.cs" />
+    <Compile Include="Statements\Loops\DoWhileStmt.cs" />
     <Compile Include="Statements\Loops\WhileStmt.cs" />
     <Compile Include="Statements\NoOpStatement.cs" />
     <Compile Include="SyntaxTree.cs" />

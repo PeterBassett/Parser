@@ -2,10 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using AST.Expressions;
 using AST.Expressions.Arithmatic;
 using AST.Expressions.Comparison;
 using AST.Expressions.Logical;
+using AST.Statements;
+using AST.Statements.Loops;
+using Moq;
 using NUnit.Framework;
 
 namespace AST.Visitor.Tests
@@ -340,7 +344,7 @@ namespace AST.Visitor.Tests
 
                 var expr = new AndExpr(new OrExpr(new ConstantExpr(true), new ConstantExpr(true)), new ConstantExpr(false));
 
-                var actual = target.Visit(expr, scope); ;
+                var actual = target.Visit(expr, scope);
 
                 Assert.AreEqual(false, actual.ToBoolean());
             }
@@ -352,7 +356,7 @@ namespace AST.Visitor.Tests
 
                 var expr = new AndExpr(new ConstantExpr(true), new OrExpr(new ConstantExpr(true), new ConstantExpr(false)));
 
-                var actual = target.Visit(expr, scope); ;
+                var actual = target.Visit(expr, scope);
 
                 Assert.AreEqual(true, actual.ToBoolean());
             }
@@ -373,6 +377,297 @@ namespace AST.Visitor.Tests
                 var actual = target.Visit(expr, scope);
 
                 Assert.AreEqual(expected, actual.ToBoolean());
+            }
+
+            [Test]
+            public void StatementBlockCallsAllStatementsTest()
+            {
+                var target = new EvaluateVisitor();
+
+                var statement1 = new Mock<IStatement>();
+                var statement2 = new Mock<IStatement>();
+                var statement3 = new Mock<IStatement>();
+
+                var stmt = new BlockStmt(new[] { statement1.Object, statement2.Object, statement3.Object });
+
+                target.Visit(stmt, scope);
+                
+                statement1.Verify(s => s.Accept(target, scope), Times.Once);
+                statement2.Verify(s => s.Accept(target, scope), Times.Once);
+                statement3.Verify(s => s.Accept(target, scope), Times.Once);
+            }
+
+
+            [Test]
+            public void StatementBlockAllStatementsAreExecutedInOrderTest()
+            {
+                var target = new EvaluateVisitor();
+
+                var statement1 = new Mock<IStatement>();
+                var statement2 = new Mock<IStatement>();
+                var statement3 = new Mock<IStatement>();
+
+                int invocations = 0;
+                var invocationOrder = new int[3];
+
+                statement1.Setup(c => c.Accept(It.IsAny<IExpressionVisitor<Value, Scope>>(), It.IsAny<Scope>()))
+                    .Returns<IExpressionVisitor<Value, Scope>, Scope>(
+                        (v, s) =>
+                        {
+                            invocationOrder[0] = invocations;
+                            invocations++;
+                            return new Value();
+                        });
+                statement2.Setup(c => c.Accept(It.IsAny<IExpressionVisitor<Value, Scope>>(), It.IsAny<Scope>()))
+                    .Returns<IExpressionVisitor<Value, Scope>, Scope>(
+                        (v, s) =>
+                        {
+                            invocationOrder[1] = invocations;
+                            invocations++;
+                            return new Value();
+                        });
+                statement3.Setup(c => c.Accept(It.IsAny<IExpressionVisitor<Value, Scope>>(), It.IsAny<Scope>()))
+                    .Returns<IExpressionVisitor<Value, Scope>, Scope>(
+                        (v, s) =>
+                        {
+                            invocationOrder[2] = invocations;
+                            invocations++;
+                            return new Value();
+                        });
+
+                var stmt = new BlockStmt(new[] { statement1.Object, statement2.Object, statement3.Object });
+
+                target.Visit(stmt, scope);
+
+                for (int i = 0; i < invocationOrder.Length; i++)
+                {
+                    Assert.AreEqual(i, invocationOrder[i]);
+                }
+            }
+
+            [Test]
+            public void WhileLoopTest()
+            {
+                var target = new EvaluateVisitor();
+
+                const int totalLoopIteration = 3;
+                int loopIterations = 0;
+
+                var condition = new Mock<IExpression>();
+                condition.Setup(c => c.Accept(It.IsAny<IExpressionVisitor<Value, Scope>>(), It.IsAny<Scope>()))
+                    .Returns<IExpressionVisitor<Value, Scope>, Scope>(
+                        (v, s) =>
+                        {
+                            loopIterations++;
+                            return new Value(loopIterations <= totalLoopIteration);
+                        });
+
+                var statement = new Mock<IStatement>();
+
+                var expr = new WhileStmt(condition.Object, new BlockStmt(new[] { statement.Object }));
+
+                target.Visit(expr, scope);
+
+                condition.Verify(c => c.Accept(target, scope), Times.Exactly(totalLoopIteration + 1));
+                statement.Verify( s => s.Accept(target, scope), Times.Exactly(totalLoopIteration) );                
+            }
+
+            [Test]
+            public void WhileFalseLoopTest()
+            {
+                var target = new EvaluateVisitor();
+
+                var condition = new Mock<IExpression>();
+                condition.Setup(c => c.Accept(It.IsAny<IExpressionVisitor<Value, Scope>>(), It.IsAny<Scope>()))
+                    .Returns<IExpressionVisitor<Value, Scope>, Scope>(
+                        (v, s) =>
+                        {
+                            return new Value(false);
+                        });
+
+                var statement = new Mock<IStatement>();
+
+                var expr = new WhileStmt(condition.Object, new BlockStmt(new[] { statement.Object }));
+
+                target.Visit(expr, scope);
+
+                condition.Verify(c => c.Accept(target, scope), Times.Exactly(1));
+                statement.Verify(s => s.Accept(target, scope), Times.Never());
+            }
+
+            [Test]
+            public void WhileLoopConditionIgnoredTest()
+            {
+                var target = new EvaluateVisitor();
+
+                var conditionExecuted = false;
+                var condition = new Mock<IExpression>();
+                condition.Setup(c => c.Accept(It.IsAny<IExpressionVisitor<Value, Scope>>(), It.IsAny<Scope>()))
+                    .Returns<IExpressionVisitor<Value, Scope>, Scope>(
+                        (v, s) =>
+                        {                            
+                            var retVal = new Value(!conditionExecuted);
+                            conditionExecuted = true;
+                            return retVal;
+                        });
+
+                var statement = new Mock<IStatement>();
+                statement.Setup(c => c.Accept(It.IsAny<IExpressionVisitor<Value, Scope>>(), It.IsAny<Scope>()))
+                    .Returns<IExpressionVisitor<Value, Scope>, Scope>(
+                        (v, s) =>
+                        {
+                            if (!conditionExecuted)
+                                throw new Exception("Statement executed before condition evaluated.");
+                            return new Value(false);
+                        });
+
+                var expr = new WhileStmt(condition.Object, new BlockStmt(new[] { statement.Object }));
+
+                target.Visit(expr, scope);
+
+                condition.Verify(c => c.Accept(target, scope), Times.Exactly(2));
+                statement.Verify(s => s.Accept(target, scope), Times.Once);
+            }
+
+
+            [Test]
+            public void DoWhileLoopTest()
+            {
+                var target = new EvaluateVisitor();
+
+                const int totalLoopIteration = 3;
+                int loopIterations = 0;
+
+                var condition = new Mock<IExpression>();
+                condition.Setup(c => c.Accept(It.IsAny<IExpressionVisitor<Value, Scope>>(), It.IsAny<Scope>()))
+                    .Returns<IExpressionVisitor<Value, Scope>, Scope>(
+                        (v, s) =>
+                        {
+                            loopIterations++;
+                            return new Value(loopIterations < totalLoopIteration);
+                        });
+
+                var statement = new Mock<IStatement>();
+
+                var expr = new DoWhileStmt(condition.Object, new BlockStmt(new[] { statement.Object }));
+
+                target.Visit(expr, scope);
+
+                condition.Verify(c => c.Accept(target, scope), Times.Exactly(totalLoopIteration));
+                statement.Verify(s => s.Accept(target, scope), Times.Exactly(totalLoopIteration));
+            }
+
+            [Test]
+            public void DoWhileFalseLoopTest()
+            {
+                var target = new EvaluateVisitor();
+
+                var condition = new Mock<IExpression>();
+                condition.Setup(c => c.Accept(It.IsAny<IExpressionVisitor<Value, Scope>>(), It.IsAny<Scope>()))
+                    .Returns<IExpressionVisitor<Value, Scope>, Scope>(
+                        (v, s) =>
+                        {
+                            return new Value(false);
+                        });
+
+                var statement = new Mock<IStatement>();
+
+                var expr = new DoWhileStmt(condition.Object, new BlockStmt(new[] { statement.Object }));
+
+                target.Visit(expr, scope);
+
+                condition.Verify(c => c.Accept(target, scope), Times.Exactly(1));
+                statement.Verify(s => s.Accept(target, scope), Times.Once);
+            }
+
+            [Test]
+            public void DoWhileLoopConditionIgnoredTest()
+            {
+                var target = new EvaluateVisitor();
+
+                var conditionExecuted = false;
+                var condition = new Mock<IExpression>();
+                condition.Setup(c => c.Accept(It.IsAny<IExpressionVisitor<Value, Scope>>(), It.IsAny<Scope>()))
+                    .Returns<IExpressionVisitor<Value, Scope>, Scope>(
+                        (v, s) =>
+                        {
+                            conditionExecuted = true;
+                            return new Value(false); ;
+                        });
+
+                var statement = new Mock<IStatement>();
+                statement.Setup(c => c.Accept(It.IsAny<IExpressionVisitor<Value, Scope>>(), It.IsAny<Scope>()))
+                    .Returns<IExpressionVisitor<Value, Scope>, Scope>(
+                        (v, s) =>
+                        {
+                            if (conditionExecuted)
+                                throw new Exception("Statement executed after condition evaluated.");
+                            return new Value(false);
+                        });
+
+                var expr = new DoWhileStmt(condition.Object, new BlockStmt(new[] { statement.Object }));
+
+                target.Visit(expr, scope);
+
+                condition.Verify(c => c.Accept(target, scope), Times.Once);
+                statement.Verify(s => s.Accept(target, scope), Times.Once);
+            }
+
+            [TestCase(true, true, true)]
+            [TestCase(false, true, true, ExpectedException = typeof(ArgumentNullException))]
+            [TestCase(true, false, true, ExpectedException = typeof(ArgumentNullException))]
+            [TestCase(true, true, false)]            
+            public void IfStatementWithNoElseTest(bool conditionSupplied, bool trueStatementSupplied, bool falseStatementSupplied)
+            {
+                var conditionStmt = conditionSupplied ? new Mock<IExpression>().Object : null;
+                var trueStmt = trueStatementSupplied ? new Mock<IStatement>().Object : null;
+                var falseStmt = falseStatementSupplied ? new Mock<IStatement>().Object : null;
+
+                new IfStmt(conditionStmt, trueStmt, falseStmt);
+            }
+
+            [TestCase(true)]
+            [TestCase(false)]
+            public void IfStatementWithNoElseTest(bool conditionValue)
+            {
+                var target = new EvaluateVisitor();
+
+                var conditionExecuted = false;
+                var condition = new Mock<IExpression>();
+                condition.Setup(c => c.Accept(It.IsAny<IExpressionVisitor<Value, Scope>>(), It.IsAny<Scope>()))
+                    .Returns<IExpressionVisitor<Value, Scope>, Scope>((v, s) => new Value(conditionValue));
+
+                var trueStmt = new Mock<IStatement>();
+
+                var expr = new IfStmt(condition.Object, trueStmt.Object, null);
+
+                target.Visit(expr, scope);
+
+                condition.Verify(c => c.Accept(target, scope), Times.Once);
+                trueStmt.Verify(s => s.Accept(target, scope), Times.Exactly(conditionValue ? 1 : 0));
+            }
+
+            [TestCase(true)]
+            [TestCase(false)]
+            public void IfStatementWithElseTest(bool conditionValue)
+            {
+                var target = new EvaluateVisitor();
+
+                var conditionExecuted = false;
+                var condition = new Mock<IExpression>();
+                condition.Setup(c => c.Accept(It.IsAny<IExpressionVisitor<Value, Scope>>(), It.IsAny<Scope>()))
+                    .Returns<IExpressionVisitor<Value, Scope>, Scope>((v, s) => new Value(conditionValue));
+
+                var trueStmt = new Mock<IStatement>();
+                var falseStmt = new Mock<IStatement>();
+
+                var expr = new IfStmt(condition.Object, trueStmt.Object, falseStmt.Object);
+
+                target.Visit(expr, scope);
+
+                condition.Verify(c => c.Accept(target, scope), Times.Once);
+                trueStmt.Verify(s => s.Accept(target, scope), Times.Exactly(conditionValue ? 1 : 0));
+                falseStmt.Verify(s => s.Accept(target, scope), Times.Exactly(!conditionValue ? 1 : 0));
             }
         }
     }

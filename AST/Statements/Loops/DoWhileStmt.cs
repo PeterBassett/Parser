@@ -3,9 +3,10 @@ using AST.Visitor;
 
 namespace AST.Statements.Loops
 {
-    public class WhileStmt : ConditionAndBlockStmt
+    public class DoWhileStmt : ConditionAndBlockStmt
     {
-        public WhileStmt(IExpression condition, IStatement block) : base(condition, block)
+        public DoWhileStmt(IExpression condition, IStatement block)
+            : base(condition, block)
         {
         }
 

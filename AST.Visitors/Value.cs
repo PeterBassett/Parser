@@ -6,6 +6,10 @@ namespace AST.Visitor
     {
         private readonly object _value;
 
+        public Value()
+        {            
+        }
+
         public Value(object value)
         {
             _value = value;

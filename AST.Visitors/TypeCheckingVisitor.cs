@@ -193,5 +193,10 @@ namespace AST.Visitor
         {
             return typeof (void);
         }
+
+        public Type Visit(DoWhileStmt stmt, Scope context)
+        {
+            return typeof(void);
+        }
     }
 }

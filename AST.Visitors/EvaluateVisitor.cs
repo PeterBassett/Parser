@@ -242,17 +242,17 @@ namespace AST.Visitor
 
         public Value Visit(WhileStmt stmt, Scope scope)
         {
-            while (stmt.Accept(this, scope).ToBoolean())
+            while (stmt.Condition.Accept(this, scope).ToBoolean())
             {
                 stmt.Block.Accept(this, scope);
             }
 
-            return new Value(null);
+            return new Value();
         }
 
         public Value Visit(IfStmt stmt, Scope scope)
         {
-            var condition = stmt.Accept(this, scope);
+            var condition = stmt.Condition.Accept(this, scope);
 
             if (condition.GetTypeCode() != TypeCode.Boolean)
                 throw new InvalidCastException();
@@ -270,12 +270,22 @@ namespace AST.Visitor
                 statement.Accept(this, scope);
             }
 
-            return new Value(null);
+            return new Value();
         }
 
         public Value Visit(NoOpStatement stmt, Scope scope)
         {
-            return new Value(null);
+            return new Value();
+        }
+
+        public Value Visit(DoWhileStmt stmt, Scope scope)
+        {
+            do
+            {
+                stmt.Block.Accept(this, scope);
+            } while (stmt.Condition.Accept(this, scope).ToBoolean());
+
+            return new Value();
         }
     }
 }

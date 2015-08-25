@@ -143,5 +143,12 @@ namespace AST.Visitor
         {
             return "";
         }
+
+        public string Visit(DoWhileStmt stmt, Scope scope)
+        {
+            return string.Format("do\r\n{{\r\n\t{0}\r\n}}while({1});",
+                stmt.Block.Accept(this, scope),
+                stmt.Condition.Accept(this, scope));
+        }
     }
 }
