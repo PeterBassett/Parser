@@ -268,7 +268,7 @@ namespace AST.Visitor
 
         public Value Visit(BlockStmt stmt, Scope scope)
         {
-            using (scope = scope.PushScope())
+            using (scope.PushScope())
             {
                 foreach (var statement in stmt.Statements)
                 {
@@ -300,9 +300,9 @@ namespace AST.Visitor
             return new Value( expr );
         }
 
-        public Value Visit(ReturnExpr expr, Scope scope)
+        public Value Visit(ReturnStmt expr, Scope scope)
         {
-            throw new ReturnStatementException(expr.Accept(this, scope));
+            throw new ReturnStatementException(expr.ReturnExpression.Accept(this, scope));
         }
 
         public Value Visit(VarDefinitionStmt stmt, Scope scope)
@@ -316,6 +316,9 @@ namespace AST.Visitor
         {
             var function = scope.FindIdentifier(expr.FunctionName.Name);
 
+            if(!function.IsDefined)
+                throw new UndefinedIdentifierException("Undefined function " + expr.FunctionName.Name);
+
             var func = (FunctionExpr)function.Value.ToObject();
 
             var arguments = from argument in expr.Arguments
@@ -326,7 +329,7 @@ namespace AST.Visitor
 
         private Value ExecuteFunction(Scope scope, FunctionExpr func, IEnumerable<Value> arguments)
         {
-            using (scope = scope.PushArguments(func.Arguments, arguments.ToArray()))
+            using (scope.PushArguments(func.Arguments, arguments.ToArray()))
             {
                 return RunFunction((dynamic)func, scope);
             }

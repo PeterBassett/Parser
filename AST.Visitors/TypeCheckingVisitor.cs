@@ -202,7 +202,7 @@ namespace AST.Visitor
             throw new NotImplementedException();
         }
 
-        public ValueType Visit(ReturnExpr returnExpr, Scope context)
+        public ValueType Visit(ReturnStmt returnExpr, Scope context)
         {
             throw new NotImplementedException();
         }

@@ -35,7 +35,7 @@ namespace AST.Visitor
         T Visit(NoOpStatement stmt, C context);
         T Visit(DoWhileStmt stmt, C context);
         T Visit(FunctionDefinitionExpr expr, C context);
-        T Visit(ReturnExpr returnExpr, C context);
+        T Visit(ReturnStmt returnExpr, C context);
         T Visit(VarDefinitionStmt varDefinitionStmt, C context);
         T Visit(FunctionCallExpr functionCallExpr, C context);
         T Visit(LambdaDefinitionExpr lambdaDefinitionExpr, C context);

@@ -1,30 +1,102 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using AST.Statements;
-using AST.Expressions.Arithmatic;
-using AST.Expressions.Function;
 
 namespace AST.Visitor
 {
-    public class Scope : IDisposable
+    public class Scope
     {
-        private readonly Scope _parent;
-        private readonly Dictionary<string, Identifier> _values;
+        private ScopeLevel _scope;
 
         public Scope()
-            : this(null)
         {
+            _scope = new ScopeLevel();
         }
 
-        public Scope(Scope parent)
+        public void DefineIdentifier(string name, Value value)
         {
-            _parent = parent;
-            _values = new Dictionary<string, Identifier>();
+            _scope.DefineIdentifier(name, value);
+        }
+
+        public Identifier FindIdentifier(string name)
+        {
+            return _scope.FindIdentifier(name);
+        }
+
+        public IDisposable PushArguments(VarDefinitionStmt[] arguments, Value[] values)
+        {
+            _scope = new ScopeLevel(_scope);
+
+            for (var i = 0; i < arguments.Length; i++)
+            {
+                _scope.DefineIdentifier(arguments[i].Name.Name, values[i]);
+            }
+
+            return new ScopePopper(this);
+        }
+
+        public IDisposable PushScope()
+        {
+            _scope = new ScopeLevel(_scope);
+            return new ScopePopper(this);
+        }
+
+        public void PopScope()
+        {
+            _scope = _scope.Parent;
+        }
+
+        private class ScopeLevel
+        {
+            private readonly ScopeLevel _parent;
+            private readonly Dictionary<string, Identifier> _values;
+            private readonly int _scopeDepth;
+
+            public ScopeLevel()
+                : this(null)
+            {
+                _scopeDepth = 0;
+            }
+
+            public ScopeLevel(ScopeLevel parent)
+            {
+                _values = new Dictionary<string, Identifier>();
+                _parent = parent;
+
+                if (parent != null)
+                    _scopeDepth = parent._scopeDepth + 1;
+            }
+
+            public ScopeLevel Parent
+            {
+                get { return _parent; }
+            }
+
+            public int ScopeDepth { get { return _scopeDepth; } }
+
+            public void DefineIdentifier(string name, Value value)
+            {
+                _values.Add(name, new Identifier(value));
+            }
+
+            public Identifier FindIdentifier(string name)
+            {
+                if (_values.ContainsKey(name))
+                    return _values[name];
+
+                if (Parent != null)
+                {
+                    return Parent.FindIdentifier(name);
+                }
+
+                return Identifier.Undefined;
+            }
         }
 
         public struct Identifier
         {
-            public static Identifier Undefined = new Identifier(false);            
+            public static Identifier Undefined = new Identifier(false);
             private readonly bool _isDefined;
             private Value _value;
 
@@ -41,55 +113,30 @@ namespace AST.Visitor
                 _isDefined = true;
             }
 
-            public Value Value { get { return _value; } }
-            public bool IsDefined { get { return _isDefined; } }
-        }
-
-        private Scope Parent { get { return _parent; } }
-
-        public void DefineIdentifier(string name, Value value)
-        {
-            _values.Add(name, new Identifier(value));
-        }
-
-        public Identifier FindIdentifier(string name)
-        {
-            if (_values.ContainsKey(name))
-                return _values[name];
-
-            if (Parent != null)
+            public Value Value
             {
-                return Parent.FindIdentifier(name);
+                get { return _value; }
             }
 
-            return Identifier.Undefined;
-        }
-
-        public void Dispose()
-        {
-            PopScope();
-        }
-
-        public Scope PushArguments(VarDefinitionStmt[] arguments, Value[] values)
-        {
-            var newScope = PushScope();
-
-            for (int i = 0; i < arguments.Length; i++)
+            public bool IsDefined
             {
-                newScope.DefineIdentifier(arguments[i].Name.Name, values[i]);
+                get { return _isDefined; }
+            }
+        }
+
+        private class ScopePopper : IDisposable
+        {
+            private readonly Scope _scope;
+
+            public ScopePopper(Scope scope)
+            {
+                _scope = scope;
             }
 
-            return newScope;
-        }
-
-        public Scope PushScope()
-        {
-            return new Scope(this);
-        }
-
-        public Scope PopScope()
-        {
-            return _parent;
+            public void Dispose()
+            {
+                _scope.PopScope();
+            }
         }
     }
 }

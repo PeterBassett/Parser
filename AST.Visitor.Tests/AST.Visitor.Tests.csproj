@@ -52,6 +52,7 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="ScopeTest.cs" />
     <Compile Include="TypeCheckingVisitorTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="EvaluateVisitorTest.cs" />
@@ -68,6 +69,10 @@
     <ProjectReference Include="..\AST\AST.csproj">
       <Project>{7383fe78-a76e-402f-ba2c-92bbfc064879}</Project>
       <Name>AST</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Common.Testing\TestHelpers.csproj">
+      <Project>{F27C9441-B94A-4F04-B585-B17F693C814C}</Project>
+      <Name>TestHelpers</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>

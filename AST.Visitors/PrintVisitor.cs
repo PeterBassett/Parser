@@ -157,7 +157,7 @@ namespace AST.Visitor
             throw new NotImplementedException();
         }
 
-        public string Visit(ReturnExpr returnExpr, Scope context)
+        public string Visit(ReturnStmt returnExpr, Scope context)
         {
             throw new NotImplementedException();
         }

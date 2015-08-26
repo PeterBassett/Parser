@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using AST.Expressions;
 using AST.Expressions.Arithmatic;
 using AST.Expressions.Comparison;
@@ -11,6 +10,8 @@ using AST.Statements;
 using AST.Statements.Loops;
 using Moq;
 using NUnit.Framework;
+using AST.Expressions.Function;
+using TestHelpers;
 
 namespace AST.Visitor.Tests
 {
@@ -29,7 +30,13 @@ namespace AST.Visitor.Tests
         [TestFixture]
         public class VisitMethods
         {
-            private static Scope scope  = new Scope();
+            private Scope _scope;
+
+            [SetUp]
+            public void DefineScope()
+            {
+                _scope = new Scope();
+            }
 
             [Test]
             public void AllTakeTwoArgumentsArgument()
@@ -99,7 +106,7 @@ namespace AST.Visitor.Tests
 
                 var expression = new ConstantExpr(1234);
 
-                var actual = target.Visit(expression, scope);
+                var actual = target.Visit(expression, _scope);
 
                 Assert.AreEqual("1234", actual.ToString());
             }
@@ -111,7 +118,7 @@ namespace AST.Visitor.Tests
 
                 var expression = new ConstantExpr(12.34);
 
-                var actual = target.Visit(expression, scope);
+                var actual = target.Visit(expression, _scope);
 
                 Assert.AreEqual("12.34", actual.ToString());
             }
@@ -124,7 +131,7 @@ namespace AST.Visitor.Tests
 
                 var expression = new ConstantExpr(value);
 
-                var actual = target.Visit(expression, scope);
+                var actual = target.Visit(expression, _scope);
 
                 Assert.AreEqual(value.ToString(), actual.ToString());
             }
@@ -138,7 +145,7 @@ namespace AST.Visitor.Tests
                 var rhs = new ConstantExpr(2);
                 var expression = new PlusExpr(lhs, rhs);
 
-                var actual = target.Visit(expression, scope);
+                var actual = target.Visit(expression, _scope);
 
                 Assert.AreEqual("3", actual.ToString());
             }
@@ -152,7 +159,7 @@ namespace AST.Visitor.Tests
                 var rhs = new ConstantExpr(2);
                 var expression = new MinusExpr(lhs, rhs);
 
-                var actual = target.Visit(expression, scope);
+                var actual = target.Visit(expression, _scope);
 
                 Assert.AreEqual("-1", actual.ToString());
             }
@@ -166,7 +173,7 @@ namespace AST.Visitor.Tests
                 var rhs = new ConstantExpr(2);
                 var expression = new MultExpr(lhs, rhs);
 
-                var actual = target.Visit(expression, scope);
+                var actual = target.Visit(expression, _scope);
 
                 Assert.AreEqual("2", actual.ToString());
             }
@@ -180,7 +187,7 @@ namespace AST.Visitor.Tests
                 var rhs = new ConstantExpr(2);
                 var expression = new DivExpr(lhs, rhs);
 
-                var actual = target.Visit(expression, scope);
+                var actual = target.Visit(expression, _scope);
 
                 Assert.AreEqual("5", actual.ToString());
             }
@@ -199,7 +206,7 @@ namespace AST.Visitor.Tests
 
                 var expr = new DivExpr(new MultExpr(three, six), new MultExpr(new MinusExpr(five, one), new PlusExpr(four, two)));
 
-                var actual = target.Visit(expr, scope);
+                var actual = target.Visit(expr, _scope);
 
                 Assert.AreEqual("0", actual.ToString());
             }
@@ -218,7 +225,7 @@ namespace AST.Visitor.Tests
 
                 var expr = new DivExpr(new MultExpr(three, six), new MultExpr(new MinusExpr(five, one), new PlusExpr(four, two)));
 
-                var actual = target.Visit(expr, scope);
+                var actual = target.Visit(expr, _scope);
 
                 Assert.AreEqual("0.75", actual.ToString());
             }
@@ -235,7 +242,7 @@ namespace AST.Visitor.Tests
                 var bExpression = new ConstantExpr(b);
                 var expr = new AndExpr(aExpression, bExpression);
 
-                var actual = target.Visit(expr, scope);
+                var actual = target.Visit(expr, _scope);
 
                 Assert.AreEqual(expected, actual.ToBoolean());
             }
@@ -252,7 +259,7 @@ namespace AST.Visitor.Tests
                 var bExpression = new ConstantExpr(b);
                 var expr = new OrExpr(aExpression, bExpression);
 
-                var actual = target.Visit(expr, scope);
+                var actual = target.Visit(expr, _scope);
 
                 Assert.AreEqual(expected, actual.ToBoolean());
             }
@@ -266,7 +273,7 @@ namespace AST.Visitor.Tests
                 var aExpression = new ConstantExpr(a);
                 var expr = new NotExpr(aExpression);
 
-                var actual = target.Visit(expr, scope);
+                var actual = target.Visit(expr, _scope);
 
                 Assert.AreEqual(expected, actual.ToBoolean());
             }
@@ -285,7 +292,7 @@ namespace AST.Visitor.Tests
 
                 var expr = new ConditionalExpr(conditionExpression, thenExpression, elseExpression);
 
-                var actual = target.Visit(expr, scope);
+                var actual = target.Visit(expr, _scope);
 
                 Assert.AreEqual(expected, actual.ToObject());
             }
@@ -305,7 +312,7 @@ namespace AST.Visitor.Tests
                 
                 var expr = new ConditionalExpr(conditionExpression, new ConstantExpr(0), new ConstantExpr(0));
 
-                target.Visit(expr, scope);
+                target.Visit(expr, _scope);
             }
 
             [TestCase(5, -5)]
@@ -320,7 +327,7 @@ namespace AST.Visitor.Tests
 
                 var expr = new NegationExpr(new ConstantExpr(value));
 
-                var actual = target.Visit(expr, scope);
+                var actual = target.Visit(expr, _scope);
 
                 Assert.AreEqual(expected, actual.ToObject());
             }
@@ -332,7 +339,7 @@ namespace AST.Visitor.Tests
 
                 var expr = new OrExpr(new ConstantExpr(true), new AndExpr(new ConstantExpr(true), new ConstantExpr(false)));
 
-                var actual = target.Visit(expr, scope); ;
+                var actual = target.Visit(expr, _scope); ;
 
                 Assert.AreEqual(true, actual.ToBoolean());
             }
@@ -344,7 +351,7 @@ namespace AST.Visitor.Tests
 
                 var expr = new AndExpr(new OrExpr(new ConstantExpr(true), new ConstantExpr(true)), new ConstantExpr(false));
 
-                var actual = target.Visit(expr, scope);
+                var actual = target.Visit(expr, _scope);
 
                 Assert.AreEqual(false, actual.ToBoolean());
             }
@@ -356,7 +363,7 @@ namespace AST.Visitor.Tests
 
                 var expr = new AndExpr(new ConstantExpr(true), new OrExpr(new ConstantExpr(true), new ConstantExpr(false)));
 
-                var actual = target.Visit(expr, scope);
+                var actual = target.Visit(expr, _scope);
 
                 Assert.AreEqual(true, actual.ToBoolean());
             }
@@ -374,7 +381,7 @@ namespace AST.Visitor.Tests
 
                 var expr = new EqualsExpr( new ConstantExpr(a), new ConstantExpr(b));
 
-                var actual = target.Visit(expr, scope);
+                var actual = target.Visit(expr, _scope);
 
                 Assert.AreEqual(expected, actual.ToBoolean());
             }
@@ -390,7 +397,7 @@ namespace AST.Visitor.Tests
 
                 var stmt = new BlockStmt(new[] { statement1.Object, statement2.Object, statement3.Object });
 
-                target.Visit(stmt, scope);
+                target.Visit(stmt, _scope);
 
                 statement1.Verify(s => s.Accept(target, It.IsAny<Scope>()), Times.Once);
                 statement2.Verify(s => s.Accept(target, It.IsAny<Scope>()), Times.Once);
@@ -437,7 +444,7 @@ namespace AST.Visitor.Tests
 
                 var stmt = new BlockStmt(new[] { statement1.Object, statement2.Object, statement3.Object });
 
-                target.Visit(stmt, scope);
+                target.Visit(stmt, _scope);
 
                 for (int i = 0; i < invocationOrder.Length; i++)
                 {
@@ -466,9 +473,9 @@ namespace AST.Visitor.Tests
 
                 var expr = new WhileStmt(condition.Object, new BlockStmt(new[] { statement.Object }));
 
-                target.Visit(expr, scope);
+                target.Visit(expr, _scope);
 
-                condition.Verify(c => c.Accept(target, scope), Times.Exactly(totalLoopIteration + 1));
+                condition.Verify(c => c.Accept(target, _scope), Times.Exactly(totalLoopIteration + 1));
                 statement.Verify( s => s.Accept(target, It.IsAny<Scope>()), Times.Exactly(totalLoopIteration) );                
             }
 
@@ -489,10 +496,10 @@ namespace AST.Visitor.Tests
 
                 var expr = new WhileStmt(condition.Object, new BlockStmt(new[] { statement.Object }));
 
-                target.Visit(expr, scope);
+                target.Visit(expr, _scope);
 
-                condition.Verify(c => c.Accept(target, scope), Times.Exactly(1));
-                statement.Verify(s => s.Accept(target, scope), Times.Never());
+                condition.Verify(c => c.Accept(target, _scope), Times.Exactly(1));
+                statement.Verify(s => s.Accept(target, _scope), Times.Never());
             }
 
             [Test]
@@ -523,9 +530,9 @@ namespace AST.Visitor.Tests
 
                 var expr = new WhileStmt(condition.Object, new BlockStmt(new[] { statement.Object }));
 
-                target.Visit(expr, scope);
+                target.Visit(expr, _scope);
 
-                condition.Verify(c => c.Accept(target, scope), Times.Exactly(2));
+                condition.Verify(c => c.Accept(target, _scope), Times.Exactly(2));
                 statement.Verify(s => s.Accept(target, It.IsAny<Scope>()), Times.Once);
             }
 
@@ -551,9 +558,9 @@ namespace AST.Visitor.Tests
 
                 var expr = new DoWhileStmt(condition.Object, new BlockStmt(new[] { statement.Object }));
 
-                target.Visit(expr, scope);
+                target.Visit(expr, _scope);
 
-                condition.Verify(c => c.Accept(target, scope), Times.Exactly(totalLoopIteration));
+                condition.Verify(c => c.Accept(target, _scope), Times.Exactly(totalLoopIteration));
                 statement.Verify(s => s.Accept(target, It.IsAny<Scope>()), Times.Exactly(totalLoopIteration));
             }
 
@@ -574,9 +581,9 @@ namespace AST.Visitor.Tests
 
                 var expr = new DoWhileStmt(condition.Object, new BlockStmt(new[] { statement.Object }));
 
-                target.Visit(expr, scope);
+                target.Visit(expr, _scope);
 
-                condition.Verify(c => c.Accept(target, scope), Times.Exactly(1));
+                condition.Verify(c => c.Accept(target, _scope), Times.Exactly(1));
                 statement.Verify(s => s.Accept(target, It.IsAny<Scope>()), Times.Once);
             }
 
@@ -607,9 +614,9 @@ namespace AST.Visitor.Tests
 
                 var expr = new DoWhileStmt(condition.Object, new BlockStmt(new[] { statement.Object }));
 
-                target.Visit(expr, scope);
+                target.Visit(expr, _scope);
 
-                condition.Verify(c => c.Accept(target, scope), Times.Once);
+                condition.Verify(c => c.Accept(target, _scope), Times.Once);
                 statement.Verify(s => s.Accept(target, It.IsAny<Scope>()), Times.Once);
             }
 
@@ -640,10 +647,10 @@ namespace AST.Visitor.Tests
 
                 var expr = new IfStmt(condition.Object, trueStmt.Object, null);
 
-                target.Visit(expr, scope);
+                target.Visit(expr, _scope);
 
-                condition.Verify(c => c.Accept(target, scope), Times.Once);
-                trueStmt.Verify(s => s.Accept(target, scope), Times.Exactly(conditionValue ? 1 : 0));
+                condition.Verify(c => c.Accept(target, _scope), Times.Once);
+                trueStmt.Verify(s => s.Accept(target, _scope), Times.Exactly(conditionValue ? 1 : 0));
             }
 
             [TestCase(true)]
@@ -661,11 +668,88 @@ namespace AST.Visitor.Tests
 
                 var expr = new IfStmt(condition.Object, trueStmt.Object, falseStmt.Object);
 
-                target.Visit(expr, scope);
+                target.Visit(expr, _scope);
 
-                condition.Verify(c => c.Accept(target, scope), Times.Once);
-                trueStmt.Verify(s => s.Accept(target, scope), Times.Exactly(conditionValue ? 1 : 0));
-                falseStmt.Verify(s => s.Accept(target, scope), Times.Exactly(!conditionValue ? 1 : 0));
+                condition.Verify(c => c.Accept(target, _scope), Times.Once);
+                trueStmt.Verify(s => s.Accept(target, _scope), Times.Exactly(conditionValue ? 1 : 0));
+                falseStmt.Verify(s => s.Accept(target, _scope), Times.Exactly(!conditionValue ? 1 : 0));
+            }
+
+            [Test]
+            public void ReturnStatementTest()
+            {
+                var target = new EvaluateVisitor();
+
+                var returnValue = RandomGenerator.String();
+                var returnStmt = new ReturnStmt(new ConstantExpr(returnValue));
+
+                try
+                {
+                    target.Visit(returnStmt, _scope);
+
+                    Assert.Fail("No exception thrown");
+                }
+                catch (ReturnStatementException rse)
+                {
+                    Assert.AreEqual(returnValue, rse.Value.ToObject());
+                }
+                catch (Exception)
+                {
+                    Assert.Fail("Incorrect exception type caught");
+                }
+            }
+
+            [Test]
+            public void FunctionCallTest()
+            {
+                var target = new EvaluateVisitor();
+
+                var functionName = RandomGenerator.String();
+                var functionNameExpr = new IdentifierExpr(functionName);
+                var returnValue = RandomGenerator.String();
+                var functionDefinition = new FunctionDefinitionExpr(functionNameExpr, new VarDefinitionStmt[0],
+                    new BlockStmt(new[] {new ReturnStmt(new ConstantExpr(returnValue))}), new IdentifierExpr("String"));
+                
+                var expr = new FunctionCallExpr(functionNameExpr, new IExpression[0]);
+
+                _scope.DefineIdentifier(functionName, Value.FromObject(functionDefinition));
+
+                var actual = target.Visit(expr, _scope);
+
+                Assert.AreEqual(returnValue, actual.ToObject());
+            }
+
+            [TestCase(ExpectedException = typeof(UndefinedIdentifierException))]
+            public void FunctionCallOnUndefinedFuncTest()
+            {
+                var target = new EvaluateVisitor();
+
+                var functionName = RandomGenerator.String();
+                var definedFunctionNameExpr = new IdentifierExpr(functionName);
+                var calledFunctionNameExpr = new IdentifierExpr(functionName + "UNDEFINED");
+                var returnValue = RandomGenerator.String();
+
+                var functionDefinition = new FunctionDefinitionExpr(definedFunctionNameExpr, new VarDefinitionStmt[0],
+                    new BlockStmt(new[] { new ReturnStmt(new ConstantExpr(returnValue)) }), new IdentifierExpr("String"));
+
+                var expr = new FunctionCallExpr(calledFunctionNameExpr, new IExpression[0]);
+
+                _scope.DefineIdentifier(functionName, Value.FromObject(functionDefinition));
+
+                target.Visit(expr, _scope);
+            }
+
+            [TestCase(ExpectedException = typeof(UndefinedIdentifierException))]
+            public void FunctionCallWithEmptyScopeTest()
+            {
+                var target = new EvaluateVisitor();
+
+                var functionName = RandomGenerator.String();
+                var calledFunctionNameExpr = new IdentifierExpr(functionName);
+                
+                var expr = new FunctionCallExpr(calledFunctionNameExpr, new IExpression[0]);
+
+                target.Visit(expr, _scope);
             }
         }
     }
