@@ -1,16 +1,16 @@
 ﻿using System;
-using System.ComponentModel;
-using System.Runtime.InteropServices;
 using AST.Expressions.Function;
 
 namespace AST.Visitor
 {
     public class Value
     {
+        public static readonly Value Unit = new Value();
+
         private readonly ValueType _type;
         private readonly object _value;
 
-        public Value()
+        private Value()
         {
             _type = ValueType.Unit;
         }
@@ -30,7 +30,7 @@ namespace AST.Visitor
                 case ValueType.Function:
                     return new Value((FunctionDefinitionExpr)value);
                 case ValueType.Unit:
-                    return new Value();
+                    return Unit;
                 default:
                     throw new InvalidCastException("Value can not represent the supplied type " + value.GetType().FullName);
             }            

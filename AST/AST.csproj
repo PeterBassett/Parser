@@ -50,6 +50,8 @@
     <Compile Include="Expressions\AssignmentExpr.cs" />
     <Compile Include="Expressions\ConditionalExpr.cs" />
     <Compile Include="Expressions\Function\FunctionCallExpr.cs" />
+    <Compile Include="Expressions\Function\FunctionExpr.cs" />
+    <Compile Include="Expressions\Function\LambdaDefinitionExpr.cs" />
     <Compile Include="Expressions\Function\ReturnExpr.cs" />
     <Compile Include="Expressions\Function\FunctionDefinitionExpr.cs" />
     <Compile Include="Expressions\UnaryOperatorExpr.cs" />

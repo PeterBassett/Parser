@@ -4,11 +4,12 @@ using AST.Visitor;
 
 namespace AST.Expressions.Function
 {
-    public class FunctionDefinitionExpr : FunctionExpr
-    {
-        private readonly IStatement _body;
+    public class LambdaDefinitionExpr : FunctionExpr
+    {      
+        private readonly IExpression _body;
 
-        public FunctionDefinitionExpr(IdentifierExpr name, VarDefinitionStmt[] arguments, IStatement body, IdentifierExpr returnType) : base(name, arguments, returnType)
+        public LambdaDefinitionExpr(IdentifierExpr name, VarDefinitionStmt[] arguments, IExpression body, IdentifierExpr returnType)
+            : base(name, arguments, returnType)
         {
             if(body == null)
                 throw new ArgumentNullException("body");
@@ -20,6 +21,6 @@ namespace AST.Expressions.Function
             return visitor.Visit(this, context);
         }
 
-        public IStatement Body { get { return _body; } }
+        public IExpression Body { get { return _body; } }
     }
 }

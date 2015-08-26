@@ -216,5 +216,11 @@ namespace AST.Visitor
         {
             throw new NotImplementedException();
         }
+
+
+        public ValueType Visit(LambdaDefinitionExpr lambdaDefinitionExpr, Scope context)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

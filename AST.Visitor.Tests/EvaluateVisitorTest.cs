@@ -416,7 +416,7 @@ namespace AST.Visitor.Tests
                         {
                             invocationOrder[0] = invocations;
                             invocations++;
-                            return new Value();
+                            return Value.Unit;;
                         });
                 statement2.Setup(c => c.Accept(It.IsAny<IExpressionVisitor<Value, Scope>>(), It.IsAny<Scope>()))
                     .Returns<IExpressionVisitor<Value, Scope>, Scope>(
@@ -424,7 +424,7 @@ namespace AST.Visitor.Tests
                         {
                             invocationOrder[1] = invocations;
                             invocations++;
-                            return new Value();
+                            return Value.Unit;;
                         });
                 statement3.Setup(c => c.Accept(It.IsAny<IExpressionVisitor<Value, Scope>>(), It.IsAny<Scope>()))
                     .Returns<IExpressionVisitor<Value, Scope>, Scope>(
@@ -432,7 +432,7 @@ namespace AST.Visitor.Tests
                         {
                             invocationOrder[2] = invocations;
                             invocations++;
-                            return new Value();
+                            return Value.Unit;;
                         });
 
                 var stmt = new BlockStmt(new[] { statement1.Object, statement2.Object, statement3.Object });

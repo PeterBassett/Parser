@@ -1,5 +1,6 @@
 ﻿using System;
 using System.CodeDom;
+using System.Collections.Generic;
 using System.Linq;
 using AST.Expressions;
 using AST.Expressions.Arithmatic;
@@ -249,7 +250,7 @@ namespace AST.Visitor
                 stmt.Block.Accept(this, scope);
             }
 
-            return new Value();
+            return Value.Unit;
         }
 
         public Value Visit(IfStmt stmt, Scope scope)
@@ -275,12 +276,12 @@ namespace AST.Visitor
                 }
             }
 
-            return new Value();
+            return Value.Unit;;
         }
 
         public Value Visit(NoOpStatement stmt, Scope scope)
         {
-            return new Value();
+            return Value.Unit;;
         }
 
         public Value Visit(DoWhileStmt stmt, Scope scope)
@@ -290,12 +291,12 @@ namespace AST.Visitor
                 stmt.Block.Accept(this, scope);
             } while (stmt.Condition.Accept(this, scope).ToBoolean());
 
-            return new Value();
+            return Value.Unit;;
         }
 
         public Value Visit(FunctionDefinitionExpr expr, Scope scope)
         {
-            scope.DefineIdentifier(expr);
+            scope.DefineIdentifier(expr.Name, Value.FromObject(expr));
             return new Value( expr );
         }
 
@@ -306,32 +307,55 @@ namespace AST.Visitor
 
         public Value Visit(VarDefinitionStmt stmt, Scope scope)
         {
-            scope.DefineIdentifier(stmt);
-            return Value.FromObject(stmt.InitialValue.Value);
+            var value = Value.FromObject(stmt.InitialValue.Value);
+            scope.DefineIdentifier(stmt.Name.Name, value);
+            return value;
         }
 
         public Value Visit(FunctionCallExpr expr, Scope scope)
         {
             var function = scope.FindIdentifier(expr.FunctionName.Name);
 
-            var func = (FunctionDefinitionExpr)function.Value.ToObject();
+            var func = (FunctionExpr)function.Value.ToObject();
 
             var arguments = from argument in expr.Arguments
                             select argument.Accept(this, scope);
 
+            return ExecuteFunction(scope, func, arguments);
+        }
+
+        private Value ExecuteFunction(Scope scope, FunctionExpr func, IEnumerable<Value> arguments)
+        {
             using (scope = scope.PushArguments(func.Arguments, arguments.ToArray()))
             {
-                try
-                {
-                    func.Body.Accept(this, scope);
-                }
-                catch (ReturnStatementException returnStatement)
-                {
-                    return returnStatement.Value;
-                }
+                return RunFunction((dynamic)func, scope);
             }
+        }
 
-            return new Value();
+        private Value RunFunction(FunctionDefinitionExpr func, Scope scope)
+        {
+            try
+            {
+                func.Body.Accept(this, scope);
+
+                throw new ReturnStatementExpectedException("Function without a return statement encountered "  + func.Name);
+            }
+            catch (ReturnStatementException returnStatement)
+            {
+                return returnStatement.Value;
+            }
+        }
+
+        private Value RunFunction(LambdaDefinitionExpr func, Scope scope)
+        {
+            return func.Body.Accept(this, scope);            
+        }
+
+        public Value Visit(LambdaDefinitionExpr lambda, Scope scope)
+        {
+            var value = Value.FromObject(lambda);
+            scope.DefineIdentifier(lambda.Name, value);
+            return value;
         }
     }
 }

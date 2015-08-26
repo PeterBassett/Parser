@@ -35,6 +35,8 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FunctionApplicationException.cs" />
+    <Compile Include="ReturnStatementExpectedException.cs" />
     <Compile Include="ValueType.cs" />
     <Compile Include="ReturnStatementException.cs" />
     <Compile Include="TypeCheckingVisitor.cs" />
