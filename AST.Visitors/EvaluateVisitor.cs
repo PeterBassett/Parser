@@ -267,7 +267,7 @@ namespace AST.Visitor
             return stmt.ElseExpression.Accept(this, scope);
         }
 
-        public Value Visit(BlockStmt stmt, Scope scope)
+        public Value Visit(ScopeBlockStmt stmt, Scope scope)
         {
             using (scope.PushScope())
             {
@@ -308,7 +308,7 @@ namespace AST.Visitor
 
         public Value Visit(VarDefinitionStmt stmt, Scope scope)
         {
-            var value = Value.FromObject(stmt.InitialValue.Value);
+            var value = Value.FromObject(stmt.InitialValue.Accept(this, scope));
             scope.DefineIdentifier(stmt.Name.Name, value);
             return value;
         }
@@ -361,6 +361,12 @@ namespace AST.Visitor
             var value = Value.FromObject(lambda);
             scope.DefineIdentifier(lambda.Name, value);
             return value;
+        }
+
+
+        public Value Visit(StatementList blockStmt, Scope context)
+        {
+            throw new NotImplementedException();
         }
     }
 }

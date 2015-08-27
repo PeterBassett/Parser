@@ -25,7 +25,7 @@ namespace Parser.Parselets.StatementParselets
 
             } while (parser.Current.Type != _endToken);
 
-            return new BlockStmt(statements);            
+            return new ScopeBlockStmt(statements);            
         }
 
         public override bool NeedsTerminator

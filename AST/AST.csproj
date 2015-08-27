@@ -52,6 +52,7 @@
     <Compile Include="Expressions\Function\FunctionCallExpr.cs" />
     <Compile Include="Expressions\Function\FunctionExpr.cs" />
     <Compile Include="Expressions\Function\LambdaDefinitionExpr.cs" />
+    <Compile Include="Statements\StatementList.cs" />
     <Compile Include="Statements\ReturnStmt.cs" />
     <Compile Include="Expressions\Function\FunctionDefinitionExpr.cs" />
     <Compile Include="Expressions\UnaryOperatorExpr.cs" />
@@ -67,7 +68,7 @@
     <Compile Include="Expressions\Logical\NotExpr.cs" />
     <Compile Include="IExpression.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Statements\BlockStmt.cs" />
+    <Compile Include="Statements\ScopeBlockStmt.cs" />
     <Compile Include="Statements\IBlockStatement.cs" />
     <Compile Include="Statements\IfStmt.cs" />
     <Compile Include="Statements\IStatement.cs" />

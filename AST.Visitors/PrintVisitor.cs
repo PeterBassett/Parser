@@ -128,7 +128,7 @@ namespace AST.Visitor
             return ifstatement;
         }
 
-        public string Visit(BlockStmt stmt, Scope scope)
+        public string Visit(ScopeBlockStmt stmt, Scope scope)
         {
             var block = "{{\r\n";
 
@@ -175,6 +175,12 @@ namespace AST.Visitor
 
 
         public string Visit(LambdaDefinitionExpr lambdaDefinitionExpr, Scope context)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        public string Visit(StatementList blockStmt, Scope context)
         {
             throw new NotImplementedException();
         }

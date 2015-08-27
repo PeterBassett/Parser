@@ -110,9 +110,11 @@ namespace Parser.Tests
                     {"b", "IDENTIFIER"},
                     {"c", "IDENTIFIER"},
                     {"d", "IDENTIFIER"},
-                    {"Test", "IDENTIFIER"},                    
-                    {"Multiply", "IDENTIFIER"},                    
-                    {"int", "IDENTIFIER"},                    
+                    {"Test", "IDENTIFIER"},
+                    {"Test2", "IDENTIFIER"},
+                    {"Multiply", "IDENTIFIER"},          
+                    {"int", "IDENTIFIER"},
+                    {"string", "IDENTIFIER"},
                     {"+", "PLUS"},
                     {"-", "MINUS"},
                     {"*", "MULT"},
@@ -142,6 +144,8 @@ namespace Parser.Tests
                     {"function", "FUNCTION"},
                     {"=>", "RIGHTARROW"},
                     {",", "COMMA"},
+                    {"val", "VAL"},
+                    {"var", "VAR"},
                 };
 
                 if(!symbolToOp.ContainsKey(value.ToString()))
@@ -716,9 +720,9 @@ namespace Parser.Tests
                 var expr = (WhileStmt)result;
 
                 Assert.AreEqual(typeof(NotEqualsExpr), expr.Condition.GetType());
-                Assert.AreEqual(typeof(BlockStmt), expr.Block.GetType());
+                Assert.AreEqual(typeof(ScopeBlockStmt), expr.Block.GetType());
 
-                var block = (BlockStmt)expr.Block;
+                var block = (ScopeBlockStmt)expr.Block;
                 Assert.AreEqual(1, block.Statements.Count());
                 Assert.AreEqual(typeof(AssignmentExpr), block.Statements.ElementAt(0).GetType());
             }
@@ -761,7 +765,7 @@ namespace Parser.Tests
 
                 var result = parser.Parse();
 
-                Assert.AreEqual(typeof(BlockStmt), result.GetType());
+                Assert.AreEqual(typeof(ScopeBlockStmt), result.GetType());
             }
 
             [Test]
@@ -782,7 +786,7 @@ namespace Parser.Tests
                 var stmt = (IfStmt) result;
 
                 Assert.AreEqual(typeof(NotEqualsExpr), stmt.Condition.GetType());
-                Assert.AreEqual(typeof(BlockStmt), stmt.ThenExpression.GetType());
+                Assert.AreEqual(typeof(ScopeBlockStmt), stmt.ThenExpression.GetType());
                 Assert.AreEqual(typeof(NoOpStatement), stmt.ElseExpression.GetType());
             }
 
@@ -808,8 +812,8 @@ namespace Parser.Tests
                 var stmt = (IfStmt)result;
 
                 Assert.AreEqual(typeof(NotEqualsExpr), stmt.Condition.GetType());
-                Assert.AreEqual(typeof(BlockStmt), stmt.ThenExpression.GetType());
-                Assert.AreEqual(typeof(BlockStmt), stmt.ElseExpression.GetType());
+                Assert.AreEqual(typeof(ScopeBlockStmt), stmt.ThenExpression.GetType());
+                Assert.AreEqual(typeof(ScopeBlockStmt), stmt.ElseExpression.GetType());
 
                 Assert.AreNotSame(stmt.ThenExpression, stmt.ElseExpression);
             }
@@ -885,7 +889,7 @@ namespace Parser.Tests
                 var stmt = (FunctionDefinitionExpr)result;
 
                 Assert.AreEqual("Test", stmt.Name);
-                Assert.AreEqual(typeof(BlockStmt), stmt.Body.GetType());
+                Assert.AreEqual(typeof(ScopeBlockStmt), stmt.Body.GetType());
             }
 
             [Test]
@@ -906,7 +910,7 @@ namespace Parser.Tests
                 var stmt = (FunctionDefinitionExpr)result;
 
                 Assert.AreEqual("Multiply", stmt.Name);
-                Assert.AreEqual(typeof(BlockStmt), stmt.Body.GetType());
+                Assert.AreEqual(typeof(ScopeBlockStmt), stmt.Body.GetType());
             }
 
             [Test]
@@ -963,6 +967,107 @@ namespace Parser.Tests
 
                 Assert.AreEqual("Test", stmt.Name);
                 Assert.AreEqual(typeof(MultExpr), stmt.Body.GetType());                
+            }
+
+            [Test]
+            public void ValDeclarationTest()
+            {
+                var parser = new StatementParser(new FakeScanner(new[]
+                {
+                    Get("val"), Get("Test"), Get(":"), Get("int"), Get(";")
+                }));
+
+                var result = parser.Parse();
+
+                Assert.AreEqual(typeof(VarDefinitionStmt), result.GetType());
+
+                var stmt = (VarDefinitionStmt)result;
+
+                Assert.AreEqual("Test", stmt.Name.Name);
+                Assert.AreEqual("int", stmt.Type.Name);
+                Assert.AreEqual(true, stmt.IsConst);
+                Assert.IsNull(stmt.InitialValue);
+            }
+
+            [Test]
+            public void MultipleValDeclarationTest()
+            {
+                var parser = new StatementParser(new FakeScanner(new[]
+                {
+                    Get("val"), Get("Test"), Get(":"), Get("int"), Get(";"),
+                    Get("val"), Get("Test2"), Get(":"), Get("string"), Get(";")
+                }));
+
+                var result = parser.Parse();
+
+                Assert.AreEqual(typeof(VarDefinitionStmt), result.GetType());
+
+                var stmt = (VarDefinitionStmt)result;
+
+                Assert.AreEqual("Test", stmt.Name.Name);
+                Assert.AreEqual("int", stmt.Type.Name);
+                Assert.AreEqual(true, stmt.IsConst);
+                Assert.IsNull(stmt.InitialValue);
+            }
+
+            [Test]
+            public void ValDeclarationWithInitialisationExpressionTest()
+            {
+                var parser = new StatementParser(new FakeScanner(new[]
+                {
+                    Get("val"), Get("Test"), Get(":"), Get("int"), Get("="), Get(1), Get("+"), Get(2), Get(";")
+                }));
+
+                var result = parser.Parse();
+
+                Assert.AreEqual(typeof(VarDefinitionStmt), result.GetType());
+
+                var stmt = (VarDefinitionStmt)result;
+
+                Assert.AreEqual("Test", stmt.Name.Name);
+                Assert.AreEqual("int", stmt.Type.Name);
+                Assert.AreEqual(true, stmt.IsConst);
+                Assert.AreEqual(typeof(PlusExpr), stmt.InitialValue.GetType());
+            }
+
+            [Test]
+            public void VarDeclarationTest()
+            {
+                var parser = new StatementParser(new FakeScanner(new[]
+                {
+                    Get("var"), Get("Test"), Get(":"), Get("int"), Get(";")
+                }));
+
+                var result = parser.Parse();
+
+                Assert.AreEqual(typeof(VarDefinitionStmt), result.GetType());
+
+                var stmt = (VarDefinitionStmt)result;
+
+                Assert.AreEqual("Test", stmt.Name.Name);
+                Assert.AreEqual("int", stmt.Type.Name);
+                Assert.AreEqual(false, stmt.IsConst);
+                Assert.IsNull(stmt.InitialValue);
+            }
+
+            [Test]
+            public void VarDeclarationWithInitialisationExpressionTest()
+            {
+                var parser = new StatementParser(new FakeScanner(new[]
+                {
+                    Get("var"), Get("Test"), Get(":"), Get("int"), Get("="), Get(1), Get("+"), Get(2), Get(";")
+                }));
+
+                var result = parser.Parse();
+
+                Assert.AreEqual(typeof(VarDefinitionStmt), result.GetType());
+
+                var stmt = (VarDefinitionStmt)result;
+
+                Assert.AreEqual("Test", stmt.Name.Name);
+                Assert.AreEqual("int", stmt.Type.Name);
+                Assert.AreEqual(false, stmt.IsConst);
+                Assert.AreEqual(typeof(PlusExpr), stmt.InitialValue.GetType());
             }
         }
     }

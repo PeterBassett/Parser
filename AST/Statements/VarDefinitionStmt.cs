@@ -10,9 +10,9 @@ namespace AST.Statements
         private readonly IdentifierExpr _name;
         private readonly IdentifierExpr _type;
         private readonly bool _isConst;
-        private readonly ConstantExpr _initialValue;
+        private readonly IExpression _initialValue;
 
-        public VarDefinitionStmt(IdentifierExpr name, IdentifierExpr type, bool isConst, ConstantExpr initialValue)
+        public VarDefinitionStmt(IdentifierExpr name, IdentifierExpr type, bool isConst, IExpression initialValue)
         {
             _name = name;
             _type = type;
@@ -27,7 +27,7 @@ namespace AST.Statements
 
         public IdentifierExpr Name { get { return _name; } }
 
-        public ConstantExpr InitialValue { get { return _initialValue; } }
+        public IExpression InitialValue { get { return _initialValue; } }
 
         public IdentifierExpr Type { get { return _type; } }
 

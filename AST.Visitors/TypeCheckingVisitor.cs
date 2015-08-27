@@ -183,7 +183,7 @@ namespace AST.Visitor
             return ValueType.Unit;
         }
 
-        public ValueType Visit(BlockStmt stmt, Scope scope)
+        public ValueType Visit(ScopeBlockStmt stmt, Scope scope)
         {
             return ValueType.Unit;
         }
@@ -220,6 +220,12 @@ namespace AST.Visitor
 
 
         public ValueType Visit(LambdaDefinitionExpr lambdaDefinitionExpr, Scope context)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        public ValueType Visit(StatementList blockStmt, Scope context)
         {
             throw new NotImplementedException();
         }

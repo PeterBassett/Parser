@@ -80,7 +80,7 @@ namespace AST.Tests.Expressions.Function
             {
                 var name = new IdentifierExpr(RandomGenerator.String());
                 var arguments = new VarDefinitionStmt[0];
-                var body = new BlockStmt(new [] { new NoOpStatement()});
+                var body = new ScopeBlockStmt(new [] { new NoOpStatement()});
                 var returnType = new IdentifierExpr(RandomGenerator.String());
 
                 var target = new FunctionDefinitionExpr(name, arguments, body, returnType);

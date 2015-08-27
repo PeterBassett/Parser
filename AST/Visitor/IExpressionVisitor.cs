@@ -31,7 +31,7 @@ namespace AST.Visitor
         T Visit(NegationExpr expr, C context);
         T Visit(WhileStmt stmt, C context);
         T Visit(IfStmt stmt, C context);
-        T Visit(BlockStmt stmt, C context);
+        T Visit(ScopeBlockStmt stmt, C context);
         T Visit(NoOpStatement stmt, C context);
         T Visit(DoWhileStmt stmt, C context);
         T Visit(FunctionDefinitionExpr expr, C context);
@@ -39,5 +39,6 @@ namespace AST.Visitor
         T Visit(VarDefinitionStmt varDefinitionStmt, C context);
         T Visit(FunctionCallExpr functionCallExpr, C context);
         T Visit(LambdaDefinitionExpr lambdaDefinitionExpr, C context);
+        T Visit(StatementList blockStmt, C context);
     }
 }

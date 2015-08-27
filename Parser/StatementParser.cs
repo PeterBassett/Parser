@@ -14,6 +14,8 @@ namespace Parser
             RegisterParselet("IF", new IfParselet());
             RegisterParselet("FUNCTION", new FunctionDefinitionParselet());
             RegisterParselet("RETURN", new ReturnStatementParselet());
+            RegisterParselet("VAL", new VariableDeclarationParselet(true));
+            RegisterParselet("VAR", new VariableDeclarationParselet(false));
             InfixRight<AssignmentExpr>("ASSIGNMENT", Precedence.Assignment);
         }        
     }

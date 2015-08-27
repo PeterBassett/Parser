@@ -396,7 +396,7 @@ namespace AST.Visitor.Tests
                 var statement2 = new Mock<IStatement>();
                 var statement3 = new Mock<IStatement>();
 
-                var stmt = new BlockStmt(new[] { statement1.Object, statement2.Object, statement3.Object });
+                var stmt = new ScopeBlockStmt(new[] { statement1.Object, statement2.Object, statement3.Object });
 
                 target.Visit(stmt, _scope);
 
@@ -443,7 +443,7 @@ namespace AST.Visitor.Tests
                             return Value.Unit;;
                         });
 
-                var stmt = new BlockStmt(new[] { statement1.Object, statement2.Object, statement3.Object });
+                var stmt = new ScopeBlockStmt(new[] { statement1.Object, statement2.Object, statement3.Object });
 
                 target.Visit(stmt, _scope);
 
@@ -472,7 +472,7 @@ namespace AST.Visitor.Tests
 
                 var statement = new Mock<IStatement>();
 
-                var expr = new WhileStmt(condition.Object, new BlockStmt(new[] { statement.Object }));
+                var expr = new WhileStmt(condition.Object, new ScopeBlockStmt(new[] { statement.Object }));
 
                 target.Visit(expr, _scope);
 
@@ -495,7 +495,7 @@ namespace AST.Visitor.Tests
 
                 var statement = new Mock<IStatement>();
 
-                var expr = new WhileStmt(condition.Object, new BlockStmt(new[] { statement.Object }));
+                var expr = new WhileStmt(condition.Object, new ScopeBlockStmt(new[] { statement.Object }));
 
                 target.Visit(expr, _scope);
 
@@ -529,7 +529,7 @@ namespace AST.Visitor.Tests
                             return new Value(false);
                         });
 
-                var expr = new WhileStmt(condition.Object, new BlockStmt(new[] { statement.Object }));
+                var expr = new WhileStmt(condition.Object, new ScopeBlockStmt(new[] { statement.Object }));
 
                 target.Visit(expr, _scope);
 
@@ -557,7 +557,7 @@ namespace AST.Visitor.Tests
 
                 var statement = new Mock<IStatement>();
 
-                var expr = new DoWhileStmt(condition.Object, new BlockStmt(new[] { statement.Object }));
+                var expr = new DoWhileStmt(condition.Object, new ScopeBlockStmt(new[] { statement.Object }));
 
                 target.Visit(expr, _scope);
 
@@ -580,7 +580,7 @@ namespace AST.Visitor.Tests
 
                 var statement = new Mock<IStatement>();
 
-                var expr = new DoWhileStmt(condition.Object, new BlockStmt(new[] { statement.Object }));
+                var expr = new DoWhileStmt(condition.Object, new ScopeBlockStmt(new[] { statement.Object }));
 
                 target.Visit(expr, _scope);
 
@@ -613,7 +613,7 @@ namespace AST.Visitor.Tests
                             return new Value(false);
                         });
 
-                var expr = new DoWhileStmt(condition.Object, new BlockStmt(new[] { statement.Object }));
+                var expr = new DoWhileStmt(condition.Object, new ScopeBlockStmt(new[] { statement.Object }));
 
                 target.Visit(expr, _scope);
 
@@ -709,7 +709,7 @@ namespace AST.Visitor.Tests
                 var functionNameExpr = new IdentifierExpr(functionName);
                 var returnValue = RandomGenerator.String();
                 var functionDefinition = new FunctionDefinitionExpr(functionNameExpr, new VarDefinitionStmt[0],
-                    new BlockStmt(new[] {new ReturnStmt(new ConstantExpr(returnValue))}), new IdentifierExpr("String"));
+                    new ScopeBlockStmt(new[] {new ReturnStmt(new ConstantExpr(returnValue))}), new IdentifierExpr("String"));
                 
                 var expr = new FunctionCallExpr(functionNameExpr, new IExpression[0]);
 
@@ -745,7 +745,7 @@ namespace AST.Visitor.Tests
                 var returnValue = values[1];
 
                 var functionDefinition = new FunctionDefinitionExpr(functionNameExpr, parameters,
-                    new BlockStmt(new[] { new ReturnStmt(returnValue) }), new IdentifierExpr("String"));
+                    new ScopeBlockStmt(new[] { new ReturnStmt(returnValue) }), new IdentifierExpr("String"));
 
                 var expr = new FunctionCallExpr(functionNameExpr, values);
 
@@ -767,7 +767,7 @@ namespace AST.Visitor.Tests
                 var returnValue = RandomGenerator.String();
 
                 var functionDefinition = new FunctionDefinitionExpr(definedFunctionNameExpr, new VarDefinitionStmt[0],
-                    new BlockStmt(new[] { new ReturnStmt(new ConstantExpr(returnValue)) }), new IdentifierExpr("String"));
+                    new ScopeBlockStmt(new[] { new ReturnStmt(new ConstantExpr(returnValue)) }), new IdentifierExpr("String"));
 
                 var expr = new FunctionCallExpr(calledFunctionNameExpr, new IExpression[0]);
 
@@ -811,7 +811,7 @@ namespace AST.Visitor.Tests
                 var functionName = RandomGenerator.String();
                 var functionNameExpr = new IdentifierExpr(functionName);
                 var returnValue = RandomGenerator.String();
-                var functionDefinition = new FunctionDefinitionExpr(functionNameExpr, new VarDefinitionStmt[0], new BlockStmt(new[] { new NoOpStatement()  }), new IdentifierExpr("String"));
+                var functionDefinition = new FunctionDefinitionExpr(functionNameExpr, new VarDefinitionStmt[0], new ScopeBlockStmt(new[] { new NoOpStatement()  }), new IdentifierExpr("String"));
 
                 var expr = new FunctionCallExpr(functionNameExpr, new IExpression[0]);
 

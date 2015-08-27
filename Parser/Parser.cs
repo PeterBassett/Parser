@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using AST;
+using AST.Statements;
 using Lexer;
 using Parser.Parselets.Infix;
 using Parser.Parselets.Prefix;
@@ -35,19 +37,30 @@ namespace Parser
 
         public IExpression Parse(int precedence)
         {
-            var token = Consume();
+           // var statementList = new List<IStatement>();
+            //do
+           // {
+                var token = Consume();
 
-            var statement = GetStatementParserForCurrentToken(token);
+                var statement = GetStatementParserForCurrentToken(token);
 
-            if (statement == null)
-                return ParseExpression(0, token);
+                if (statement == null)
+                    return ParseExpression(0, token);
 
-            var result = statement.Parse(this, token);
+                var stmt =  statement.Parse(this, token);
 
-            if (statement.NeedsTerminator)
-                Consume(statement.Terminator);
+              //  statementList.Add(stmt);
 
-            return result;
+                if (statement.NeedsTerminator)
+                    Consume(statement.Terminator);
+
+            return stmt;
+            //} while (Peek().Type != "EMPTY");
+
+            //if(statementList.Count> 1)
+               // return new StatementList(statementList);
+            
+            //return statementList.First();
         }
 
         public IExpression ParseExpression(int precedence)
