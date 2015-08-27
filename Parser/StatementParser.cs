@@ -12,6 +12,8 @@ namespace Parser
             RegisterParselet("LEFTBRACE", new BlockParselet("RIGHTBRACE"));
             RegisterParselet("WHILE", new WhileParselet());
             RegisterParselet("IF", new IfParselet());
+            RegisterParselet("FUNCTION", new FunctionDefinitionParselet());
+            RegisterParselet("RETURN", new ReturnStatementParselet());
             InfixRight<AssignmentExpr>("ASSIGNMENT", Precedence.Assignment);
         }        
     }

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace AST.Visitor
+namespace AST.Visitor.Exceptions
 {
     public class ReturnStatementException : Exception
     {

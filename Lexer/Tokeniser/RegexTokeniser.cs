@@ -8,9 +8,6 @@ namespace Lexer.Tokeniser
         public RegexTokeniser(string pattern, string type)
             : this(new Regex(pattern, RegexOptions.Compiled), type)
         {
-            if (pattern == null)
-                throw new ArgumentNullException("pattern");
-
             if (pattern == "")
                 throw new ArgumentOutOfRangeException("pattern", "pattern must be provided");
 

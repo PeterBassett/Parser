@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using AST.Statements;
+using AST.Visitor.Exceptions;
 
 namespace AST.Visitor
 {
@@ -26,14 +27,22 @@ namespace AST.Visitor
 
         public IDisposable PushArguments(VarDefinitionStmt[] arguments, Value[] values)
         {
-            _scope = new ScopeLevel(_scope);
+            var scopePopper = PushScope();
 
-            for (var i = 0; i < arguments.Length; i++)
+            try
             {
-                _scope.DefineIdentifier(arguments[i].Name.Name, values[i]);
+                for (var i = 0; i < arguments.Length; i++)
+                {
+                    _scope.DefineIdentifier(arguments[i].Name.Name, values[i]);
+                }
+            }
+            catch (Exception)
+            {
+                scopePopper.Dispose();
+                throw;
             }
 
-            return new ScopePopper(this);
+            return scopePopper;
         }
 
         public IDisposable PushScope()
@@ -51,21 +60,16 @@ namespace AST.Visitor
         {
             private readonly ScopeLevel _parent;
             private readonly Dictionary<string, Identifier> _values;
-            private readonly int _scopeDepth;
-
+            
             public ScopeLevel()
                 : this(null)
             {
-                _scopeDepth = 0;
             }
 
             public ScopeLevel(ScopeLevel parent)
             {
                 _values = new Dictionary<string, Identifier>();
                 _parent = parent;
-
-                if (parent != null)
-                    _scopeDepth = parent._scopeDepth + 1;
             }
 
             public ScopeLevel Parent
@@ -73,10 +77,11 @@ namespace AST.Visitor
                 get { return _parent; }
             }
 
-            public int ScopeDepth { get { return _scopeDepth; } }
-
             public void DefineIdentifier(string name, Value value)
             {
+                if (_values.ContainsKey(name))
+                    throw new IdentifierAlreadyDefinedException(name);
+
                 _values.Add(name, new Identifier(value));
             }
 

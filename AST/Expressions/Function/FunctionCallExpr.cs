@@ -1,5 +1,5 @@
 ﻿using System;
-using AST.Statements;
+using System.Collections.Generic;
 using AST.Visitor;
 
 namespace AST.Expressions.Function
@@ -25,7 +25,7 @@ namespace AST.Expressions.Function
             return visitor.Visit(this, context);
         }
 
-        public IExpression[] Arguments { get { return _arguments; }}
+        public IEnumerable<IExpression> Arguments { get { return _arguments; }}
         public IdentifierExpr FunctionName { get { return _functionName; } }
 
     }

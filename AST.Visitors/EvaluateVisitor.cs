@@ -9,6 +9,7 @@ using AST.Expressions.Function;
 using AST.Expressions.Logical;
 using AST.Statements;
 using AST.Statements.Loops;
+using AST.Visitor.Exceptions;
 
 namespace AST.Visitor
 {
@@ -315,16 +316,17 @@ namespace AST.Visitor
         public Value Visit(FunctionCallExpr expr, Scope scope)
         {
             var function = scope.FindIdentifier(expr.FunctionName.Name);
-
+            
             if(!function.IsDefined)
                 throw new UndefinedIdentifierException("Undefined function " + expr.FunctionName.Name);
 
-            var func = (FunctionExpr)function.Value.ToObject();
+            if(!function.Value.IsFunction)
+                throw new UndefinedIdentifierException("Identifier is not a function " + expr.FunctionName.Name);            
 
             var arguments = from argument in expr.Arguments
                             select argument.Accept(this, scope);
 
-            return ExecuteFunction(scope, func, arguments);
+            return ExecuteFunction(scope, function.Value.ToFuntion(), arguments);
         }
 
         private Value ExecuteFunction(Scope scope, FunctionExpr func, IEnumerable<Value> arguments)

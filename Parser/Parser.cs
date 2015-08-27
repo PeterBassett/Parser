@@ -175,9 +175,6 @@ namespace Parser
 
         private Token LookAhead(int distance = 0)
         {
-            if (distance < 0)
-                throw new ArgumentOutOfRangeException("distance");
-
             // Read in as many as needed.
             while (distance >= _tokenQueue.Count)
             {
@@ -187,6 +184,12 @@ namespace Parser
 
             // Get the queued token.
             return _tokenQueue[distance];
+        }
+
+        internal Token Peek()
+        {
+            LookAhead();
+            return _tokenQueue[0];
         }
     }
 }

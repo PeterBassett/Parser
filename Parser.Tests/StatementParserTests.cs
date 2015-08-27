@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using AST;
 using AST.Expressions;
 using AST.Expressions.Arithmatic;
 using AST.Expressions.Comparison;
+using AST.Expressions.Function;
 using AST.Expressions.Logical;
 using AST.Statements;
 using AST.Statements.Loops;
@@ -108,6 +110,9 @@ namespace Parser.Tests
                     {"b", "IDENTIFIER"},
                     {"c", "IDENTIFIER"},
                     {"d", "IDENTIFIER"},
+                    {"Test", "IDENTIFIER"},                    
+                    {"Multiply", "IDENTIFIER"},                    
+                    {"int", "IDENTIFIER"},                    
                     {"+", "PLUS"},
                     {"-", "MINUS"},
                     {"*", "MULT"},
@@ -133,7 +138,14 @@ namespace Parser.Tests
                     {"=", "ASSIGNMENT"},
                     {"if", "IF"},
                     {"else", "ELSE"},
+                    {"return", "RETURN"},
+                    {"function", "FUNCTION"},
+                    {"=>", "RIGHTARROW"},
+                    {",", "COMMA"},
                 };
+
+                if(!symbolToOp.ContainsKey(value.ToString()))
+                    throw new ArgumentException("Token dictionary doesnt contain " + value.ToString());
 
                 return new Token(symbolToOp[value.ToString()], value.ToString(), 0, 0, 0);
             }
@@ -853,6 +865,104 @@ namespace Parser.Tests
                 var innerIf = (IfStmt)stmt.ThenExpression;
                 Assert.AreEqual(typeof(ConstantExpr), innerIf.Condition.GetType());
                 Assert.AreEqual(false, ((ConstantExpr)innerIf.Condition).Value);                
+            }
+
+            [Test]
+            public void FunctionDefinitionTest()
+            {
+                var parser = new StatementParser(new FakeScanner(new[]
+                {
+                    Get("function"), Get("Test"), Get("("),Get(")"),
+                    Get("{"),
+                        Get("return"), Get(1), Get(";"),
+                    Get("}")
+                }));
+
+                var result = parser.Parse();
+
+                Assert.AreEqual(typeof(FunctionDefinitionExpr), result.GetType());
+
+                var stmt = (FunctionDefinitionExpr)result;
+
+                Assert.AreEqual("Test", stmt.Name);
+                Assert.AreEqual(typeof(BlockStmt), stmt.Body.GetType());
+            }
+
+            [Test]
+            public void FunctionDefinitionWithParametersTest()
+            {
+                var parser = new StatementParser(new FakeScanner(new[]
+                {
+                    Get("function"), Get("Multiply"), Get("("), Get("a"), Get("int"), Get(","), Get("b"), Get("int"), Get(")"),
+                    Get("{"),
+                        Get("return"), Get("a"), Get("*"), Get("b"), Get(";"),
+                    Get("}")
+                }));
+
+                var result = parser.Parse();
+
+                Assert.AreEqual(typeof(FunctionDefinitionExpr), result.GetType());
+
+                var stmt = (FunctionDefinitionExpr)result;
+
+                Assert.AreEqual("Multiply", stmt.Name);
+                Assert.AreEqual(typeof(BlockStmt), stmt.Body.GetType());
+            }
+
+            [Test]
+            public void LambdaDefinitionTest()
+            {
+                var parser = new StatementParser(new FakeScanner(new[]
+                {
+                    Get("function"), Get("Test"), Get("("),Get(")"), Get("=>"), Get(1), Get(";") 
+                }));
+
+                var result = parser.Parse();
+
+                Assert.AreEqual(typeof(LambdaDefinitionExpr), result.GetType());
+
+                var stmt = (LambdaDefinitionExpr)result;
+
+                Assert.AreEqual("Test", stmt.Name);
+                Assert.AreEqual(typeof(ConstantExpr), stmt.Body.GetType());
+                Assert.AreEqual(1, ((ConstantExpr)stmt.Body).Value);
+            }
+
+            [Test]
+            public void AnonymousLambdaDefinitionTest()
+            {
+                var parser = new StatementParser(new FakeScanner(new[]
+                {
+                    Get("function"), Get("("),Get(")"), Get("=>"), Get(1), Get(";") 
+                }));
+
+                var result = parser.Parse();
+
+                Assert.AreEqual(typeof(LambdaDefinitionExpr), result.GetType());
+
+                var stmt = (LambdaDefinitionExpr)result;
+
+                Assert.AreEqual(null, stmt.Name);
+                Assert.AreEqual(typeof(ConstantExpr), stmt.Body.GetType());
+                Assert.AreEqual(1, ((ConstantExpr)stmt.Body).Value);
+            }
+
+            [Test]
+            public void MoreComplexLambdaDefinitionTest()
+            {
+                var parser = new StatementParser(new FakeScanner(new[]
+                {
+                    Get("function"), Get("Test"), Get("("),Get(")"), Get("=>"), Get(1), Get("*"), Get(2), Get(";") 
+                }));
+
+                var result = parser.Parse();
+
+                Assert.AreEqual(typeof(LambdaDefinitionExpr), result.GetType());
+
+                var stmt = (LambdaDefinitionExpr)result;
+
+                Assert.AreEqual("Test", stmt.Name);
+                Assert.AreEqual(typeof(MultExpr), stmt.Body.GetType());                
             }
         }
     }

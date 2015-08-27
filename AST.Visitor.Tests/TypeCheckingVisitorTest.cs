@@ -1,5 +1,4 @@
 ﻿using System;
-using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -7,6 +6,7 @@ using AST.Expressions;
 using AST.Expressions.Arithmatic;
 using AST.Expressions.Logical;
 using AST.Statements;
+using AST.Visitor.Exceptions;
 using NUnit.Framework;
 
 namespace AST.Visitor.Tests

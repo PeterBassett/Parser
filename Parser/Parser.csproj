@@ -41,7 +41,9 @@
   <ItemGroup>
     <Compile Include="Parselets\Prefix\IdentifierParselet.cs" />
     <Compile Include="Parselets\StatementParselets\BlockParselet.cs" />
+    <Compile Include="Parselets\StatementParselets\FunctionDefinitionParselet.cs" />
     <Compile Include="Parselets\StatementParselets\IfParselet.cs" />
+    <Compile Include="Parselets\StatementParselets\ReturnStatementParselet.cs" />
     <Compile Include="StatementParser.cs" />
     <Compile Include="ExpressionParser.cs" />
     <Compile Include="IParser.cs" />

@@ -20,10 +20,5 @@ namespace Parser.Parselets.Prefix
 
             return (IExpression)Activator.CreateInstance(typeof(T), new object[] { right });
         }
-
-        public int Precedence
-        {
-            get { return _precedence; }
-        }
     }
 }

@@ -28,7 +28,7 @@ namespace AST.Visitor
                 case ValueType.String:
                     return new Value(Convert.ToString(value));
                 case ValueType.Function:
-                    return new Value((FunctionDefinitionExpr)value);
+                    return new Value((FunctionExpr)value);
                 case ValueType.Unit:
                     return Unit;
                 default:
@@ -58,8 +58,8 @@ namespace AST.Visitor
 
             if (value is string)
                 return ValueType.String;
-
-            if (value is FunctionDefinitionExpr)
+            
+            if (value is FunctionExpr)
                 return ValueType.Function;
 
             throw new InvalidCastException("Value can not represent the supplied type " + value.GetType().FullName);
@@ -95,7 +95,7 @@ namespace AST.Visitor
             _type = ValueType.Boolean;
         }
 
-        public Value(FunctionDefinitionExpr func)
+        public Value(FunctionExpr func)
         {
             _value = func;
             _type = ValueType.Function;
@@ -136,7 +136,7 @@ namespace AST.Visitor
 
         public bool IsFunction { get { return _type == ValueType.Function; } }
 
-        public FunctionDefinitionExpr ToFuntion() { return _value as FunctionDefinitionExpr; }
+        public FunctionExpr ToFuntion() { return _value as FunctionExpr; }
 
         public override string ToString()
         {

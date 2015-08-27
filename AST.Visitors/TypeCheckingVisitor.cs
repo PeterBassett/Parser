@@ -6,6 +6,7 @@ using AST.Expressions.Function;
 using AST.Expressions.Logical;
 using AST.Statements;
 using AST.Statements.Loops;
+using AST.Visitor.Exceptions;
 
 namespace AST.Visitor
 {

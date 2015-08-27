@@ -53,6 +53,7 @@
     <Otherwise />
   </Choose>
   <ItemGroup>
+    <Compile Include="Decorators\StripLexerTests.cs" />
     <Compile Include="Tokeniser\CSRegexTokeniserTests.cs" />
     <Compile Include="Tokeniser\RegexTokeniserTests.cs" />
     <Compile Include="TokenTests.cs" />

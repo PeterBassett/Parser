@@ -8,6 +8,7 @@ using AST.Expressions.Comparison;
 using AST.Expressions.Logical;
 using AST.Statements;
 using AST.Statements.Loops;
+using AST.Visitor.Exceptions;
 using Moq;
 using NUnit.Framework;
 using AST.Expressions.Function;
@@ -676,7 +677,7 @@ namespace AST.Visitor.Tests
             }
 
             [Test]
-            public void ReturnStatementTest()
+            public void ReturnStatementVisitTest()
             {
                 var target = new EvaluateVisitor();
 
@@ -719,6 +720,42 @@ namespace AST.Visitor.Tests
                 Assert.AreEqual(returnValue, actual.ToObject());
             }
 
+            [Test]
+            public void FunctionCallCallsVisitOnAllParametersPassedTest()
+            {
+                var target = new EvaluateVisitor();
+
+                var functionName = RandomGenerator.String();
+                var functionNameExpr = new IdentifierExpr(functionName);                
+
+                var parameters = new[]
+                {
+                    new VarDefinitionStmt(new IdentifierExpr("A"), new IdentifierExpr("INT"), false, new ConstantExpr(1)),
+                    new VarDefinitionStmt(new IdentifierExpr("B"), new IdentifierExpr("STRING"), false, new ConstantExpr("TEST")),
+                    new VarDefinitionStmt(new IdentifierExpr("C"), new IdentifierExpr("BOOL"), false, new ConstantExpr(true))
+                };
+
+                var values = new IExpression[]
+                {
+                    new ConstantExpr(1),
+                    new ConstantExpr(RandomGenerator.String()),
+                    new ConstantExpr(true)
+                };
+
+                var returnValue = values[1];
+
+                var functionDefinition = new FunctionDefinitionExpr(functionNameExpr, parameters,
+                    new BlockStmt(new[] { new ReturnStmt(returnValue) }), new IdentifierExpr("String"));
+
+                var expr = new FunctionCallExpr(functionNameExpr, values);
+
+                _scope.DefineIdentifier(functionName, Value.FromObject(functionDefinition));
+
+                var actual = target.Visit(expr, _scope);
+
+                Assert.AreEqual(((ConstantExpr)returnValue).Value, actual.ToObject());
+            }
+
             [TestCase(ExpectedException = typeof(UndefinedIdentifierException))]
             public void FunctionCallOnUndefinedFuncTest()
             {
@@ -740,6 +777,20 @@ namespace AST.Visitor.Tests
             }
 
             [TestCase(ExpectedException = typeof(UndefinedIdentifierException))]
+            public void FunctionCallOnNonFunctionTest()
+            {
+                var target = new EvaluateVisitor();
+
+                var functionNameExpr = new IdentifierExpr(RandomGenerator.String());
+
+                var expr = new FunctionCallExpr(functionNameExpr, new IExpression[0]);
+
+                _scope.DefineIdentifier(functionNameExpr.Name, Value.FromObject(RandomGenerator.String()));
+
+                target.Visit(expr, _scope);
+            }
+
+            [TestCase(ExpectedException = typeof(UndefinedIdentifierException))]
             public void FunctionCallWithEmptyScopeTest()
             {
                 var target = new EvaluateVisitor();
@@ -750,6 +801,42 @@ namespace AST.Visitor.Tests
                 var expr = new FunctionCallExpr(calledFunctionNameExpr, new IExpression[0]);
 
                 target.Visit(expr, _scope);
+            }
+
+            [TestCase(ExpectedException = typeof(ReturnStatementExpectedException))]
+            public void FunctionCallWithNoReturnStatementTest()
+            {
+                var target = new EvaluateVisitor();
+
+                var functionName = RandomGenerator.String();
+                var functionNameExpr = new IdentifierExpr(functionName);
+                var returnValue = RandomGenerator.String();
+                var functionDefinition = new FunctionDefinitionExpr(functionNameExpr, new VarDefinitionStmt[0], new BlockStmt(new[] { new NoOpStatement()  }), new IdentifierExpr("String"));
+
+                var expr = new FunctionCallExpr(functionNameExpr, new IExpression[0]);
+
+                _scope.DefineIdentifier(functionName, Value.FromObject(functionDefinition));
+
+                target.Visit(expr, _scope);
+            }
+
+            [Test]
+            public void LambdaCallTest()
+            {
+                var target = new EvaluateVisitor();
+
+                var functionName = RandomGenerator.String();
+                var functionNameExpr = new IdentifierExpr(functionName);
+                var returnValue = RandomGenerator.String();
+                var functionDefinition = new LambdaDefinitionExpr(functionNameExpr, new VarDefinitionStmt[0], new ConstantExpr(returnValue), new IdentifierExpr("String"));
+
+                var expr = new FunctionCallExpr(functionNameExpr, new IExpression[0]);
+
+                _scope.DefineIdentifier(functionName, Value.FromObject(functionDefinition));
+
+                var actual = target.Visit(expr, _scope);
+
+                Assert.AreEqual(returnValue, actual.ToObject());
             }
         }
     }

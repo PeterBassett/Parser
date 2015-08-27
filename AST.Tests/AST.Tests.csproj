@@ -58,7 +58,11 @@
     <Compile Include="Expressions\Arithmatic\MinusExprTests.cs" />
     <Compile Include="Expressions\Arithmatic\PlusExprTests.cs" />
     <Compile Include="Expressions\ConditionalExpressionTests.cs" />
+    <Compile Include="Expressions\Function\LambdaDefinitionExprTests.cs" />
+    <Compile Include="Expressions\Function\FunctionDefinitionExprTests.cs" />
+    <Compile Include="Expressions\Function\FunctionCallExprTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Statements\ReturnStmtTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\AST.Visitors\AST.Visitor.csproj">
