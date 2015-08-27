@@ -29,7 +29,8 @@ namespace Parser.Parselets.StatementParselets
             IExpression initialValue = null;
             if (parser.ConsumeOptional("ASSIGNMENT"))
                 initialValue = parser.ParseExpression(0);
-
+            else if(_constVariables)
+                throw  new ParseException("Const variable declarations must have an initialiser.");
             return new VarDefinitionStmt(new IdentifierExpr(name), new IdentifierExpr(type), _constVariables, initialValue);
         }
 

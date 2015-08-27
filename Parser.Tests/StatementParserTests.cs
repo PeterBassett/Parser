@@ -974,7 +974,7 @@ namespace Parser.Tests
             {
                 var parser = new StatementParser(new FakeScanner(new[]
                 {
-                    Get("val"), Get("Test"), Get(":"), Get("int"), Get(";")
+                    Get("val"), Get("Test"), Get(":"), Get("int"), Get("="), Get(1), Get(";")
                 }));
 
                 var result = parser.Parse();
@@ -986,7 +986,18 @@ namespace Parser.Tests
                 Assert.AreEqual("Test", stmt.Name.Name);
                 Assert.AreEqual("int", stmt.Type.Name);
                 Assert.AreEqual(true, stmt.IsConst);
-                Assert.IsNull(stmt.InitialValue);
+                Assert.AreEqual(typeof(ConstantExpr), stmt.InitialValue.GetType());
+            }
+
+            [TestCase(ExpectedException=typeof(ParseException))]
+            public void InvalidValDeclarationBecauseNoInitialiserTest()
+            {
+                var parser = new StatementParser(new FakeScanner(new[]
+                {
+                    Get("val"), Get("Test"), Get(":"), Get("int"), Get(";")
+                }));
+
+                parser.Parse();
             }
 
             [Test]
