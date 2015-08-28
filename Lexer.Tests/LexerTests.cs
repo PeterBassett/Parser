@@ -230,10 +230,18 @@ namespace Lexer.Tests
             [TestCase("false",
                     new[] { "BOOLEAN" },
                     new[] { "false" })]
-
             [TestCase("false && true",
                     new[] { "BOOLEAN", "WHITESPACE", "BOOLEAN-AND", "WHITESPACE", "BOOLEAN" },
                     new[] { "false", " ", "&&", " ", "true" })]
+            [TestCase("var a : int;",
+                new[] { "VAR", "WHITESPACE", "IDENTIFIER", "WHITESPACE", "COLON", "WHITESPACE", "IDENTIFIER", "SEMICOLON"},
+                new[] { "var", " ", "a", " ", ":", " ", "int", ";" })]
+            [TestCase("val test : string = \"VALUE\";",
+                new[] { "VAL", "WHITESPACE", "IDENTIFIER", "WHITESPACE", "COLON", "WHITESPACE", "IDENTIFIER", "WHITESPACE", "ASSIGNMENT", "WHITESPACE", "QUOTED-STRING", "SEMICOLON" },
+                new[] { "val", " ", "test", " ", ":", " ", "string", " ", "=", " ", "\"VALUE\"", ";" })]
+            [TestCase("return 1;",
+                new[] { "RETURN", "WHITESPACE", "INTEGER", "SEMICOLON" },
+                new[] { "return", " ", "1", ";" })]
             public void TestTokenisation(string source, string[] types, string[] lexemes)
             {
                 var generatedTokens = GenerateTokens(source);

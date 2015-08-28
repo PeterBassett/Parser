@@ -17,7 +17,8 @@ namespace AST.Visitor
     {
         public Value Visit(IdentifierExpr expr, Scope scope)
         {
-            return new Value(expr.Name);
+            var value = scope.FindIdentifier(expr.Name);
+            return value.Value;
         }
 
         public Value Visit(PlusExpr expr, Scope scope)
@@ -308,7 +309,7 @@ namespace AST.Visitor
 
         public Value Visit(VarDefinitionStmt stmt, Scope scope)
         {
-            var value = Value.FromObject(stmt.InitialValue.Accept(this, scope));
+            var value = stmt.InitialValue.Accept(this, scope);
             scope.DefineIdentifier(stmt.Name.Name, value);
             return value;
         }

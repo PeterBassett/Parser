@@ -19,6 +19,14 @@ namespace Lexer.Tokeniser
                 
                 new RegexTokeniser(@"([""])(?:\\\1|.)*?\1", "QUOTED-STRING"),
                 new RegexTokeniser(@"'[A-Za-z0-9]'", "QUOTED-CHAR"),
+                
+                new RegexTokeniser(@"if", "IF"),
+                new RegexTokeniser(@"else", "ELSE"),
+
+                new RegexTokeniser(@"var", "VAR"),
+                new RegexTokeniser(@"val", "VAL"),
+                new RegexTokeniser(@"return", "RETURN"),
+                new RegexTokeniser(@"function", "FUNCTION"),
 
                 new RegexTokeniser(@"\s+", "WHITESPACE"),
                 new RegexTokeniser(@"[A-Za-z_]+[A-Za-z0-9_]*", "IDENTIFIER"),
@@ -27,6 +35,7 @@ namespace Lexer.Tokeniser
                 new RegexTokeniser(@"\)", "RIGHTPAREN"),
                 new RegexTokeniser(@"{", "LEFTBRACE"),
                 new RegexTokeniser(@"}", "RIGHTBRACE"),
+                new RegexTokeniser(@"=>", "RIGHTARROW"),
                 new RegexTokeniser(@"\+", "PLUS"),
                 new RegexTokeniser(@"-", "MINUS"),
                 new RegexTokeniser(@"\*", "MULT"),
@@ -52,7 +61,6 @@ namespace Lexer.Tokeniser
                 new RegexTokeniser(@"\&\&", "BOOLEAN-AND"),
                 new RegexTokeniser(@"~", "TILDE"),
                 new RegexTokeniser(@"!", "BOOLEAN-NOT")
-
             };
         }
 
