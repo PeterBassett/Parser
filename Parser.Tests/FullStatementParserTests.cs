@@ -114,7 +114,7 @@ namespace Parser.Tests
             [TestCase("var a : int = 1+2; return a;", 3)]
             [TestCase("function Double (n int) => n * 2; val Test : int = Double (4); return Test;", 8)]
             [TestCase("function Square (n int) => n * n; val Test : int = Square (9); return Test;", 81)]            
-            [TestCase(@"function fibonacci( n int )
+            [TestCase(@"function fibonacci( n int ) /* recursive fib for fun */
             {
                 if(n == 0)
                     return 0;
