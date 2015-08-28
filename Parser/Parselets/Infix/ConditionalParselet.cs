@@ -9,11 +9,11 @@ namespace Parser.Parselets.Infix
         public int Precedence { get { return (int)global::Parser.Precedence.Conditional; } }
         public IExpression Parse(Parser parser, IExpression lhs, Token current)
         {
-            var thenExpression = parser.Parse();
+            var thenExpression = parser.ParseNext();
 
             parser.Consume("COLON");
 
-            var elseExpression = parser.Parse(Precedence - 1);
+            var elseExpression = parser.ParseExpression(Precedence - 1);
 
             return new ConditionalExpr(lhs, thenExpression, elseExpression);
         }

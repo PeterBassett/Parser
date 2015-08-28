@@ -7,7 +7,7 @@ namespace Parser.Parselets.Prefix
     {
         public IExpression Parse(Parser parser, Token token)
         {
-            var expression = parser.Parse();
+            var expression = parser.ParseNext();
             parser.Consume("RIGHTPAREN");
             return expression;
         }

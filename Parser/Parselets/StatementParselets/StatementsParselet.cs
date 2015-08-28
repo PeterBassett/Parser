@@ -9,7 +9,7 @@ namespace Parser.Parselets.StatementParselets
 
         protected IStatement ParseStatement(Parser parser)
         {
-            var expression = parser.Parse();
+            var expression = parser.ParseNext();
 
             if (expression == null) 
                 return null;
@@ -18,7 +18,7 @@ namespace Parser.Parselets.StatementParselets
                 throw new ParseException("Invalid statement in block.");
 
             if(!(expression is IBlockStatement))
-                parser.Consume("SEMICOLON");
+                parser.ConsumeOptional("SEMICOLON");
 
             return expression as IStatement;
         }

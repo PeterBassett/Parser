@@ -42,21 +42,7 @@ namespace Parser.Tests
                 IParser target = new StatementParser(new FakeScanner(new[] { Token.Empty }));
                 try
                 {
-                    IExpression actual = target.Parse();
-                    Assert.Fail("No tokens to parse");
-                }
-                catch (ParseException)
-                {
-                }
-            }
-
-            [Test]
-            public void ImplementsParseWithPrecedence()
-            {
-                IParser target = new StatementParser(new FakeScanner(new[] { Token.Empty }));
-                try
-                {
-                    IExpression actual = target.Parse(0);
+                    IExpression actual = target.ParseAll();
                     Assert.Fail("No tokens to parse");
                 }
                 catch (ParseException)
@@ -73,7 +59,7 @@ namespace Parser.Tests
             {
                 var parser = new StatementParser(new FakeScanner(new[] { new Token("INTEGER", "1", 0, 0, 0) }));
 
-                var result = parser.Parse();
+                var result = parser.ParseAll();
 
                 Assert.AreEqual(typeof(ConstantExpr), result.GetType());
             }
@@ -83,7 +69,7 @@ namespace Parser.Tests
             {
                 var parser = new StatementParser(new FakeScanner(new[] { new Token("FLOAT", "2.34", 0, 0, 0) }));
 
-                var result = parser.Parse();
+                var result = parser.ParseAll();
 
                 Assert.AreEqual(typeof(ConstantExpr), result.GetType());
             }
@@ -110,9 +96,12 @@ namespace Parser.Tests
                     {"b", "IDENTIFIER"},
                     {"c", "IDENTIFIER"},
                     {"d", "IDENTIFIER"},
+                    {"n", "IDENTIFIER"},                    
                     {"Test", "IDENTIFIER"},
                     {"Test2", "IDENTIFIER"},
-                    {"Multiply", "IDENTIFIER"},          
+                    {"Multiply", "IDENTIFIER"}, 
+                    {"Square", "IDENTIFIER"}, 
+                    {"fibonacci", "IDENTIFIER"},  
                     {"int", "IDENTIFIER"},
                     {"string", "IDENTIFIER"},
                     {"+", "PLUS"},
@@ -159,7 +148,7 @@ namespace Parser.Tests
             {
                 var parser = new StatementParser(new FakeScanner(new[] { Get(2), Get("+"), Get(3) }));
 
-                var result = parser.Parse();
+                var result = parser.ParseAll();
 
                 Assert.AreEqual(typeof(PlusExpr), result.GetType());
 
@@ -177,7 +166,7 @@ namespace Parser.Tests
             {
                 var parser = new StatementParser(new FakeScanner(new[] { Get(4), Get("*"), Get(5) }));
 
-                var result = parser.Parse();
+                var result = parser.ParseAll();
 
                 Assert.AreEqual(typeof(MultExpr), result.GetType());
 
@@ -195,7 +184,7 @@ namespace Parser.Tests
             {
                 var parser = new StatementParser(new FakeScanner(new[] { Get(6), Get("-"), Get(3) }));
 
-                var result = parser.Parse();
+                var result = parser.ParseAll();
 
                 Assert.AreEqual(typeof(MinusExpr), result.GetType());
 
@@ -213,7 +202,7 @@ namespace Parser.Tests
             {
                 var parser = new StatementParser(new FakeScanner(new[] { Get(10), Get("/"), Get(5) }));
 
-                var result = parser.Parse();
+                var result = parser.ParseAll();
 
                 Assert.AreEqual(typeof(DivExpr), result.GetType());
 
@@ -231,7 +220,7 @@ namespace Parser.Tests
             {
                 var parser = new StatementParser(new FakeScanner(new[] { Get(3), Get("^"), Get(2) }));
 
-                var result = parser.Parse();
+                var result = parser.ParseAll();
 
                 Assert.AreEqual(typeof(PowExpr), result.GetType());
 
@@ -249,7 +238,7 @@ namespace Parser.Tests
             {
                 var parser = new StatementParser(new FakeScanner(new[] { Get(3), Get("+"), Get(2), Get("-"), Get(5) }));
 
-                var result = parser.Parse();
+                var result = parser.ParseAll();
 
                 Assert.AreEqual(typeof(MinusExpr), result.GetType());
             }
@@ -259,7 +248,7 @@ namespace Parser.Tests
             {
                 var parser = new StatementParser(new FakeScanner(new[] { Get(3), Get("-"), Get(2), Get("+"), Get(5) }));
 
-                var result = parser.Parse();
+                var result = parser.ParseAll();
 
                 Assert.AreEqual(typeof(PlusExpr), result.GetType());
             }
@@ -269,7 +258,7 @@ namespace Parser.Tests
             {
                 var parser = new StatementParser(new FakeScanner(new[] { Get(3), Get("*"), Get(2), Get("+"), Get(5) }));
 
-                var result = parser.Parse();
+                var result = parser.ParseAll();
 
                 Assert.AreEqual(typeof(PlusExpr), result.GetType());
             }
@@ -279,7 +268,7 @@ namespace Parser.Tests
             {
                 var parser = new StatementParser(new FakeScanner(new[] { Get(3), Get("+"), Get(2), Get("*"), Get(5) }));
 
-                var result = parser.Parse();
+                var result = parser.ParseAll();
 
                 Assert.AreEqual(typeof(PlusExpr), result.GetType());
             }
@@ -289,7 +278,7 @@ namespace Parser.Tests
             {
                 var parser = new StatementParser(new FakeScanner(new[] { Get(3), Get("/"), Get(2), Get("+"), Get(5) }));
 
-                var result = parser.Parse();
+                var result = parser.ParseAll();
 
                 Assert.AreEqual(typeof(PlusExpr), result.GetType());
             }
@@ -299,7 +288,7 @@ namespace Parser.Tests
             {
                 var parser = new StatementParser(new FakeScanner(new[] { Get(3), Get("+"), Get(2), Get("/"), Get(5) }));
 
-                var result = parser.Parse();
+                var result = parser.ParseAll();
 
                 Assert.AreEqual(typeof(PlusExpr), result.GetType());
             }
@@ -309,7 +298,7 @@ namespace Parser.Tests
             {
                 var parser = new StatementParser(new FakeScanner(new[] { Get(3), Get("/"), Get(2), Get("^"), Get(5) }));
 
-                var result = parser.Parse();
+                var result = parser.ParseAll();
 
                 Assert.AreEqual(typeof(DivExpr), result.GetType());
             }
@@ -319,7 +308,7 @@ namespace Parser.Tests
             {
                 var parser = new StatementParser(new FakeScanner(new[] { Get(3), Get("^"), Get(2), Get("/"), Get(5) }));
 
-                var result = parser.Parse();
+                var result = parser.ParseAll();
 
                 Assert.AreEqual(typeof(DivExpr), result.GetType());
             }
@@ -329,7 +318,7 @@ namespace Parser.Tests
             {
                 var parser = new StatementParser(new FakeScanner(new[] { Get("("), Get(1), Get(")") }));
 
-                var result = parser.Parse();
+                var result = parser.ParseAll();
 
                 Assert.AreEqual(typeof(ConstantExpr), result.GetType());
 
@@ -343,7 +332,7 @@ namespace Parser.Tests
             {
                 var parser = new StatementParser(new FakeScanner(new[] { Get(3), Get("^"), Get("("), Get(2), Get("*"), Get(5), Get(")") }));
 
-                var result = parser.Parse();
+                var result = parser.ParseAll();
 
                 Assert.AreEqual(typeof(PowExpr), result.GetType());
             }
@@ -353,7 +342,7 @@ namespace Parser.Tests
             {
                 var parser = new StatementParser(new FakeScanner(new[] { Get("("), Get(3), Get("^"), Get(2), Get(")"), Get("*"), Get(5) }));
 
-                var result = parser.Parse();
+                var result = parser.ParseAll();
 
                 Assert.AreEqual(typeof(MultExpr), result.GetType());
             }
@@ -363,7 +352,7 @@ namespace Parser.Tests
             {
                 var parser = new StatementParser(new FakeScanner(new[] { Get("("), Get(2), Get("^"), Get("("), Get(3), Get("*"), Get(4), Get(")"), Get(")") }));
 
-                var result = parser.Parse();
+                var result = parser.ParseAll();
 
                 Assert.AreEqual(typeof(PowExpr), result.GetType());
             }
@@ -373,7 +362,7 @@ namespace Parser.Tests
             {
                 var parser = new StatementParser(new FakeScanner(new[] { Get(2), Get("^"), Get(3), Get("*"), Get(4) }));
 
-                var result = parser.Parse();
+                var result = parser.ParseAll();
 
                 Assert.AreEqual(typeof(MultExpr), result.GetType());
             }
@@ -383,7 +372,7 @@ namespace Parser.Tests
             {
                 var parser = new StatementParser(new FakeScanner(new[] { Get(2), Get("=="), Get(3) }));
 
-                var result = parser.Parse();
+                var result = parser.ParseAll();
 
                 Assert.AreEqual(typeof(EqualsExpr), result.GetType());
 
@@ -401,7 +390,7 @@ namespace Parser.Tests
             {
                 var parser = new StatementParser(new FakeScanner(new[] { Get(2), Get("!="), Get(3) }));
 
-                var result = parser.Parse();
+                var result = parser.ParseAll();
 
                 Assert.AreEqual(typeof(NotEqualsExpr), result.GetType());
 
@@ -419,7 +408,7 @@ namespace Parser.Tests
             {
                 var parser = new StatementParser(new FakeScanner(new[] { Get(2), Get(">"), Get(3) }));
 
-                var result = parser.Parse();
+                var result = parser.ParseAll();
 
                 Assert.AreEqual(typeof(GreaterThanExpr), result.GetType());
 
@@ -437,7 +426,7 @@ namespace Parser.Tests
             {
                 var parser = new StatementParser(new FakeScanner(new[] { Get(2), Get(">="), Get(3) }));
 
-                var result = parser.Parse();
+                var result = parser.ParseAll();
 
                 Assert.AreEqual(typeof(GreaterThanOrEqualsExpr), result.GetType());
 
@@ -455,7 +444,7 @@ namespace Parser.Tests
             {
                 var parser = new StatementParser(new FakeScanner(new[] { Get(2), Get("<"), Get(3) }));
 
-                var result = parser.Parse();
+                var result = parser.ParseAll();
 
                 Assert.AreEqual(typeof(LessThanExpr), result.GetType());
 
@@ -473,7 +462,7 @@ namespace Parser.Tests
             {
                 var parser = new StatementParser(new FakeScanner(new[] { Get(2), Get("<="), Get(3) }));
 
-                var result = parser.Parse();
+                var result = parser.ParseAll();
 
                 Assert.AreEqual(typeof(LessThanOrEqualsExpr), result.GetType());
 
@@ -491,7 +480,7 @@ namespace Parser.Tests
             {
                 var parser = new StatementParser(new FakeScanner(new[] { Get(true), Get("&&"), Get(false) }));
 
-                var result = parser.Parse();
+                var result = parser.ParseAll();
 
                 Assert.AreEqual(typeof(AndExpr), result.GetType());
 
@@ -509,7 +498,7 @@ namespace Parser.Tests
             {
                 var parser = new StatementParser(new FakeScanner(new[] { Get(true), Get("||"), Get(false) }));
 
-                var result = parser.Parse();
+                var result = parser.ParseAll();
 
                 Assert.AreEqual(typeof(OrExpr), result.GetType());
 
@@ -527,7 +516,7 @@ namespace Parser.Tests
             {
                 var parser = new StatementParser(new FakeScanner(new[] { Get("!"), Get(false) }));
 
-                var result = parser.Parse();
+                var result = parser.ParseAll();
 
                 Assert.AreEqual(typeof(NotExpr), result.GetType());
 
@@ -542,7 +531,7 @@ namespace Parser.Tests
             {
                 var parser = new StatementParser(new FakeScanner(new[] { Get(true), Get("&&"), Get("!"), Get(false) }));
 
-                var result = parser.Parse();
+                var result = parser.ParseAll();
 
                 Assert.AreEqual(typeof(AndExpr), result.GetType());
 
@@ -557,7 +546,7 @@ namespace Parser.Tests
             {
                 var parser = new StatementParser(new FakeScanner(new[] { Get(true), Get("?"), Get(1234), Get(":"), Get(5678) }));
 
-                var result = parser.Parse();
+                var result = parser.ParseAll();
 
                 Assert.AreEqual(typeof(ConditionalExpr), result.GetType());
 
@@ -577,7 +566,7 @@ namespace Parser.Tests
             {
                 var parser = new StatementParser(new FakeScanner(new[] { Get(true), Get("&&"), Get(false), Get("?"), Get(1234), Get(":"), Get(5678) }));
 
-                var result = parser.Parse();
+                var result = parser.ParseAll();
 
                 Assert.AreEqual(typeof(ConditionalExpr), result.GetType());
 
@@ -593,7 +582,7 @@ namespace Parser.Tests
             {
                 var parser = new StatementParser(new FakeScanner(new[] { Get(true), Get("&&"), Get(false), Get("?"), Get(1234), Get("+"), Get(2345), Get(":"), Get(3), Get("^"), Get(2) }));
 
-                var result = parser.Parse();
+                var result = parser.ParseAll();
 
                 Assert.AreEqual(typeof(ConditionalExpr), result.GetType());
 
@@ -609,7 +598,7 @@ namespace Parser.Tests
             {
                 var parser = new StatementParser(new FakeScanner(new[] { Get("-"), Get(5) }));
 
-                var result = parser.Parse();
+                var result = parser.ParseAll();
 
                 Assert.AreEqual(typeof(NegationExpr), result.GetType());
 
@@ -624,7 +613,7 @@ namespace Parser.Tests
             {
                 var parser = new StatementParser(new FakeScanner(new[] { Get(true), Get("||"), Get(true), Get("&&"), Get(false) }));
 
-                var result = parser.Parse();
+                var result = parser.ParseAll();
 
                 Assert.AreEqual(typeof(OrExpr), result.GetType());
             }
@@ -634,7 +623,7 @@ namespace Parser.Tests
             {
                 var parser = new StatementParser(new FakeScanner(new[] { Get("("), Get(true), Get("||"), Get(true), Get(")"), Get("&&"), Get(false) }));
 
-                var result = parser.Parse();
+                var result = parser.ParseAll();
 
                 Assert.AreEqual(typeof(AndExpr), result.GetType());
             }
@@ -644,7 +633,7 @@ namespace Parser.Tests
             {
                 var parser = new StatementParser(new FakeScanner(new[] { Get(true), Get("||"), Get("("), Get(true), Get("&&"), Get(false), Get(")") }));
 
-                var result = parser.Parse();
+                var result = parser.ParseAll();
 
                 Assert.AreEqual(typeof(OrExpr), result.GetType());
             }
@@ -654,7 +643,7 @@ namespace Parser.Tests
             {
                 var parser = new StatementParser(new FakeScanner(new[] { Get(true), Get("&&"), Get(true), Get("||"), Get(false) }));
 
-                var result = parser.Parse();
+                var result = parser.ParseAll();
 
                 Assert.AreEqual(typeof(AndExpr), result.GetType());
             }
@@ -664,7 +653,7 @@ namespace Parser.Tests
             {
                 var parser = new StatementParser(new FakeScanner(new[] { Get("("), Get(true), Get("&&"), Get(true), Get(")"), Get("||"), Get(false) }));
 
-                var result = parser.Parse();
+                var result = parser.ParseAll();
 
                 Assert.AreEqual(typeof(OrExpr), result.GetType());
             }
@@ -674,7 +663,7 @@ namespace Parser.Tests
             {
                 var parser = new StatementParser(new FakeScanner(new[] { Get(true), Get("&&"), Get("("), Get(true), Get("||"), Get(false), Get(")") }));
 
-                var result = parser.Parse();
+                var result = parser.ParseAll();
 
                 Assert.AreEqual(typeof(AndExpr), result.GetType());
             }
@@ -684,7 +673,7 @@ namespace Parser.Tests
             {
                 var parser = new StatementParser(new FakeScanner(new[] { Get("a"), Get("="), Get("b"), Get("+"), Get(1) }));
 
-                var result = parser.Parse();
+                var result = parser.ParseAll();
 
                 Assert.AreEqual(typeof(AssignmentExpr), result.GetType());
                 var expr = (AssignmentExpr)result;
@@ -698,7 +687,7 @@ namespace Parser.Tests
             {
                 var parser = new StatementParser(new FakeScanner(new[] { Get("a"), Get("="), Get("b"), Get("+"), Get(1), Get("*"), Get(5), Get("-"), Get(4) }));
 
-                var result = parser.Parse();
+                var result = parser.ParseAll();
 
                 Assert.AreEqual(typeof(AssignmentExpr), result.GetType());
 
@@ -713,7 +702,7 @@ namespace Parser.Tests
             {
                 var parser = new StatementParser(new FakeScanner(new[] { Get("while"), Get("("), Get(1), Get("!="), Get(3), Get(")"), Get("{"), Get("a"), Get("="), Get("b"), Get("+"), Get(1), Get(";"), Get("}") }));
 
-                var result = parser.Parse();
+                var result = parser.ParseAll();
 
                 Assert.AreEqual(typeof(WhileStmt), result.GetType());
 
@@ -732,7 +721,7 @@ namespace Parser.Tests
             {
                 var parser = new StatementParser(new FakeScanner(new[] { Get("while"), Get("("), Get(1), Get("!="), Get(3), Get(")"), Get("a"), Get("="), Get("b"), Get("+"), Get(1), Get(";") }));
 
-                var result = parser.Parse();
+                var result = parser.ParseAll();
 
                 Assert.AreEqual(typeof(WhileStmt), result.GetType());
 
@@ -747,7 +736,7 @@ namespace Parser.Tests
             {
                 var parser = new StatementParser(new FakeScanner(new[] { Get("while"), Get("("), Get(1), Get("!="), Get(3), Get(")"), Get("b"), Get("+"), Get(1), Get(";") }));
 
-                parser.Parse();
+                parser.ParseAll();
             }
 
             [TestCase(ExpectedException = typeof(ParseException))]
@@ -755,7 +744,7 @@ namespace Parser.Tests
             {
                 var parser = new StatementParser(new FakeScanner(new[] { Get("while"), Get("("), Get(1), Get("!="), Get(3), Get(")"), Get("{"), Get("b"), Get("+"), Get(1), Get(";"), Get("}") }));
 
-                parser.Parse();
+                parser.ParseAll();
             }
 
             [Test]
@@ -763,7 +752,7 @@ namespace Parser.Tests
             {
                 var parser = new StatementParser(new FakeScanner(new[] { Get("{"), Get("a"), Get("="), Get("b"), Get("+"), Get(1), Get(";"), Get("}") }));
 
-                var result = parser.Parse();
+                var result = parser.ParseAll();
 
                 Assert.AreEqual(typeof(ScopeBlockStmt), result.GetType());
             }
@@ -779,7 +768,7 @@ namespace Parser.Tests
                     Get("}")
                 }));
 
-                var result = parser.Parse();
+                var result = parser.ParseAll();
 
                 Assert.AreEqual(typeof(IfStmt), result.GetType());
 
@@ -805,7 +794,7 @@ namespace Parser.Tests
                     Get("}")
                 }));
 
-                var result = parser.Parse();
+                var result = parser.ParseAll();
 
                 Assert.AreEqual(typeof(IfStmt), result.GetType());
 
@@ -829,7 +818,7 @@ namespace Parser.Tests
                         Get("c"), Get("="), Get("d"), Get("+"), Get(2), Get(";"), 
                 }));
 
-                var result = parser.Parse();
+                var result = parser.ParseAll();
 
                 Assert.AreEqual(typeof(IfStmt), result.GetType());
 
@@ -854,7 +843,7 @@ namespace Parser.Tests
                             Get("c"), Get("="), Get("d"), Get("+"), Get(2), Get(";"), 
                 }));
 
-                var result = parser.Parse();
+                var result = parser.ParseAll();
 
                 Assert.AreEqual(typeof(IfStmt), result.GetType());
 
@@ -882,7 +871,7 @@ namespace Parser.Tests
                     Get("}")
                 }));
 
-                var result = parser.Parse();
+                var result = parser.ParseAll();
 
                 Assert.AreEqual(typeof(FunctionDefinitionExpr), result.GetType());
 
@@ -890,6 +879,105 @@ namespace Parser.Tests
 
                 Assert.AreEqual("Test", stmt.Name);
                 Assert.AreEqual(typeof(ScopeBlockStmt), stmt.Body.GetType());
+            }
+
+            [Test]
+            public void FunctionCallTest()
+            {
+                var parser = new StatementParser(new FakeScanner(new[]
+                {
+                    Get("Test"), Get("("), Get(")"), Get(";"),
+                }));
+
+                var result = parser.ParseAll();
+
+                Assert.AreEqual(typeof(FunctionCallExpr), result.GetType());
+
+                var stmt = (FunctionCallExpr)result;
+
+                Assert.AreEqual("Test", stmt.FunctionName.Name);
+                Assert.AreEqual(0, stmt.Arguments.Count());
+            }
+
+            [Test]
+            public void FunctionCallWithParameterTest()
+            {
+                var parser = new StatementParser(new FakeScanner(new[]
+                {
+                    Get("Test"), Get("("), Get(1), Get(")"), Get(";"),
+                }));
+
+                var result = parser.ParseAll();
+
+                Assert.AreEqual(typeof(FunctionCallExpr), result.GetType());
+
+                var stmt = (FunctionCallExpr)result;
+
+                Assert.AreEqual("Test", stmt.FunctionName.Name);
+                Assert.AreEqual(1, stmt.Arguments.Count());
+                var argument = (ConstantExpr)stmt.Arguments.ElementAt(0);
+                Assert.AreEqual(1, argument.Value);
+            }
+
+            [Test]
+            public void FunctionCallWithExpressionParameterTest()
+            {
+                var parser = new StatementParser(new FakeScanner(new[]
+                {
+                    Get("Test"), Get("("), Get(1), Get("+"), Get(2), Get("*"), Get(5), Get(")"), Get(";"),
+                }));
+
+                var result = parser.ParseAll();
+
+                Assert.AreEqual(typeof(FunctionCallExpr), result.GetType());
+
+                var stmt = (FunctionCallExpr)result;
+
+                Assert.AreEqual("Test", stmt.FunctionName.Name);
+                Assert.AreEqual(1, stmt.Arguments.Count());
+                Assert.AreEqual(typeof(PlusExpr), stmt.Arguments.ElementAt(0).GetType());
+            }
+
+            [Test]
+            public void FunctionCallWithMultipleParametersTest()
+            {
+                var parser = new StatementParser(new FakeScanner(new[]
+                {
+                    Get("Test"), Get("("), Get(1), Get(","), Get(2), Get(","), Get(3), Get(")"), Get(";"),
+                }));
+
+                var result = parser.ParseAll();
+
+                Assert.AreEqual(typeof(FunctionCallExpr), result.GetType());
+
+                var stmt = (FunctionCallExpr)result;
+
+                Assert.AreEqual("Test", stmt.FunctionName.Name);
+                Assert.AreEqual(3, stmt.Arguments.Count());
+                
+                Assert.AreEqual(1, ((ConstantExpr)stmt.Arguments.ElementAt(0)).Value);
+                Assert.AreEqual(2, ((ConstantExpr)stmt.Arguments.ElementAt(1)).Value);
+                Assert.AreEqual(3, ((ConstantExpr)stmt.Arguments.ElementAt(2)).Value);
+            }
+
+            [Test]
+            public void FunctionCallWithMultipleExpressionParametersTest()
+            {
+                var parser = new StatementParser(new FakeScanner(new[]
+                {
+                    Get("Test"), Get("("), Get(1), Get("+"), Get(2), Get("*"), Get(5), Get(","), Get(1), Get("*"), Get(2), Get(")"), Get(";"),
+                }));
+
+                var result = parser.ParseAll();
+
+                Assert.AreEqual(typeof(FunctionCallExpr), result.GetType());
+
+                var stmt = (FunctionCallExpr)result;
+
+                Assert.AreEqual("Test", stmt.FunctionName.Name);
+                Assert.AreEqual(2, stmt.Arguments.Count());
+                Assert.AreEqual(typeof(PlusExpr), stmt.Arguments.ElementAt(0).GetType());
+                Assert.AreEqual(typeof(MultExpr), stmt.Arguments.ElementAt(1).GetType());
             }
 
             [Test]
@@ -903,7 +991,7 @@ namespace Parser.Tests
                     Get("}")
                 }));
 
-                var result = parser.Parse();
+                var result = parser.ParseAll();
 
                 Assert.AreEqual(typeof(FunctionDefinitionExpr), result.GetType());
 
@@ -914,6 +1002,119 @@ namespace Parser.Tests
             }
 
             [Test]
+            public void FibonacciFunctionTest()
+            {
+                var parser = new StatementParser(new FakeScanner(new[]
+                {
+                    Get("function"), Get("fibonacci"), Get("("), Get("n"), Get("int"), Get(")"),
+                    Get("{"),
+                        Get("if"),Get("("),Get("n"), Get("=="), Get(0), Get(")"),
+                            Get("return"), Get(0), Get(";"),
+                        Get("else"), Get("if"), Get("("), Get("n"), Get("=="), Get(1), Get(")"),
+                            Get("return"), Get(1), Get(";"),
+                        Get("else"),
+                            Get("return"), Get("fibonacci"), Get("("), Get("n"), Get("-"), Get(1), Get(")"), Get("+"), Get("fibonacci"), Get("("), Get("n"), Get("-"), Get(2), Get(")"), Get(";"),
+                    Get("}")
+                }));
+
+                var result = parser.ParseAll();
+
+                Assert.AreEqual(typeof(FunctionDefinitionExpr), result.GetType());
+
+                var stmt = (FunctionDefinitionExpr)result;
+
+                Assert.AreEqual("fibonacci", stmt.Name);
+
+                Assert.AreEqual(1, stmt.Arguments.Length);
+                Assert.AreEqual("n", stmt.Arguments.First().Name.Name);
+
+                Assert.AreEqual(typeof (ScopeBlockStmt), stmt.Body.GetType());
+                var body = (ScopeBlockStmt) stmt.Body;
+
+                Assert.AreEqual(1, body.Statements.Count());
+
+                Assert.AreEqual(typeof(IfStmt), body.Statements.First().GetType());
+
+                var ifStmt = (IfStmt)body.Statements.First();
+                Assert.AreEqual(typeof(EqualsExpr), ifStmt.Condition.GetType());
+                var condition = (EqualsExpr)ifStmt.Condition;
+                Assert.AreEqual("n", ((IdentifierExpr)condition.Left).Name);
+                Assert.AreEqual(0, ((ConstantExpr)condition.Right).Value);
+
+                Assert.AreEqual(typeof(ReturnStmt), ifStmt.ThenExpression.GetType());
+                var returnZeroStmt = (ReturnStmt)ifStmt.ThenExpression;
+                Assert.AreEqual(0, ((ConstantExpr)returnZeroStmt.ReturnExpression).Value);
+
+                var elseNotZeroStmt = (IfStmt)ifStmt.ElseExpression;
+                var equalsOneCondition = (EqualsExpr)elseNotZeroStmt.Condition;
+                Assert.AreEqual("n", ((IdentifierExpr)equalsOneCondition.Left).Name);
+                Assert.AreEqual(1, ((ConstantExpr)equalsOneCondition.Right).Value);     
+          
+                Assert.AreEqual(typeof(ReturnStmt), elseNotZeroStmt.ThenExpression.GetType());
+                var returnOneStmt = (ReturnStmt)elseNotZeroStmt.ThenExpression;
+                Assert.AreEqual(1, ((ConstantExpr)returnOneStmt.ReturnExpression).Value);
+
+                var elseNotOneStmt = (ReturnStmt)elseNotZeroStmt.ElseExpression;
+                var returnFibExpr = (PlusExpr)elseNotOneStmt.ReturnExpression;
+                Assert.AreEqual(typeof(FunctionCallExpr), returnFibExpr.Left.GetType());
+                Assert.AreEqual(typeof(FunctionCallExpr), returnFibExpr.Right.GetType());
+
+                Assert.AreEqual("fibonacci",  ((FunctionCallExpr)returnFibExpr.Left).FunctionName.Name);
+                Assert.AreEqual("fibonacci", ((FunctionCallExpr)returnFibExpr.Right).FunctionName.Name);
+
+                var fibMinusOneCall = ((FunctionCallExpr) returnFibExpr.Left);
+                var fibMinusTwoCall = ((FunctionCallExpr)returnFibExpr.Right);
+
+                Assert.AreEqual(1, fibMinusOneCall.Arguments.Count());
+                Assert.AreEqual(1, fibMinusTwoCall.Arguments.Count());
+
+                Assert.AreEqual(typeof(MinusExpr), fibMinusOneCall.Arguments.First().GetType());
+                Assert.AreEqual(typeof(MinusExpr), fibMinusTwoCall.Arguments.First().GetType());
+
+                var minusOneExpr = (MinusExpr)fibMinusOneCall.Arguments.First();
+                var minusTwoExpr = (MinusExpr)fibMinusTwoCall.Arguments.First();
+
+                Assert.AreEqual("n", ((IdentifierExpr)minusOneExpr.Left).Name);
+                Assert.AreEqual("n", ((IdentifierExpr)minusTwoExpr.Left).Name);
+
+                Assert.AreEqual(1, ((ConstantExpr)minusOneExpr.Right).Value);
+                Assert.AreEqual(2, ((ConstantExpr)minusTwoExpr.Right).Value);
+            }
+            [Test]
+            public void MultiStatementFunctionTest()
+            {
+                var parser = new StatementParser(new FakeScanner(new[]
+                {
+                    Get("function"), Get("Test"), Get("("), Get(")"),
+                    Get("{"),
+                        Get("var"), Get("a"),Get("="), Get(0), Get(";"),
+                        Get("var"), Get("b"),Get("="), Get(1), Get(";"),
+                        
+                        Get("return"), Get("a"), Get("=="), Get("b"), Get(";"),
+                    Get("}")
+                }));
+
+                var result = parser.ParseAll();
+
+                Assert.AreEqual(typeof(FunctionDefinitionExpr), result.GetType());
+
+                var stmt = (FunctionDefinitionExpr)result;
+
+                Assert.AreEqual("Test", stmt.Name);
+
+                Assert.AreEqual(0, stmt.Arguments.Length);
+
+                Assert.AreEqual(typeof(ScopeBlockStmt), stmt.Body.GetType());
+                var body = (ScopeBlockStmt)stmt.Body;
+
+                Assert.AreEqual(3, body.Statements.Count());
+
+                Assert.AreEqual(typeof(VarDefinitionStmt), body.Statements.ElementAt(0).GetType());
+                Assert.AreEqual(typeof(VarDefinitionStmt), body.Statements.ElementAt(1).GetType());
+                Assert.AreEqual(typeof(ReturnStmt), body.Statements.ElementAt(2).GetType());
+            }
+
+            [Test]
             public void LambdaDefinitionTest()
             {
                 var parser = new StatementParser(new FakeScanner(new[]
@@ -921,7 +1122,7 @@ namespace Parser.Tests
                     Get("function"), Get("Test"), Get("("),Get(")"), Get("=>"), Get(1), Get(";") 
                 }));
 
-                var result = parser.Parse();
+                var result = parser.ParseAll();
 
                 Assert.AreEqual(typeof(LambdaDefinitionExpr), result.GetType());
 
@@ -940,7 +1141,7 @@ namespace Parser.Tests
                     Get("function"), Get("("),Get(")"), Get("=>"), Get(1), Get(";") 
                 }));
 
-                var result = parser.Parse();
+                var result = parser.ParseAll();
 
                 Assert.AreEqual(typeof(LambdaDefinitionExpr), result.GetType());
 
@@ -959,7 +1160,7 @@ namespace Parser.Tests
                     Get("function"), Get("Test"), Get("("),Get(")"), Get("=>"), Get(1), Get("*"), Get(2), Get(";") 
                 }));
 
-                var result = parser.Parse();
+                var result = parser.ParseAll();
 
                 Assert.AreEqual(typeof(LambdaDefinitionExpr), result.GetType());
 
@@ -970,6 +1171,28 @@ namespace Parser.Tests
             }
 
             [Test]
+            public void LambdaDefinitionAndCallTest()
+            {
+                var parser = new StatementParser(new FakeScanner(new[]
+                {
+                    Get("function"), Get("Square"), Get("("),Get("n"), Get("int"), Get(")"), Get("=>"), Get("n"), Get("*"), Get(2), Get(";"),
+                    Get("val"), Get("Test"), Get(":"), Get("int"), Get("="), Get("Square"), Get("("), Get(2), Get(")"), Get(";")
+                }));
+
+                var result = parser.ParseAll();
+
+                Assert.AreEqual(typeof(StatementList), result.GetType());
+
+                var stmtList = (StatementList)result;
+                var funcDecl = (LambdaDefinitionExpr)stmtList.Statements.ElementAt(0);
+                var varDecl = (VarDefinitionStmt)stmtList.Statements.ElementAt(1);
+
+                Assert.AreEqual("Square", funcDecl.Name);
+                Assert.AreEqual("Test", varDecl.Name.Name);
+                Assert.AreEqual("Square", ((FunctionCallExpr)varDecl.InitialValue).FunctionName.Name);
+            }
+
+            [Test]
             public void ValDeclarationTest()
             {
                 var parser = new StatementParser(new FakeScanner(new[]
@@ -977,7 +1200,7 @@ namespace Parser.Tests
                     Get("val"), Get("Test"), Get(":"), Get("int"), Get("="), Get(1), Get(";")
                 }));
 
-                var result = parser.Parse();
+                var result = parser.ParseAll();
 
                 Assert.AreEqual(typeof(VarDefinitionStmt), result.GetType());
 
@@ -997,7 +1220,7 @@ namespace Parser.Tests
                     Get("val"), Get("Test"), Get(":"), Get("int"), Get(";")
                 }));
 
-                parser.Parse();
+                parser.ParseAll();
             }
 
             [Test]
@@ -1005,20 +1228,30 @@ namespace Parser.Tests
             {
                 var parser = new StatementParser(new FakeScanner(new[]
                 {
-                    Get("val"), Get("Test"), Get(":"), Get("int"), Get(";"),
-                    Get("val"), Get("Test2"), Get(":"), Get("string"), Get(";")
+                    Get("val"), Get("Test"), Get(":"), Get("int"), Get("="), Get(100), Get(";"),
+                    Get("val"), Get("Test2"), Get("="), Get(10), Get(";")
                 }));
 
-                var result = parser.Parse();
+                var result = parser.ParseAll();
 
-                Assert.AreEqual(typeof(VarDefinitionStmt), result.GetType());
+                Assert.AreEqual(typeof(StatementList), result.GetType());
 
-                var stmt = (VarDefinitionStmt)result;
+                var stmt = (StatementList)result;
 
-                Assert.AreEqual("Test", stmt.Name.Name);
-                Assert.AreEqual("int", stmt.Type.Name);
-                Assert.AreEqual(true, stmt.IsConst);
-                Assert.IsNull(stmt.InitialValue);
+                Assert.AreEqual(2, stmt.Statements.Count());
+
+                var val1 = (VarDefinitionStmt)stmt.Statements.ElementAt(0);
+                Assert.AreEqual("Test", val1.Name.Name);
+                Assert.AreEqual("int", val1.Type.Name);
+                Assert.AreEqual(true, val1.IsConst);
+                Assert.AreEqual(100, ((ConstantExpr)val1.InitialValue).Value);
+
+                var val2 = (VarDefinitionStmt)stmt.Statements.ElementAt(1);
+                Assert.AreEqual("Test2", val2.Name.Name);
+                Assert.IsNull(val2.Type.Name);
+                Assert.AreEqual(true, val2.IsConst);
+                Assert.AreEqual(10, ((ConstantExpr)val2.InitialValue).Value);
+
             }
 
             [Test]
@@ -1029,7 +1262,7 @@ namespace Parser.Tests
                     Get("val"), Get("Test"), Get(":"), Get("int"), Get("="), Get(1), Get("+"), Get(2), Get(";")
                 }));
 
-                var result = parser.Parse();
+                var result = parser.ParseAll();
 
                 Assert.AreEqual(typeof(VarDefinitionStmt), result.GetType());
 
@@ -1049,7 +1282,7 @@ namespace Parser.Tests
                     Get("var"), Get("Test"), Get(":"), Get("int"), Get(";")
                 }));
 
-                var result = parser.Parse();
+                var result = parser.ParseAll();
 
                 Assert.AreEqual(typeof(VarDefinitionStmt), result.GetType());
 
@@ -1069,7 +1302,7 @@ namespace Parser.Tests
                     Get("var"), Get("Test"), Get(":"), Get("int"), Get("="), Get(1), Get("+"), Get(2), Get(";")
                 }));
 
-                var result = parser.Parse();
+                var result = parser.ParseAll();
 
                 Assert.AreEqual(typeof(VarDefinitionStmt), result.GetType());
 

@@ -12,12 +12,15 @@ namespace Parser.Parselets.StatementParselets
             var condition = parser.ParseExpression(0);
             parser.Consume("RIGHTPAREN");
 
-            var block = parser.Parse();
+            var block = ParseStatement(parser);// parser.ParseNext();
 
             if (!(block is IStatement))
                 throw new ParseException("Invalid statement in block.");
-
+            /*
+            if (!(block is IBlockStatement))
+                parser.Consume("SEMICOLON");
+            */
             return new WhileStmt(condition, block as IStatement);
-        }        
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using AST.Expressions;
 using Lexer;
+using Parser.Parselets.Infix;
 using Parser.Parselets.StatementParselets;
 
 namespace Parser
@@ -16,6 +17,7 @@ namespace Parser
             RegisterParselet("RETURN", new ReturnStatementParselet());
             RegisterParselet("VAL", new VariableDeclarationParselet(true));
             RegisterParselet("VAR", new VariableDeclarationParselet(false));
+            RegisterParselet("LEFTPAREN", new FunctionCallParselet());
             InfixRight<AssignmentExpr>("ASSIGNMENT", Precedence.Assignment);
         }        
     }

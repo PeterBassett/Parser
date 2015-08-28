@@ -30,37 +30,52 @@ namespace Parser
             _statementParselets = new Dictionary<string, IStatementParselet>();
         }
 
-        public IExpression Parse()
+        public IExpression ParseAll()
         {
-            return Parse(0);
+            return ParseStatementList(0);
         }
 
-        public IExpression Parse(int precedence)
+        private IExpression ParseStatementList(int precedence)
         {
-           // var statementList = new List<IStatement>();
-            //do
-           // {
-                var token = Consume();
+            var statementList = new List<IStatement>();
 
-                var statement = GetStatementParserForCurrentToken(token);
+            do
+            {
+                var stmt = ParseStatementOrExpression(precedence);
 
-                if (statement == null)
-                    return ParseExpression(0, token);
+                if (!(stmt is IStatement))
+                    return stmt;
 
-                var stmt =  statement.Parse(this, token);
+                statementList.Add(stmt as IStatement);
 
-              //  statementList.Add(stmt);
+            } while (Peek().Type != "EMPTY");
 
-                if (statement.NeedsTerminator)
-                    Consume(statement.Terminator);
+            if(statementList.Count> 1)
+                return new StatementList(statementList);
 
-            return stmt;
-            //} while (Peek().Type != "EMPTY");
+            return statementList.First();
+        }
 
-            //if(statementList.Count> 1)
-               // return new StatementList(statementList);
-            
-            //return statementList.First();
+        public IExpression ParseNext()
+        {
+            return ParseStatementOrExpression(0);
+        }
+
+        private IExpression ParseStatementOrExpression(int precedence)
+        {
+            var token = Consume();
+
+            var statement = GetStatementParserForCurrentToken(token);
+
+            if (statement == null)
+                return ParseExpression(0, token);
+
+            var stmt = statement.Parse(this, token);
+
+            if (statement.NeedsTerminator)
+                Consume(statement.Terminator);
+
+            return stmt;            
         }
 
         public IExpression ParseExpression(int precedence)
@@ -70,7 +85,7 @@ namespace Parser
             return ParseExpression(precedence, token);
         }
 
-        public IExpression ParseExpression(int precedence, Token token)
+        private IExpression ParseExpression(int precedence, Token token)
         {
             var prefix = GetPrefixParserForCurrentToken(token);
 

@@ -31,7 +31,7 @@ namespace Parser.Parselets.StatementParselets
 
             if (token.Type == "LEFTBRACE")
             {
-                var body = parser.Parse();
+                var body = parser.ParseNext();
                 return new FunctionDefinitionExpr(new IdentifierExpr(name), parameters, (IStatement)body,
                     new IdentifierExpr("UNKNOWN"));
             }
@@ -39,6 +39,7 @@ namespace Parser.Parselets.StatementParselets
             {
                 parser.Consume("RIGHTARROW");
                 var body = parser.ParseExpression(0);
+                parser.Consume("SEMICOLON");
                 return new LambdaDefinitionExpr(new IdentifierExpr(name), parameters, body,
                     new IdentifierExpr("UNKNOWN"));
             }

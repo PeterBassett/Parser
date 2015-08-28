@@ -277,7 +277,7 @@ namespace AST.Visitor
                 }
             }
 
-            return Value.Unit;;
+            return Value.Unit;
         }
 
         public Value Visit(NoOpStatement stmt, Scope scope)
@@ -364,9 +364,15 @@ namespace AST.Visitor
         }
 
 
-        public Value Visit(StatementList blockStmt, Scope context)
+        public Value Visit(StatementList stmt, Scope scope)
         {
-            throw new NotImplementedException();
+            // no new scope for a simple statement list.
+            foreach (var statement in stmt.Statements)
+            {
+                statement.Accept(this, scope);
+            }
+            
+            return Value.Unit;
         }
     }
 }

@@ -22,7 +22,7 @@ namespace Parser.Tests
             {
                 var target = SetupParser(source);
 
-                return target.Parse();
+                return target.ParseAll();;
             }
 
             [TestCase("1+2", 3)]

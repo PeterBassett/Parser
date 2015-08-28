@@ -157,14 +157,25 @@ namespace AST.Visitor
             throw new NotImplementedException();
         }
 
-        public string Visit(ReturnStmt returnExpr, Scope context)
+        public string Visit(ReturnStmt returnExpr, Scope scope)
         {
-            throw new NotImplementedException();
+            return "return " + returnExpr.ReturnExpression.Accept(this, scope);
         }
 
-        public string Visit(VarDefinitionStmt varDefinitionStmt, Scope context)
+        public string Visit(VarDefinitionStmt varDefinitionStmt, Scope scope)
         {
-            throw new NotImplementedException();
+            var definition = (varDefinitionStmt.IsConst) ? "val" : "var";
+
+            definition += " ";
+            definition += varDefinitionStmt.Name.Name;
+
+            if (varDefinitionStmt.Type.Name != null)
+                definition += " : " + varDefinitionStmt.Type.Name;
+
+            if (varDefinitionStmt.InitialValue != null)
+                definition += " = " + varDefinitionStmt.InitialValue.Accept(this, scope);
+
+            return definition + ";";
         }
 
 

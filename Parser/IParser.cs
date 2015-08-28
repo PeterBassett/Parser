@@ -5,8 +5,8 @@ namespace Parser
 {
     public interface IParser
     {
-        IExpression Parse();
-        IExpression Parse(int precedence);
+        IExpression ParseAll();
+        IExpression ParseNext();
         Token Current { get; }    
     }
 }

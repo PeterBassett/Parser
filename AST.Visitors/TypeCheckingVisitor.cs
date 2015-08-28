@@ -200,17 +200,29 @@ namespace AST.Visitor
 
         public ValueType Visit(FunctionDefinitionExpr expr, Scope context)
         {
-            throw new NotImplementedException();
+            return ValueType.Function;
         }
 
-        public ValueType Visit(ReturnStmt returnExpr, Scope context)
+        public ValueType Visit(ReturnStmt expr, Scope scope)
         {
-            throw new NotImplementedException();
+            return expr.ReturnExpression.Accept(this, scope);
         }
-        
-        public ValueType Visit(VarDefinitionStmt varDefinitionStmt, Scope context)
+
+        public ValueType Visit(VarDefinitionStmt stmt, Scope scope)
         {
-            throw new NotImplementedException();
+            ValueType type;
+
+            if (stmt.Type.Name != null)
+            {
+                if (!ValueType.TryParse(stmt.Type.Name, true, out type))
+                    throw new TypeCheckException("Unknown type " + stmt.Type.Name);
+            }
+            else
+            {
+                type = stmt.InitialValue.Accept(this, scope);
+            }
+
+            return type;
         }
 
         public ValueType Visit(FunctionCallExpr functionCallExpr, Scope context)
@@ -221,13 +233,13 @@ namespace AST.Visitor
 
         public ValueType Visit(LambdaDefinitionExpr lambdaDefinitionExpr, Scope context)
         {
-            throw new NotImplementedException();
+            return ValueType.Function;
         }
 
 
         public ValueType Visit(StatementList blockStmt, Scope context)
         {
-            throw new NotImplementedException();
+            return ValueType.Unit;
         }
     }
 }
