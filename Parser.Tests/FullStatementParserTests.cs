@@ -126,6 +126,47 @@ namespace Parser.Tests
 
             return fibonacci(8);
             ", 21)]
+            [TestCase(@"function abs( n int )
+            {
+                if(n < 0)
+                    return -n;
+                else 
+                    return n;
+            }
+            return abs(-1234) + abs(1234);
+            ", 2468)]
+            [TestCase(@"function a( n int )
+            {
+                return b(n) + 1;
+            }
+            function b( n int )
+            {
+                return c(n) + 1;
+            }
+            function c( n int )
+            {
+                return d(n) + 1;
+            }
+            function d( n int )
+            {
+                return n;
+            }
+            return a(1);
+            ", 4)]
+            [TestCase(@"val globalInt : int = 1024;
+            function a( n int )
+            {
+                return globalInt * 2 + n;
+            }
+            return a(1);
+            ", 2049)]
+            [TestCase(@"val globalInt : int = 1024;
+            function a( n int ) => globalInt * 2 + n;
+            return a(1);
+            ", 2049)]
+            [TestCase(@"function IIF( c bool, a ont, b int) => c ? a : b;
+            return IIF(1==1, 3, 100) + IIF(1==0, 3059559, 2);
+            ", 5)]
             public void EvaluateStatement(string source, object expected)
             {
                 EvaluateTest(source, expected);
