@@ -164,7 +164,7 @@ namespace Parser.Tests
             function a( n int ) => globalInt * 2 + n;
             return a(1);
             ", 2049)]
-            [TestCase(@"function IIF( c bool, a ont, b int) => c ? a : b;
+            [TestCase(@"function IIF( c bool, a int, b int) => c ? a : b;
             return IIF(1==1, 3, 100) + IIF(1==0, 3059559, 2);
             ", 5)]
             public void EvaluateStatement(string source, object expected)
