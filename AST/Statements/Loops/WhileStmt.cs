@@ -1,5 +1,4 @@
-﻿using System;
-using AST.Visitor;
+﻿using AST.Visitor;
 
 namespace AST.Statements.Loops
 {

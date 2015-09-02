@@ -40,5 +40,6 @@ namespace AST.Visitor
         T Visit(FunctionCallExpr functionCallExpr, C context);
         T Visit(LambdaDefinitionExpr lambdaDefinitionExpr, C context);
         T Visit(StatementList blockStmt, C context);
+        T Visit(ClassDefinitionStmt classDefinitionStmt, C context);
     }
 }

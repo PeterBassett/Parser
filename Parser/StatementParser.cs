@@ -14,6 +14,7 @@ namespace Parser
             RegisterParselet("WHILE", new WhileParselet());
             RegisterParselet("IF", new IfParselet());
             RegisterParselet("FUNCTION", new FunctionDefinitionParselet());
+            RegisterParselet("CLASS", new ClassDefinitionParselet());
             RegisterParselet("RETURN", new ReturnStatementParselet());
             RegisterParselet("VAL", new VariableDeclarationParselet(true));
             RegisterParselet("VAR", new VariableDeclarationParselet(false));

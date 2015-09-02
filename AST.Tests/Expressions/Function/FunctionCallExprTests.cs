@@ -2,7 +2,6 @@
 using AST.Expressions;
 using AST.Expressions.Arithmatic;
 using AST.Expressions.Function;
-using AST.Expressions.Logical;
 using AST.Visitor;
 using Moq;
 using NUnit.Framework;

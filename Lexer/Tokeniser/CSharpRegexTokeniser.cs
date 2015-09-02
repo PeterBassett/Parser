@@ -27,6 +27,7 @@ namespace Lexer.Tokeniser
                 new RegexTokeniser(@"val", "VAL"),
                 new RegexTokeniser(@"return", "RETURN"),
                 new RegexTokeniser(@"function", "FUNCTION"),
+                new RegexTokeniser(@"class", "CLASS"),
 
                 new RegexTokeniser(@"\s+", "WHITESPACE"),
                 new RegexTokeniser(@"[A-Za-z_]+[A-Za-z0-9_]*", "IDENTIFIER"),

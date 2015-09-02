@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices.ComTypes;
-using System.Runtime.InteropServices.Expando;
+﻿using System.Collections.Generic;
 using AST;
 using AST.Expressions;
 using AST.Expressions.Function;
+using AST.Expressions.Logical;
 using AST.Statements;
 
 namespace Parser.Parselets.StatementParselets
@@ -47,10 +43,12 @@ namespace Parser.Parselets.StatementParselets
             throw new ParseException("Malformed function defintion");
         }
 
-        private IEnumerable<VarDefinitionStmt> ParseParameterList(Parser parser)
+        private List<VarDefinitionStmt> ParseParameterList(Parser parser)
         {
+            var parameters = new List<VarDefinitionStmt>();
+
             if (parser.Peek().Type == "RIGHTPAREN")
-                yield break;
+                return parameters;
 
             while (true)
             {
@@ -59,18 +57,29 @@ namespace Parser.Parselets.StatementParselets
                 if(!(name is IdentifierExpr))
                     throw new ParseException("Expected parameter name");
 
-                var type = parser.ParseExpression(0);
+                IExpression type = null;
+                if (parser.ConsumeOptional("COLON"))
+                {
+                    type = parser.ParseExpression(0);
 
-                if (!(type is IdentifierExpr))
-                    throw new ParseException("Expected parameter type");
+                    if (!(type is IdentifierExpr))
+                        throw new ParseException("Expected parameter type");
 
-                yield return new VarDefinitionStmt((IdentifierExpr)name, (IdentifierExpr)type, false, null);
+                }
+                else
+                {
+                    type = new IdentifierExpr("dynamic");
+                }
+
+                parameters.Add(new VarDefinitionStmt((IdentifierExpr)name, (IdentifierExpr)type, false, null));
 
                 if (parser.Peek().Type == "RIGHTPAREN")
-                    yield break;
+                    break;
 
                 parser.Consume("COMMA");
             }
+
+            return parameters;
         }        
     }
 }

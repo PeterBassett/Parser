@@ -1,18 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using AST.Expressions;
+﻿using AST.Expressions;
 using AST.Expressions.Arithmatic;
-using AST.Expressions.Comparison;
-using AST.Expressions.Logical;
 using AST.Statements;
-using AST.Statements.Loops;
 using AST.Visitor.Exceptions;
-using Moq;
 using NUnit.Framework;
-using AST.Expressions.Function;
-using TestHelpers;
 
 namespace AST.Visitor.Tests
 {

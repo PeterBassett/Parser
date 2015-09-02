@@ -10,7 +10,7 @@ namespace AST.Expressions.Function
         private readonly VarDefinitionStmt[] _arguments;
         private readonly IdentifierExpr _returnType;
 
-        public FunctionExpr(IdentifierExpr name, VarDefinitionStmt[] arguments, IdentifierExpr returnType)
+        protected FunctionExpr(IdentifierExpr name, VarDefinitionStmt[] arguments, IdentifierExpr returnType)
         {
             if (name == null)
                 throw new ArgumentNullException("name");

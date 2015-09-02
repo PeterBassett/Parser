@@ -41,7 +41,7 @@ namespace Parser
 
             do
             {
-                var stmt = ParseStatementOrExpression(precedence);
+                var stmt = ParseNext();
 
                 if (!(stmt is IStatement))
                     return stmt;
@@ -57,11 +57,6 @@ namespace Parser
         }
 
         public IExpression ParseNext()
-        {
-            return ParseStatementOrExpression(0);
-        }
-
-        private IExpression ParseStatementOrExpression(int precedence)
         {
             var token = Consume();
 

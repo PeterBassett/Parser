@@ -1,6 +1,4 @@
-﻿using System;
-using AST.Expressions.Arithmatic;
-using AST.Statements;
+﻿using AST.Statements;
 using AST.Visitor;
 
 namespace AST.Expressions

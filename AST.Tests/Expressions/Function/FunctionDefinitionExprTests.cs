@@ -1,8 +1,6 @@
 ﻿using System;
 using AST.Expressions;
-using AST.Expressions.Arithmatic;
 using AST.Expressions.Function;
-using AST.Expressions.Logical;
 using AST.Statements;
 using AST.Visitor;
 using Moq;

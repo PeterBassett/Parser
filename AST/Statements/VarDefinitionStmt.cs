@@ -1,6 +1,4 @@
-﻿using System.Data.Common;
-using AST.Expressions;
-using AST.Expressions.Arithmatic;
+﻿using AST.Expressions;
 using AST.Visitor;
 
 namespace AST.Statements

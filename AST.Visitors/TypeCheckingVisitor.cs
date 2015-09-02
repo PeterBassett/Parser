@@ -241,5 +241,11 @@ namespace AST.Visitor
         {
             return ValueType.Unit;
         }
+
+
+        public ValueType Visit(ClassDefinitionStmt classDefinitionStmt, Scope context)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Net;
 using AST.Expressions;
 using AST.Expressions.Arithmatic;
 using AST.Expressions.Comparison;
@@ -192,6 +191,12 @@ namespace AST.Visitor
 
 
         public string Visit(StatementList blockStmt, Scope context)
+        {
+            throw new NotImplementedException();
+        }
+
+
+        public string Visit(ClassDefinitionStmt classDefinitionStmt, Scope context)
         {
             throw new NotImplementedException();
         }

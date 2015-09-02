@@ -112,9 +112,9 @@ namespace Parser.Tests
             }
 
             [TestCase("var a : int = 1+2; return a;", 3)]
-            [TestCase("function Double (n int) => n * 2; val Test : int = Double (4); return Test;", 8)]
-            [TestCase("function Square (n int) => n * n; val Test : int = Square (9); return Test;", 81)]            
-            [TestCase(@"function fibonacci( n int ) /* recursive fib for fun */
+            [TestCase("function Double (n : int) => n * 2; val Test : int = Double (4); return Test;", 8)]
+            [TestCase("function Square (n : int) => n * n; val Test : int = Square (9); return Test;", 81)]            
+            [TestCase(@"function fibonacci( n : int ) /* recursive fib for fun */
             {
                 if(n == 0)
                     return 0;
@@ -126,7 +126,7 @@ namespace Parser.Tests
 
             return fibonacci(8);
             ", 21)]
-            [TestCase(@"function abs( n int )
+            [TestCase(@"function abs( n : int )
             {
                 if(n < 0)
                     return -n;
@@ -135,38 +135,49 @@ namespace Parser.Tests
             }
             return abs(-1234) + abs(1234);
             ", 2468)]
-            [TestCase(@"function a( n int )
+            [TestCase(@"function a( n : int )
             {
                 return b(n) + 1;
             }
-            function b( n int )
+            function b( n : int )
             {
                 return c(n) + 1;
             }
-            function c( n int )
+            function c( n : int )
             {
                 return d(n) + 1;
             }
-            function d( n int )
+            function d( n : int )
             {
                 return n;
             }
             return a(1);
             ", 4)]
             [TestCase(@"val globalInt : int = 1024;
-            function a( n int )
+            function a( n : int )
             {
                 return globalInt * 2 + n;
             }
             return a(1);
             ", 2049)]
             [TestCase(@"val globalInt : int = 1024;
-            function a( n int ) => globalInt * 2 + n;
+            function a( n : int ) => globalInt * 2 + n;
             return a(1);
             ", 2049)]
-            [TestCase(@"function IIF( c bool, a int, b int) => c ? a : b;
+            [TestCase(@"function IIF( c : bool, a : int, b : int) => c ? a : b;
             return IIF(1==1, 3, 100) + IIF(1==0, 3059559, 2);
             ", 5)]
+            [TestCase(@"function IIF(c, a, b) => c ? a : b;
+            return IIF(1==1, 3, 100) + IIF(1==0, 3059559, 2);
+            ", 5)]
+            [TestCase(@"function IIF(c:int, a, b) => c ? a : b;
+            return IIF(1==1, 3, 100) + IIF(1==0, 3059559, 2);
+            ", 5)]
+            [TestCase(@"function IIF(c, a:int, b) => c ? a : b;
+            return IIF(1==1, 3, 100) + IIF(1==0, 3059559, 2);
+            ", 5)]
+            [TestCase(@"class test { var a : int = 9; } return 9;
+            ", 9)]
             public void EvaluateStatement(string source, object expected)
             {
                 EvaluateTest(source, expected);

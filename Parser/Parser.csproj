@@ -42,6 +42,7 @@
     <Compile Include="Parselets\Infix\FunctionCallParselet.cs" />
     <Compile Include="Parselets\Prefix\IdentifierParselet.cs" />
     <Compile Include="Parselets\StatementParselets\BlockParselet.cs" />
+    <Compile Include="Parselets\StatementParselets\ClassDefinitionParselet.cs" />
     <Compile Include="Parselets\StatementParselets\VariableDeclarationParselet.cs" />
     <Compile Include="Parselets\StatementParselets\FunctionDefinitionParselet.cs" />
     <Compile Include="Parselets\StatementParselets\IfParselet.cs" />

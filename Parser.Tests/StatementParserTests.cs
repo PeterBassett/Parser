@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using AST;
@@ -104,6 +103,10 @@ namespace Parser.Tests
                     {"fibonacci", "IDENTIFIER"},  
                     {"int", "IDENTIFIER"},
                     {"string", "IDENTIFIER"},
+                    {"class", "CLASS"},
+                    {"public", "PUBLIC"},
+                    {"private", "PRIVATE"},
+                    {"protected", "PROTECTED"},
                     {"+", "PLUS"},
                     {"-", "MINUS"},
                     {"*", "MULT"},
@@ -985,7 +988,7 @@ namespace Parser.Tests
             {
                 var parser = new StatementParser(new FakeScanner(new[]
                 {
-                    Get("function"), Get("Multiply"), Get("("), Get("a"), Get("int"), Get(","), Get("b"), Get("int"), Get(")"),
+                    Get("function"), Get("Multiply"), Get("("), Get("a"), Get(":"), Get("int"), Get(","), Get("b"), Get(":"), Get("int"), Get(")"),
                     Get("{"),
                         Get("return"), Get("a"), Get("*"), Get("b"), Get(";"),
                     Get("}")
@@ -1006,7 +1009,7 @@ namespace Parser.Tests
             {
                 var parser = new StatementParser(new FakeScanner(new[]
                 {
-                    Get("function"), Get("fibonacci"), Get("("), Get("n"), Get("int"), Get(")"),
+                    Get("function"), Get("fibonacci"), Get("("), Get("n"), Get(":"), Get("int"), Get(")"),
                     Get("{"),
                         Get("if"),Get("("),Get("n"), Get("=="), Get(0), Get(")"),
                             Get("return"), Get(0), Get(";"),
@@ -1175,7 +1178,7 @@ namespace Parser.Tests
             {
                 var parser = new StatementParser(new FakeScanner(new[]
                 {
-                    Get("function"), Get("Square"), Get("("),Get("n"), Get("int"), Get(")"), Get("=>"), Get("n"), Get("*"), Get(2), Get(";"),
+                    Get("function"), Get("Square"), Get("("),Get("n"), Get(":"), Get("int"), Get(")"), Get("=>"), Get("n"), Get("*"), Get(2), Get(";"),
                     Get("val"), Get("Test"), Get(":"), Get("int"), Get("="), Get("Square"), Get("("), Get(2), Get(")"), Get(";")
                 }));
 
@@ -1312,6 +1315,19 @@ namespace Parser.Tests
                 Assert.AreEqual("int", stmt.Type.Name);
                 Assert.AreEqual(false, stmt.IsConst);
                 Assert.AreEqual(typeof(PlusExpr), stmt.InitialValue.GetType());
+            }
+
+            [Test]
+            public void ClassDeclarationTest()
+            {
+                var parser = new StatementParser(new FakeScanner(new[]
+                {
+                    Get("class"), Get("Test"), Get("{"), Get("var"), Get("a"), Get(":"), Get("int"), Get("="), Get(1), Get(";"), Get("}")
+                }));
+
+                var result = parser.ParseAll();
+
+                Assert.AreEqual(typeof(ClassDefinitionStmt), result.GetType());
             }
         }
     }

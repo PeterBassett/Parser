@@ -242,6 +242,9 @@ namespace Lexer.Tests
             [TestCase("return 1;",
                 new[] { "RETURN", "WHITESPACE", "INTEGER", "SEMICOLON" },
                 new[] { "return", " ", "1", ";" })]
+            [TestCase("class",
+                new[] { "CLASS" },
+                new[] { "class"})]
             public void TestTokenisation(string source, string[] types, string[] lexemes)
             {
                 var generatedTokens = GenerateTokens(source);

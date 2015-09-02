@@ -5,7 +5,6 @@ using System.Reflection;
 using AST.Expressions;
 using AST.Expressions.Arithmatic;
 using AST.Expressions.Logical;
-using Moq;
 using NUnit.Framework;
 
 namespace AST.Visitor.Tests
