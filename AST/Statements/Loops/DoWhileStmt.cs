@@ -4,7 +4,7 @@ namespace AST.Statements.Loops
 {
     public class DoWhileStmt : ConditionAndBlockStmt
     {
-        public DoWhileStmt(IExpression condition, IStatement block)
+        public DoWhileStmt(Expression condition, Statement block)
             : base(condition, block)
         {
         }

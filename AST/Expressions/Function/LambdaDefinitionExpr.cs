@@ -6,9 +6,9 @@ namespace AST.Expressions.Function
 {
     public class LambdaDefinitionExpr : FunctionExpr
     {      
-        private readonly IExpression _body;
+        private readonly Expression _body;
 
-        public LambdaDefinitionExpr(IdentifierExpr name, VarDefinitionStmt[] arguments, IExpression body, IdentifierExpr returnType)
+        public LambdaDefinitionExpr(IdentifierExpr name, VarDefinitionStmt[] arguments, Expression body, IdentifierExpr returnType)
             : base(name, arguments, returnType)
         {
             if(body == null)
@@ -21,6 +21,6 @@ namespace AST.Expressions.Function
             return visitor.Visit(this, context);
         }
 
-        public IExpression Body { get { return _body; } }
+        public Expression Body { get { return _body; } }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using AST.Expressions;
 using AST.Expressions.Arithmatic;
 using AST.Expressions.Comparison;
@@ -153,7 +154,7 @@ namespace AST.Visitor
 
         public string Visit(FunctionDefinitionExpr expr, Scope context)
         {
-            throw new NotImplementedException();
+            return "function definition";
         }
 
         public string Visit(ReturnStmt returnExpr, Scope scope)
@@ -180,25 +181,28 @@ namespace AST.Visitor
 
         public string Visit(FunctionCallExpr functionCallExpr, Scope context)
         {
-            throw new NotImplementedException();
+            return "functionCall";
         }
 
 
         public string Visit(LambdaDefinitionExpr lambdaDefinitionExpr, Scope context)
         {
-            throw new NotImplementedException();
+            var arguments = from arg in lambdaDefinitionExpr.Arguments
+                            select arg.Name  + " : " + arg.Type.Name;
+
+            return lambdaDefinitionExpr.Name + "(" + string.Join(", ", arguments.ToArray()) + ") : " + lambdaDefinitionExpr.ReturnType.Name;
         }
 
 
         public string Visit(StatementList blockStmt, Scope context)
         {
-            throw new NotImplementedException();
+            return "block";
         }
 
 
         public string Visit(ClassDefinitionStmt classDefinitionStmt, Scope context)
         {
-            throw new NotImplementedException();
+            return "class";
         }
     }
 }

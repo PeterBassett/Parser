@@ -2,7 +2,7 @@
 
 namespace AST.Expressions
 {
-    public class IdentifierExpr : IExpression
+    public class IdentifierExpr : Expression
     {
         private readonly string _name;
         public IdentifierExpr(string name)
@@ -15,7 +15,7 @@ namespace AST.Expressions
             get { return _name; }
         }
 
-        public T Accept<T,C>(IExpressionVisitor<T,C> visitor, C context)
+        public T Accept<T, C>(IExpressionVisitor<T,C> visitor, C context)
         {
             return visitor.Visit(this, context);
         }

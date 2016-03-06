@@ -4,7 +4,7 @@ namespace Parser.Parselets.StatementParselets
 {
     class IfParselet : StatementParselet
     {
-        public override IStatement Parse(Parser parser, Lexer.Token current)
+        public override Statement Parse(Parser parser, Lexer.Token current)
         {
             parser.Consume("LEFTPAREN");
             var condition = parser.ParseExpression(0);

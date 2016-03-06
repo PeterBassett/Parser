@@ -4,12 +4,12 @@ namespace AST.Expressions.Comparison
 {
     public class GreaterThanExpr : BinaryOperatorExpr
     {
-        public GreaterThanExpr(IExpression lhs, IExpression rhs)
+        public GreaterThanExpr(Expression lhs, Expression rhs)
             : base(lhs, rhs)
         {
         }
 
-        public override T Accept<T,C>(IExpressionVisitor<T,C> visitor, C context)
+        public override T Accept<T, C>(IExpressionVisitor<T, C> visitor, C context)
         {
             return visitor.Visit(this, context);
         }

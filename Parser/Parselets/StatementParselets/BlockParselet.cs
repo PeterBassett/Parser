@@ -12,9 +12,9 @@ namespace Parser.Parselets.StatementParselets
             _endToken = endToken;
         }
 
-        public override IStatement Parse(Parser parser, Lexer.Token current)
+        public override Statement Parse(Parser parser, Lexer.Token current)
         {
-            var statements = new List<IStatement>();
+            var statements = new List<Statement>();
 
             do
             {

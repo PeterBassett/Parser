@@ -3,12 +3,12 @@ using AST.Visitor;
 
 namespace AST.Statements.Loops
 {
-    public abstract class ConditionAndBlockStmt : IStatement
+    public abstract class ConditionAndBlockStmt : Statement
     {
-        private readonly IExpression _condition;
-        private readonly IStatement _block;
+        private readonly Expression _condition;
+        private readonly Statement _block;
 
-        public ConditionAndBlockStmt(IExpression condition, IStatement block)
+        public ConditionAndBlockStmt(Expression condition, Statement block)
         {
             if (condition == null)
                 throw new ArgumentNullException("condition");
@@ -21,7 +21,7 @@ namespace AST.Statements.Loops
 
         public abstract T Accept<T, C>(IExpressionVisitor<T, C> visitor, C context);
 
-        public IExpression Condition { get { return _condition; } }
-        public IStatement Block { get { return _block; } }
+        public Expression Condition { get { return _condition; } }
+        public Statement Block { get { return _block; } }
     }
 }

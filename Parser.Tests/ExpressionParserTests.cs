@@ -37,7 +37,7 @@ namespace Parser.Tests
                 IParser target = new ExpressionParser(new FakeScanner(new []{ Token.Empty }));
                 try
                 {
-                    IExpression actual = target.ParseAll();;
+                    Expression actual = target.ParseAll();;
                     Assert.Fail("No tokens to parse");
                 }
                 catch (ParseException)

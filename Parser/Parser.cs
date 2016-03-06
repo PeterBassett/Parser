@@ -16,7 +16,7 @@ namespace Parser
         private readonly List<Token> _tokenQueue;
         private readonly Dictionary<string, IPrefixParselet> _prefixParselets;
         private readonly Dictionary<string, IInfixParselet> _infixParselets;
-        private readonly Dictionary<string, IStatementParselet> _statementParselets;
+        private readonly Dictionary<string, StatementParselet> _statementParselets;
 
         protected Parser(ILexer lexer)
         {
@@ -27,26 +27,26 @@ namespace Parser
             _tokenQueue = new List<Token>();
             _prefixParselets = new Dictionary<string, IPrefixParselet>();
             _infixParselets = new Dictionary<string, IInfixParselet>();
-            _statementParselets = new Dictionary<string, IStatementParselet>();
+            _statementParselets = new Dictionary<string, StatementParselet>();
         }
 
-        public IExpression ParseAll()
+        public Expression ParseAll()
         {
             return ParseStatementList(0);
         }
 
-        private IExpression ParseStatementList(int precedence)
+        private Expression ParseStatementList(int precedence)
         {
-            var statementList = new List<IStatement>();
+            var statementList = new List<Statement>();
 
             do
             {
                 var stmt = ParseNext();
 
-                if (!(stmt is IStatement))
+                if (!(stmt is Statement))
                     return stmt;
 
-                statementList.Add(stmt as IStatement);
+                statementList.Add(stmt as Statement);
 
             } while (Peek().Type != "EMPTY");
 
@@ -56,7 +56,7 @@ namespace Parser
             return statementList.First();
         }
 
-        public IExpression ParseNext()
+        public Expression ParseNext()
         {
             var token = Consume();
 
@@ -73,14 +73,14 @@ namespace Parser
             return stmt;            
         }
 
-        public IExpression ParseExpression(int precedence)
+        public Expression ParseExpression(int precedence)
         {
             var token = Consume();
 
             return ParseExpression(precedence, token);
         }
 
-        private IExpression ParseExpression(int precedence, Token token)
+        private Expression ParseExpression(int precedence, Token token)
         {
             var prefix = GetPrefixParserForCurrentToken(token);
 
@@ -115,7 +115,7 @@ namespace Parser
             _infixParselets.Add(tokenType, parselet);
         }
 
-        protected void RegisterParselet(string tokenType, IStatementParselet parselet)
+        protected void RegisterParselet(string tokenType, StatementParselet parselet)
         {
             _statementParselets.Add(tokenType, parselet);
         }
@@ -140,7 +140,7 @@ namespace Parser
             return null;
         }
 
-        private IStatementParselet GetStatementParserForCurrentToken(Token token)
+        private StatementParselet GetStatementParserForCurrentToken(Token token)
         {
             var type = token.Type;
 

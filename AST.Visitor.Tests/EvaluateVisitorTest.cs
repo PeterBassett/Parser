@@ -51,7 +51,7 @@ namespace AST.Visitor.Tests
                     var parameters = method.GetParameters();
                     Assert.AreEqual(2, parameters.Length);
 
-                    Assert.IsTrue(typeof(IExpression).IsAssignableFrom(parameters.First().ParameterType), "Visit must accept an IExpression instance");
+                    Assert.IsTrue(typeof(Expression).IsAssignableFrom(parameters.First().ParameterType), "Visit must accept an Expression instance");
                     Assert.IsTrue(typeof(Scope).IsAssignableFrom(parameters.ElementAt(1).ParameterType), "Visit must accept an Scope instance");
                 }
             }
@@ -69,7 +69,7 @@ namespace AST.Visitor.Tests
                 foreach (var method in visitMethods)
                 {
                     var parameter = (from param in method.GetParameters()
-                                     where typeof(IExpression).IsAssignableFrom(param.ParameterType)
+                                     where typeof(Expression).IsAssignableFrom(param.ParameterType)
                                      select param).First();
 
                     try
@@ -392,9 +392,9 @@ namespace AST.Visitor.Tests
             {
                 var target = new EvaluateVisitor();
 
-                var statement1 = new Mock<IStatement>();
-                var statement2 = new Mock<IStatement>();
-                var statement3 = new Mock<IStatement>();
+                var statement1 = new Mock<Statement>();
+                var statement2 = new Mock<Statement>();
+                var statement3 = new Mock<Statement>();
 
                 var stmt = new ScopeBlockStmt(new[] { statement1.Object, statement2.Object, statement3.Object });
 
@@ -411,9 +411,9 @@ namespace AST.Visitor.Tests
             {
                 var target = new EvaluateVisitor();
 
-                var statement1 = new Mock<IStatement>();
-                var statement2 = new Mock<IStatement>();
-                var statement3 = new Mock<IStatement>();
+                var statement1 = new Mock<Statement>();
+                var statement2 = new Mock<Statement>();
+                var statement3 = new Mock<Statement>();
 
                 int invocations = 0;
                 var invocationOrder = new int[3];
@@ -461,7 +461,7 @@ namespace AST.Visitor.Tests
                 const int totalLoopIteration = 3;
                 int loopIterations = 0;
 
-                var condition = new Mock<IExpression>();
+                var condition = new Mock<Expression>();
                 condition.Setup(c => c.Accept(It.IsAny<IExpressionVisitor<Value, Scope>>(), It.IsAny<Scope>()))
                     .Returns<IExpressionVisitor<Value, Scope>, Scope>(
                         (v, s) =>
@@ -470,7 +470,7 @@ namespace AST.Visitor.Tests
                             return new Value(loopIterations <= totalLoopIteration);
                         });
 
-                var statement = new Mock<IStatement>();
+                var statement = new Mock<Statement>();
 
                 var expr = new WhileStmt(condition.Object, new ScopeBlockStmt(new[] { statement.Object }));
 
@@ -485,7 +485,7 @@ namespace AST.Visitor.Tests
             {
                 var target = new EvaluateVisitor();
 
-                var condition = new Mock<IExpression>();
+                var condition = new Mock<Expression>();
                 condition.Setup(c => c.Accept(It.IsAny<IExpressionVisitor<Value, Scope>>(), It.IsAny<Scope>()))
                     .Returns<IExpressionVisitor<Value, Scope>, Scope>(
                         (v, s) =>
@@ -493,7 +493,7 @@ namespace AST.Visitor.Tests
                             return new Value(false);
                         });
 
-                var statement = new Mock<IStatement>();
+                var statement = new Mock<Statement>();
 
                 var expr = new WhileStmt(condition.Object, new ScopeBlockStmt(new[] { statement.Object }));
 
@@ -509,7 +509,7 @@ namespace AST.Visitor.Tests
                 var target = new EvaluateVisitor();
 
                 var conditionExecuted = false;
-                var condition = new Mock<IExpression>();
+                var condition = new Mock<Expression>();
                 condition.Setup(c => c.Accept(It.IsAny<IExpressionVisitor<Value, Scope>>(), It.IsAny<Scope>()))
                     .Returns<IExpressionVisitor<Value, Scope>, Scope>(
                         (v, s) =>
@@ -519,7 +519,7 @@ namespace AST.Visitor.Tests
                             return retVal;
                         });
 
-                var statement = new Mock<IStatement>();
+                var statement = new Mock<Statement>();
                 statement.Setup(c => c.Accept(It.IsAny<IExpressionVisitor<Value, Scope>>(), It.IsAny<Scope>()))
                     .Returns<IExpressionVisitor<Value, Scope>, Scope>(
                         (v, s) =>
@@ -546,7 +546,7 @@ namespace AST.Visitor.Tests
                 const int totalLoopIteration = 3;
                 int loopIterations = 0;
 
-                var condition = new Mock<IExpression>();
+                var condition = new Mock<Expression>();
                 condition.Setup(c => c.Accept(It.IsAny<IExpressionVisitor<Value, Scope>>(), It.IsAny<Scope>()))
                     .Returns<IExpressionVisitor<Value, Scope>, Scope>(
                         (v, s) =>
@@ -555,7 +555,7 @@ namespace AST.Visitor.Tests
                             return new Value(loopIterations < totalLoopIteration);
                         });
 
-                var statement = new Mock<IStatement>();
+                var statement = new Mock<Statement>();
 
                 var expr = new DoWhileStmt(condition.Object, new ScopeBlockStmt(new[] { statement.Object }));
 
@@ -570,7 +570,7 @@ namespace AST.Visitor.Tests
             {
                 var target = new EvaluateVisitor();
 
-                var condition = new Mock<IExpression>();
+                var condition = new Mock<Expression>();
                 condition.Setup(c => c.Accept(It.IsAny<IExpressionVisitor<Value, Scope>>(), It.IsAny<Scope>()))
                     .Returns<IExpressionVisitor<Value, Scope>, Scope>(
                         (v, s) =>
@@ -578,7 +578,7 @@ namespace AST.Visitor.Tests
                             return new Value(false);
                         });
 
-                var statement = new Mock<IStatement>();
+                var statement = new Mock<Statement>();
 
                 var expr = new DoWhileStmt(condition.Object, new ScopeBlockStmt(new[] { statement.Object }));
 
@@ -594,7 +594,7 @@ namespace AST.Visitor.Tests
                 var target = new EvaluateVisitor();
 
                 var conditionExecuted = false;
-                var condition = new Mock<IExpression>();
+                var condition = new Mock<Expression>();
                 condition.Setup(c => c.Accept(It.IsAny<IExpressionVisitor<Value, Scope>>(), It.IsAny<Scope>()))
                     .Returns<IExpressionVisitor<Value, Scope>, Scope>(
                         (v, s) =>
@@ -603,7 +603,7 @@ namespace AST.Visitor.Tests
                             return new Value(false); ;
                         });
 
-                var statement = new Mock<IStatement>();
+                var statement = new Mock<Statement>();
                 statement.Setup(c => c.Accept(It.IsAny<IExpressionVisitor<Value, Scope>>(), It.IsAny<Scope>()))
                     .Returns<IExpressionVisitor<Value, Scope>, Scope>(
                         (v, s) =>
@@ -627,9 +627,9 @@ namespace AST.Visitor.Tests
             [TestCase(true, true, false)]            
             public void IfStatementWithNoElseTest(bool conditionSupplied, bool trueStatementSupplied, bool falseStatementSupplied)
             {
-                var conditionStmt = conditionSupplied ? new Mock<IExpression>().Object : null;
-                var trueStmt = trueStatementSupplied ? new Mock<IStatement>().Object : null;
-                var falseStmt = falseStatementSupplied ? new Mock<IStatement>().Object : null;
+                var conditionStmt = conditionSupplied ? new Mock<Expression>().Object : null;
+                var trueStmt = trueStatementSupplied ? new Mock<Statement>().Object : null;
+                var falseStmt = falseStatementSupplied ? new Mock<Statement>().Object : null;
 
                 new IfStmt(conditionStmt, trueStmt, falseStmt);
             }
@@ -640,11 +640,11 @@ namespace AST.Visitor.Tests
             {
                 var target = new EvaluateVisitor();
 
-                var condition = new Mock<IExpression>();
+                var condition = new Mock<Expression>();
                 condition.Setup(c => c.Accept(It.IsAny<IExpressionVisitor<Value, Scope>>(), It.IsAny<Scope>()))
                     .Returns<IExpressionVisitor<Value, Scope>, Scope>((v, s) => new Value(conditionValue));
 
-                var trueStmt = new Mock<IStatement>();
+                var trueStmt = new Mock<Statement>();
 
                 var expr = new IfStmt(condition.Object, trueStmt.Object, null);
 
@@ -660,12 +660,12 @@ namespace AST.Visitor.Tests
             {
                 var target = new EvaluateVisitor();
 
-                var condition = new Mock<IExpression>();
+                var condition = new Mock<Expression>();
                 condition.Setup(c => c.Accept(It.IsAny<IExpressionVisitor<Value, Scope>>(), It.IsAny<Scope>()))
                     .Returns<IExpressionVisitor<Value, Scope>, Scope>((v, s) => new Value(conditionValue));
 
-                var trueStmt = new Mock<IStatement>();
-                var falseStmt = new Mock<IStatement>();
+                var trueStmt = new Mock<Statement>();
+                var falseStmt = new Mock<Statement>();
 
                 var expr = new IfStmt(condition.Object, trueStmt.Object, falseStmt.Object);
 
@@ -711,7 +711,7 @@ namespace AST.Visitor.Tests
                 var functionDefinition = new FunctionDefinitionExpr(functionNameExpr, new VarDefinitionStmt[0],
                     new ScopeBlockStmt(new[] {new ReturnStmt(new ConstantExpr(returnValue))}), new IdentifierExpr("String"));
                 
-                var expr = new FunctionCallExpr(functionNameExpr, new IExpression[0]);
+                var expr = new FunctionCallExpr(functionNameExpr, new Expression[0]);
 
                 _scope.DefineIdentifier(functionName, Value.FromObject(functionDefinition));
 
@@ -735,7 +735,7 @@ namespace AST.Visitor.Tests
                     new VarDefinitionStmt(new IdentifierExpr("C"), new IdentifierExpr("BOOL"), false, new ConstantExpr(true))
                 };
 
-                var values = new IExpression[]
+                var values = new Expression[]
                 {
                     new ConstantExpr(1),
                     new ConstantExpr(RandomGenerator.String()),
@@ -769,7 +769,7 @@ namespace AST.Visitor.Tests
                 var functionDefinition = new FunctionDefinitionExpr(definedFunctionNameExpr, new VarDefinitionStmt[0],
                     new ScopeBlockStmt(new[] { new ReturnStmt(new ConstantExpr(returnValue)) }), new IdentifierExpr("String"));
 
-                var expr = new FunctionCallExpr(calledFunctionNameExpr, new IExpression[0]);
+                var expr = new FunctionCallExpr(calledFunctionNameExpr, new Expression[0]);
 
                 _scope.DefineIdentifier(functionName, Value.FromObject(functionDefinition));
 
@@ -783,7 +783,7 @@ namespace AST.Visitor.Tests
 
                 var functionNameExpr = new IdentifierExpr(RandomGenerator.String());
 
-                var expr = new FunctionCallExpr(functionNameExpr, new IExpression[0]);
+                var expr = new FunctionCallExpr(functionNameExpr, new Expression[0]);
 
                 _scope.DefineIdentifier(functionNameExpr.Name, Value.FromObject(RandomGenerator.String()));
 
@@ -798,7 +798,7 @@ namespace AST.Visitor.Tests
                 var functionName = RandomGenerator.String();
                 var calledFunctionNameExpr = new IdentifierExpr(functionName);
                 
-                var expr = new FunctionCallExpr(calledFunctionNameExpr, new IExpression[0]);
+                var expr = new FunctionCallExpr(calledFunctionNameExpr, new Expression[0]);
 
                 target.Visit(expr, _scope);
             }
@@ -813,7 +813,7 @@ namespace AST.Visitor.Tests
                 var returnValue = RandomGenerator.String();
                 var functionDefinition = new FunctionDefinitionExpr(functionNameExpr, new VarDefinitionStmt[0], new ScopeBlockStmt(new[] { new NoOpStatement()  }), new IdentifierExpr("String"));
 
-                var expr = new FunctionCallExpr(functionNameExpr, new IExpression[0]);
+                var expr = new FunctionCallExpr(functionNameExpr, new Expression[0]);
 
                 _scope.DefineIdentifier(functionName, Value.FromObject(functionDefinition));
 
@@ -830,7 +830,7 @@ namespace AST.Visitor.Tests
                 var returnValue = RandomGenerator.String();
                 var functionDefinition = new LambdaDefinitionExpr(functionNameExpr, new VarDefinitionStmt[0], new ConstantExpr(returnValue), new IdentifierExpr("String"));
 
-                var expr = new FunctionCallExpr(functionNameExpr, new IExpression[0]);
+                var expr = new FunctionCallExpr(functionNameExpr, new Expression[0]);
 
                 _scope.DefineIdentifier(functionName, Value.FromObject(functionDefinition));
 

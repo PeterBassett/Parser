@@ -41,7 +41,7 @@ namespace Parser.Tests
                 IParser target = new StatementParser(new FakeScanner(new[] { Token.Empty }));
                 try
                 {
-                    IExpression actual = target.ParseAll();
+                    Expression actual = target.ParseAll();
                     Assert.Fail("No tokens to parse");
                 }
                 catch (ParseException)
@@ -1084,7 +1084,7 @@ namespace Parser.Tests
                 Assert.AreEqual(2, ((ConstantExpr)minusTwoExpr.Right).Value);
             }
             [Test]
-            public void MultiStatementFunctionTest()
+            public void MultStatementFunctionTest()
             {
                 var parser = new StatementParser(new FakeScanner(new[]
                 {

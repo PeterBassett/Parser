@@ -227,7 +227,7 @@ namespace AST.Visitor
 
         public ValueType Visit(FunctionCallExpr functionCallExpr, Scope context)
         {
-            throw new NotImplementedException();
+            return functionCallExpr.Accept(this, context);
         }
 
 
@@ -245,7 +245,7 @@ namespace AST.Visitor
 
         public ValueType Visit(ClassDefinitionStmt classDefinitionStmt, Scope context)
         {
-            throw new NotImplementedException();
+            return ValueType.Class;
         }
     }
 }

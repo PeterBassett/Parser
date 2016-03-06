@@ -3,13 +3,13 @@ using AST.Visitor;
 
 namespace AST.Expressions
 {
-    public class ConditionalExpr : IExpression
+    public class ConditionalExpr : Expression
     {
-        private readonly IExpression _condition;
-        private readonly IExpression _thenExpression;
-        private readonly IExpression _elseExpression;
+        private readonly Expression _condition;
+        private readonly Expression _thenExpression;
+        private readonly Expression _elseExpression;
 
-        public ConditionalExpr(IExpression condition, IExpression thenExpression, IExpression elseExpression)
+        public ConditionalExpr(Expression condition, Expression thenExpression, Expression elseExpression)
         {
             if(condition == null)
                 throw new ArgumentNullException("condition");
@@ -24,13 +24,13 @@ namespace AST.Expressions
             _elseExpression = elseExpression;
         }
 
-        public virtual T Accept<T,C>(IExpressionVisitor<T,C> visitor, C context)
+        public T Accept<T,C>(IExpressionVisitor<T,C> visitor, C context)
         {
             return visitor.Visit(this, context);
         }
 
-        public IExpression Condition { get { return _condition; }}
-        public IExpression ThenExpression { get { return _thenExpression; } }
-        public IExpression ElseExpression { get { return _elseExpression; } }
+        public Expression Condition { get { return _condition; }}
+        public Expression ThenExpression { get { return _thenExpression; } }
+        public Expression ElseExpression { get { return _elseExpression; } }
     }
 }

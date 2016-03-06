@@ -17,8 +17,8 @@ namespace AST.Tests.Expressions.Arithmatic
             [TestCase(true, true)]
             public void ThrowsOnNulls(bool lhsSupplied, bool rhsSupplied)
             {
-                IExpression lhs = lhsSupplied ? new ConstantExpr(1) : null;
-                IExpression rhs = rhsSupplied ? new ConstantExpr(1) : null;
+                Expression lhs = lhsSupplied ? new ConstantExpr(1) : null;
+                Expression rhs = rhsSupplied ? new ConstantExpr(1) : null;
 
                 new DivExpr(lhs, rhs);
             }

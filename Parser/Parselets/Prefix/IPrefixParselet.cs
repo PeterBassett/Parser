@@ -5,6 +5,6 @@ namespace Parser.Parselets.Prefix
 {
     public interface IPrefixParselet
     {
-        IExpression Parse(Parser parser, Token current);
+        Expression Parse(Parser parser, Token current);
     }
 }

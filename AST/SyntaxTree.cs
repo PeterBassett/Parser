@@ -2,9 +2,9 @@
 {
     public class SyntaxTree
     {
-        private IExpression _expression;
+        private Expression _expression;
 
-        public SyntaxTree(IExpression expression)
+        public SyntaxTree(Expression expression)
         {
             _expression = expression;
         }

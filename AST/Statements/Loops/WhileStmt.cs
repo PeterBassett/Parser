@@ -4,7 +4,7 @@ namespace AST.Statements.Loops
 {
     public class WhileStmt : ConditionAndBlockStmt
     {
-        public WhileStmt(IExpression condition, IStatement block) : base(condition, block)
+        public WhileStmt(Expression condition, Statement block) : base(condition, block)
         {
         }
 

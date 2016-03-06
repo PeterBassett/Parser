@@ -4,11 +4,11 @@ namespace AST.Statements
 {
     public class IfStmt : IBlockStatement
     {
-        private readonly IExpression _condition;
-        private readonly IStatement _thenStatement;
-        private readonly IStatement _elseExpression;
+        private readonly Expression _condition;
+        private readonly Statement _thenStatement;
+        private readonly Statement _elseExpression;
 
-        public IfStmt(IExpression condition, IStatement thenStatement, IStatement elseStatement)
+        public IfStmt(Expression condition, Statement thenStatement, Statement elseStatement)
         {
             if (condition == null)
                 throw new ArgumentNullException("condition");
@@ -23,9 +23,9 @@ namespace AST.Statements
             _elseExpression = elseStatement;
         }
 
-        public IExpression Condition { get { return _condition; } }
-        public IStatement ThenExpression { get { return _thenStatement; } }
-        public IStatement ElseExpression { get { return _elseExpression; } }
+        public Expression Condition { get { return _condition; } }
+        public Statement ThenExpression { get { return _thenStatement; } }
+        public Statement ElseExpression { get { return _elseExpression; } }
 
         public T Accept<T, C>(Visitor.IExpressionVisitor<T, C> visitor, C context)
         {

@@ -19,7 +19,7 @@ namespace Parser.Tests
                 return new StatementParser(new StripLexer(new Scanner(source, new CSharpRegexTokeniser())));
             }
 
-            public IExpression CreateExpression(string source)
+            public Expression CreateExpression(string source)
             {
                 var target = SetupParser(source);
 

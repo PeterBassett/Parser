@@ -4,7 +4,7 @@ namespace AST.Expressions.Logical
 {
     public class NotExpr : UnaryOperatorExpr
     {
-        public NotExpr(IExpression rhs)
+        public NotExpr(Expression rhs)
             : base(rhs)
         {
         }

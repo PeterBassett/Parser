@@ -6,9 +6,9 @@ namespace AST.Expressions.Function
 {
     public class FunctionDefinitionExpr : FunctionExpr
     {
-        private readonly IStatement _body;
+        private readonly Statement _body;
 
-        public FunctionDefinitionExpr(IdentifierExpr name, VarDefinitionStmt[] arguments, IStatement body, IdentifierExpr returnType) : base(name, arguments, returnType)
+        public FunctionDefinitionExpr(IdentifierExpr name, VarDefinitionStmt[] arguments, Statement body, IdentifierExpr returnType) : base(name, arguments, returnType)
         {
             if(body == null)
                 throw new ArgumentNullException("body");
@@ -20,6 +20,6 @@ namespace AST.Expressions.Function
             return visitor.Visit(this, context);
         }
 
-        public IStatement Body { get { return _body; } }
+        public Statement Body { get { return _body; } }
     }
 }

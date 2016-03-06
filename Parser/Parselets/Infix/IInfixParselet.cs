@@ -6,6 +6,6 @@ namespace Parser.Parselets.Infix
     public interface IInfixParselet
     {
         int Precedence { get; }
-        IExpression Parse(Parser parser, IExpression lhs, Token current);
+        Expression Parse(Parser parser, Expression lhs, Token current);
     }
 }

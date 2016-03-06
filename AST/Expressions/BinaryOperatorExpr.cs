@@ -3,12 +3,12 @@ using AST.Visitor;
 
 namespace AST.Expressions
 {
-    public abstract class BinaryOperatorExpr : IExpression
+    public abstract class BinaryOperatorExpr : Expression
     {
-        private readonly IExpression _lhs;
-        private readonly IExpression _rhs;
+        private readonly Expression _lhs;
+        private readonly Expression _rhs;
 
-        protected BinaryOperatorExpr(IExpression lhs, IExpression rhs)
+        protected BinaryOperatorExpr(Expression lhs, Expression rhs)
         {
             if(lhs == null)
                 throw new ArgumentNullException("lhs");
@@ -20,7 +20,7 @@ namespace AST.Expressions
         }
 
         public abstract T Accept<T,C>(IExpressionVisitor<T,C> visitor, C context);
-        public IExpression Left { get { return _lhs; } }
-        public IExpression Right { get { return _rhs; } }
+        public Expression Left { get { return _lhs; } }
+        public Expression Right { get { return _rhs; } }
     }
 }

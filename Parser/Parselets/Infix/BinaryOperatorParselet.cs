@@ -16,11 +16,11 @@ namespace Parser.Parselets.Infix
             _isRightAssociative = isRightAssociative;
         }
 
-        public IExpression Parse(Parser parser, IExpression left, Token token)
+        public Expression Parse(Parser parser, Expression left, Token token)
         {           
             var right = parser.ParseExpression(_precedence - (_isRightAssociative ? 1 : 0));
 
-            return (IExpression)Activator.CreateInstance(typeof(T), new object[] { left, right });
+            return (Expression)Activator.CreateInstance(typeof(T), new object[] { left, right });
         }
 
         public int Precedence

@@ -13,7 +13,7 @@ namespace Parser.Parselets.StatementParselets
             _constVariables = constVariables;
         }
         
-        public override IStatement Parse(Parser parser, Lexer.Token current)
+        public override Statement Parse(Parser parser, Lexer.Token current)
         {
             var name = parser.Current.Lexeme;
             
@@ -23,7 +23,7 @@ namespace Parser.Parselets.StatementParselets
             if (parser.Peek().Type == "COLON")
                 type = ParseTypeSpecified(parser);
         
-            IExpression initialValue = null;
+            Expression initialValue = null;
             if (parser.ConsumeOptional("ASSIGNMENT"))
                 initialValue = parser.ParseExpression(0);
             else if(_constVariables)

@@ -3,14 +3,14 @@ using AST.Visitor;
 
 namespace AST.Statements
 {
-    public class VarDefinitionStmt : IStatement
+    public class VarDefinitionStmt : Statement
     {
         private readonly IdentifierExpr _name;
         private readonly IdentifierExpr _type;
         private readonly bool _isConst;
-        private readonly IExpression _initialValue;
+        private readonly Expression _initialValue;
 
-        public VarDefinitionStmt(IdentifierExpr name, IdentifierExpr type, bool isConst, IExpression initialValue)
+        public VarDefinitionStmt(IdentifierExpr name, IdentifierExpr type, bool isConst, Expression initialValue)
         {
             _name = name;
             _type = type;
@@ -25,7 +25,7 @@ namespace AST.Statements
 
         public IdentifierExpr Name { get { return _name; } }
 
-        public IExpression InitialValue { get { return _initialValue; } }
+        public Expression InitialValue { get { return _initialValue; } }
 
         public IdentifierExpr Type { get { return _type; } }
 

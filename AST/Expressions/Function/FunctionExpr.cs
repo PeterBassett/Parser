@@ -4,7 +4,7 @@ using AST.Visitor;
 
 namespace AST.Expressions.Function
 {
-    public abstract class FunctionExpr : IStatement
+    public abstract class FunctionExpr : Statement
     {
         private readonly IdentifierExpr _name;
         private readonly VarDefinitionStmt[] _arguments;

@@ -3,11 +3,11 @@ using AST.Visitor;
 
 namespace AST.Expressions
 {
-    public abstract class UnaryOperatorExpr : IExpression
+    public abstract class UnaryOperatorExpr : Expression
     {
-        private readonly IExpression _rhs;
+        private readonly Expression _rhs;
 
-        protected UnaryOperatorExpr(IExpression rhs)
+        protected UnaryOperatorExpr(Expression rhs)
         {
             if (rhs == null)
                 throw new ArgumentNullException("rhs");
@@ -15,6 +15,6 @@ namespace AST.Expressions
         }
 
         public abstract T Accept<T,C>(IExpressionVisitor<T,C> visitor, C context);
-        public IExpression Right { get { return _rhs; } }
+        public Expression Right { get { return _rhs; } }
     }
 }

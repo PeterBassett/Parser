@@ -378,7 +378,7 @@ namespace AST.Visitor
 
         public Value Visit(ClassDefinitionStmt classDefinitionStmt, Scope context)
         {
-            throw new NotImplementedException();
+            return Value.Unit;
         }
     }
 }

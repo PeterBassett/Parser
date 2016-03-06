@@ -14,11 +14,11 @@ namespace Parser.Parselets.Prefix
             _precedence = precedence;
         }
 
-        public IExpression Parse(Parser parser, Token token)
+        public Expression Parse(Parser parser, Token token)
         {           
             var right = parser.ParseExpression(_precedence);
 
-            return (IExpression)Activator.CreateInstance(typeof(T), new object[] { right });
+            return (Expression)Activator.CreateInstance(typeof(T), new object[] { right });
         }
     }
 }

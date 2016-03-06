@@ -10,7 +10,7 @@ namespace Parser.Parselets.Infix
     class FunctionCallParselet : IInfixParselet
     {
         public int Precedence { get { return (int)global::Parser.Precedence.Call; } }
-        public IExpression Parse(Parser parser, IExpression lhs, Token current)
+        public Expression Parse(Parser parser, Expression lhs, Token current)
         {
             var functionName = ((IdentifierExpr) lhs);
 
@@ -22,7 +22,7 @@ namespace Parser.Parselets.Infix
             return new FunctionCallExpr(functionName, arguments);
         }
 
-        private IEnumerable<IExpression> ParseArguments(Parser parser)
+        private IEnumerable<Expression> ParseArguments(Parser parser)
         {
             if (parser.Peek().Type == "RIGHTPAREN")
                 yield break;

@@ -4,7 +4,7 @@ namespace AST.Expressions.Logical
 {
     public class NegationExpr : UnaryOperatorExpr
     {
-        public NegationExpr(IExpression rhs)
+        public NegationExpr(Expression rhs)
             : base(rhs)
         {
         }

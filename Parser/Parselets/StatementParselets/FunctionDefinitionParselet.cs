@@ -9,7 +9,7 @@ namespace Parser.Parselets.StatementParselets
 {
     class FunctionDefinitionParselet : StatementParselet
     {
-        public override IStatement Parse(Parser parser, Lexer.Token current)
+        public override Statement Parse(Parser parser, Lexer.Token current)
         {
             string name = null;
 
@@ -28,7 +28,7 @@ namespace Parser.Parselets.StatementParselets
             if (token.Type == "LEFTBRACE")
             {
                 var body = parser.ParseNext();
-                return new FunctionDefinitionExpr(new IdentifierExpr(name), parameters, (IStatement)body,
+                return new FunctionDefinitionExpr(new IdentifierExpr(name), parameters, (Statement)body,
                     new IdentifierExpr("UNKNOWN"));
             }
             else if (token.Type == "RIGHTARROW")
@@ -57,7 +57,7 @@ namespace Parser.Parselets.StatementParselets
                 if(!(name is IdentifierExpr))
                     throw new ParseException("Expected parameter name");
 
-                IExpression type = null;
+                Expression type = null;
                 if (parser.ConsumeOptional("COLON"))
                 {
                     type = parser.ParseExpression(0);

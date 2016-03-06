@@ -3,11 +3,11 @@ using AST.Visitor;
 
 namespace AST.Expressions.Function
 {
-    public class ReturnStmt : IStatement
+    public class ReturnStmt : Statement
     {
-        private readonly IExpression _returnExpr;
+        private readonly Expression _returnExpr;
 
-        public ReturnStmt(IExpression returnExpr)
+        public ReturnStmt(Expression returnExpr)
         {
             _returnExpr = returnExpr;
         }
@@ -17,6 +17,6 @@ namespace AST.Expressions.Function
             return visitor.Visit(this, context);
         }
 
-        public IExpression ReturnExpression { get { return _returnExpr; } }
+        public Expression ReturnExpression { get { return _returnExpr; } }
     }
 }

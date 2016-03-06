@@ -7,9 +7,9 @@ namespace AST.Statements
 {
     public class StatementList : IBlockStatement
     {
-        private readonly IStatement [] _statements;
+        private readonly Statement [] _statements;
 
-        public StatementList(IEnumerable<IStatement> statements)
+        public StatementList(IEnumerable<Statement> statements)
         {
             if(statements == null)
                 throw new ArgumentNullException("statements");
@@ -21,6 +21,6 @@ namespace AST.Statements
             return visitor.Visit(this, context);
         }
 
-        public IEnumerable<IStatement> Statements { get { return _statements; } }
+        public IEnumerable<Statement> Statements { get { return _statements; } }
     }
 }

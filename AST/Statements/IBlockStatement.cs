@@ -1,6 +1,6 @@
 ﻿namespace AST.Statements
 {
-    public interface IBlockStatement : IStatement
+    public interface IBlockStatement : Statement
     {
     }
 }

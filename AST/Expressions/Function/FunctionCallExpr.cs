@@ -4,12 +4,12 @@ using AST.Visitor;
 
 namespace AST.Expressions.Function
 {
-    public class FunctionCallExpr : IExpression
+    public class FunctionCallExpr : Expression
     {
         private readonly IdentifierExpr _functionName;
-        private readonly IExpression[] _arguments;
+        private readonly Expression[] _arguments;
 
-        public FunctionCallExpr(IdentifierExpr functionName, IExpression[] callSiteArguments)
+        public FunctionCallExpr(IdentifierExpr functionName, Expression[] callSiteArguments)
         {
             if (functionName == null)
                 throw new ArgumentNullException("functionName");
@@ -25,7 +25,7 @@ namespace AST.Expressions.Function
             return visitor.Visit(this, context);
         }
 
-        public IEnumerable<IExpression> Arguments { get { return _arguments; }}
+        public IEnumerable<Expression> Arguments { get { return _arguments; }}
         public IdentifierExpr FunctionName { get { return _functionName; } }
 
     }

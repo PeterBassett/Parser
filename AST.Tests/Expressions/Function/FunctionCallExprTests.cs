@@ -21,7 +21,7 @@ namespace AST.Tests.Expressions.Function
             public void ThrowsOnNulls(bool nameSupplied, bool argumentsSupplied)
             {
                 var name = nameSupplied ? new IdentifierExpr("TEST") : null;
-                var arguments = argumentsSupplied ? new IExpression[] { new ConstantExpr(1), new ConstantExpr(2) } : null;
+                var arguments = argumentsSupplied ? new Expression[] { new ConstantExpr(1), new ConstantExpr(2) } : null;
 
                 new FunctionCallExpr(name, arguments);
             }
@@ -34,7 +34,7 @@ namespace AST.Tests.Expressions.Function
             public void ArgumentsPropertyReturnsPassedArguments()
             {
                 var name = new IdentifierExpr(RandomGenerator.String());
-                var arguments = new IExpression[] { new ConstantExpr(RandomGenerator.Int()), new ConstantExpr(RandomGenerator.Int()) };
+                var arguments = new Expression[] { new ConstantExpr(RandomGenerator.Int()), new ConstantExpr(RandomGenerator.Int()) };
 
                 var target = new FunctionCallExpr(name, arguments);
 
@@ -45,7 +45,7 @@ namespace AST.Tests.Expressions.Function
             public void FunctionNamePropertyReturnsPassedName()
             {
                 var name = new IdentifierExpr(RandomGenerator.String());
-                var arguments = new IExpression[] { new ConstantExpr(RandomGenerator.Int()), new ConstantExpr(RandomGenerator.Int()) };
+                var arguments = new Expression[] { new ConstantExpr(RandomGenerator.Int()), new ConstantExpr(RandomGenerator.Int()) };
 
                 var target = new FunctionCallExpr(name, arguments);
 
@@ -60,7 +60,7 @@ namespace AST.Tests.Expressions.Function
             public void AcceptMethodCallsVisitOnVisitorWithThis()
             {
                 var name = new IdentifierExpr(RandomGenerator.String());
-                var arguments = new IExpression[] { new ConstantExpr(RandomGenerator.Int()), new ConstantExpr(RandomGenerator.Int()) };
+                var arguments = new Expression[] { new ConstantExpr(RandomGenerator.Int()), new ConstantExpr(RandomGenerator.Int()) };
 
                 var target = new FunctionCallExpr(name, arguments);
                 var visitor = new Mock<IExpressionVisitor<string, int>>();
@@ -74,7 +74,7 @@ namespace AST.Tests.Expressions.Function
             public void AcceptMethodCallsOnlyVisitOnVisitorWithThisAndNoOtherVisitMethods()
             {
                 var name = new IdentifierExpr(RandomGenerator.String());
-                var arguments = new IExpression[] { new ConstantExpr(RandomGenerator.Int()), new ConstantExpr(RandomGenerator.Int()) };
+                var arguments = new Expression[] { new ConstantExpr(RandomGenerator.Int()), new ConstantExpr(RandomGenerator.Int()) };
 
                 var target = new FunctionCallExpr(name, arguments);
                 // throw exception is any other methods called other than the PlusExpr overload.

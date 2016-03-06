@@ -5,7 +5,7 @@ namespace Parser.Parselets.StatementParselets
 {
     public interface IStatementParselet
     {
-        IStatement Parse(Parser parser, Token current);
+        Statement Parse(Parser parser, Token current);
         bool NeedsTerminator { get; }
         string Terminator { get;}
     }

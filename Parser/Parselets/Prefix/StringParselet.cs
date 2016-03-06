@@ -6,7 +6,7 @@ namespace Parser.Parselets.Prefix
 {
     internal class StringParselet : IPrefixParselet
     {
-        public IExpression Parse(Parser parser, Token current)
+        public Expression Parse(Parser parser, Token current)
         {
             var value = current.Lexeme;
 

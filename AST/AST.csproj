@@ -67,7 +67,7 @@
     <Compile Include="Expressions\Logical\AndExpr.cs" />
     <Compile Include="Expressions\Logical\OrExpr.cs" />
     <Compile Include="Expressions\Logical\NotExpr.cs" />
-    <Compile Include="IExpression.cs" />
+    <Compile Include="Expression.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Statements\ScopeBlockStmt.cs" />
     <Compile Include="Statements\IBlockStatement.cs" />

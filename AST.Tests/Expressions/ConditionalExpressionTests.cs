@@ -36,9 +36,9 @@ namespace AST.Tests.Expressions
         [TestCase(false, false, false, ExpectedException = typeof(ArgumentNullException))]        
         public void ConstructorThrowsOnNullParameters(bool conditionSupplied, bool thenExpressionSupplied, bool elseExpressionSupplied)
         {
-            var condition = conditionSupplied ? new Mock<IExpression>().Object : null;
-            var thenExpression = thenExpressionSupplied ? new Mock<IExpression>().Object : null;
-            var elseExpression = elseExpressionSupplied ? new Mock<IExpression>().Object : null;
+            var condition = conditionSupplied ? new Mock<Expression>().Object : null;
+            var thenExpression = thenExpressionSupplied ? new Mock<Expression>().Object : null;
+            var elseExpression = elseExpressionSupplied ? new Mock<Expression>().Object : null;
 
             new ConditionalExpr(condition, thenExpression, elseExpression);
         }

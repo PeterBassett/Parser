@@ -38,7 +38,7 @@ namespace AST.Visitor.Tests
                     var parameters = method.GetParameters();
                     Assert.AreEqual(2, parameters.Length);
 
-                    Assert.IsTrue(typeof(IExpression).IsAssignableFrom(parameters.First().ParameterType), "Visit must accept an IExpression instance");
+                    Assert.IsTrue(typeof(Expression).IsAssignableFrom(parameters.First().ParameterType), "Visit must accept an Expression instance");
                     Assert.IsTrue(typeof(Scope).IsAssignableFrom(parameters.ElementAt(1).ParameterType), "Visit must accept an Scope instance");
                 }
             }
@@ -56,7 +56,7 @@ namespace AST.Visitor.Tests
                 foreach (var method in visitMethods)
                 {
                     var parameter = (from param in method.GetParameters()
-                        where typeof (IExpression).IsAssignableFrom(param.ParameterType)
+                        where typeof (Expression).IsAssignableFrom(param.ParameterType)
                         select param).First();
 
                     try

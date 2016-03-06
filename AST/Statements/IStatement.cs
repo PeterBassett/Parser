@@ -1,6 +1,6 @@
 ﻿namespace AST.Statements
 {
-    public interface IStatement : IExpression
+    public interface Statement : Expression
     {
     }
 }

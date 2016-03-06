@@ -5,7 +5,7 @@ namespace Parser.Parselets.StatementParselets
 {
     class ReturnStatementParselet : StatementParselet
     {
-        public override IStatement Parse(Parser parser, Lexer.Token current)
+        public override Statement Parse(Parser parser, Lexer.Token current)
         {
             var expr = parser.ParseExpression(0);
             parser.Consume("SEMICOLON");

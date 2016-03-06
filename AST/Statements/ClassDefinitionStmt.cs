@@ -3,12 +3,12 @@ using AST.Visitor;
 
 namespace AST.Statements
 {
-    public class ClassDefinitionStmt : IStatement
+    public class ClassDefinitionStmt : Statement
     {
         private readonly IdentifierExpr _name;
-        private readonly IExpression _statement;
+        private readonly Expression _statement;
 
-        public ClassDefinitionStmt(IdentifierExpr name, IExpression stmt)
+        public ClassDefinitionStmt(IdentifierExpr name, Expression stmt)
         {
             _name = name;
             _statement = stmt;
@@ -21,6 +21,6 @@ namespace AST.Statements
 
         public IdentifierExpr Name { get { return _name; } }
 
-        public IExpression InitialValue { get { return _statement; } }
+        public Expression InitialValue { get { return _statement; } }
     }
 }

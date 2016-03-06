@@ -7,6 +7,7 @@
         Boolean,
         Int,
         Float,
-        String
+        String,
+        Class
     }
 }

@@ -9,7 +9,7 @@ namespace Parser.Parselets.StatementParselets
 {
     class ClassDefinitionParselet : StatementParselet
     {
-        public override IStatement Parse(Parser parser, Lexer.Token current)
+        public override Statement Parse(Parser parser, Lexer.Token current)
         {
             string name = parser.Current.Lexeme;
             parser.Consume("IDENTIFIER");

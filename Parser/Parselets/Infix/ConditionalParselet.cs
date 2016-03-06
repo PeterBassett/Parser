@@ -7,7 +7,7 @@ namespace Parser.Parselets.Infix
     class ConditionalParselet : IInfixParselet
     {
         public int Precedence { get { return (int)global::Parser.Precedence.Conditional; } }
-        public IExpression Parse(Parser parser, IExpression lhs, Token current)
+        public Expression Parse(Parser parser, Expression lhs, Token current)
         {
             var thenExpression = parser.ParseNext();
 

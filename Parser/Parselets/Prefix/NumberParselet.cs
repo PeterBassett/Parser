@@ -6,7 +6,7 @@ namespace Parser.Parselets.Prefix
 {
     internal abstract class LiteralParselet : IPrefixParselet
     {
-        public IExpression Parse(Parser parser, Token token)
+        public Expression Parse(Parser parser, Token token)
         {
             return new ConstantExpr(Parse(token.Lexeme));
         }

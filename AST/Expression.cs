@@ -2,7 +2,7 @@
 
 namespace AST
 {
-    public interface IExpression
+    public interface Expression
     {
         T Accept<T,C>(IExpressionVisitor<T,C> visitor, C context);
     }

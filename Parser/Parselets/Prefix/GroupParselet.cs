@@ -5,7 +5,7 @@ namespace Parser.Parselets.Prefix
 {
     public class GroupParselet : IPrefixParselet
     {
-        public IExpression Parse(Parser parser, Token token)
+        public Expression Parse(Parser parser, Token token)
         {
             var expression = parser.ParseNext();
             parser.Consume("RIGHTPAREN");
