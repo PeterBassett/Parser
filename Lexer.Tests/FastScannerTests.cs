@@ -7,29 +7,17 @@ using NUnit.Framework;
 
 namespace Lexer.Tests
 {
-    namespace ScannerTests
+    namespace FastScannerTests
     {
         [TestFixture]
         public class Constructor
         {
-            [TestCase]
-            public void TakesTwoParameters()
-            {
-                new Scanner("source", new Mock<IRegexTokeniser>().Object);
-            }
-
-            [TestCase("a", true)]
-            [TestCase("", true)]
-            [TestCase(null, true, ExpectedException = typeof(ArgumentNullException))]
-            [TestCase("a", false, ExpectedException = typeof(ArgumentNullException))]
-            public void TakesSourceAndATokeniser(string source, bool validTokeniser)
-            {
-                IRegexTokeniser tokeniser = null;
-
-                if (validTokeniser)
-                    tokeniser = new Mock<IRegexTokeniser>().Object;
-
-                new Scanner(source, tokeniser);
+            [TestCase("a")]
+            [TestCase("")]
+            [TestCase(null, ExpectedException = typeof(ArgumentNullException))]            
+            public void TakesSourceAndATokeniser(string source)
+            {                
+                new FastScanner(source);
             }
         }
 
@@ -255,7 +243,7 @@ namespace Lexer.Tests
 
             private List<Token> GenerateTokens(string source)
             {
-                return Tokenise(new Scanner(source, new CSharpRegexTokeniser()));
+                return Tokenise(new FastScanner(source));
             }
 
             private static List<Token> Tokenise(ILexer target)

@@ -183,7 +183,7 @@ namespace AST.Visitor.Tests
             [Test]
             public void VisitMathExpressionTree()
             {
-                var target = new PrintVisitor();
+               var target = new PrintVisitor();
 
                 var one = new ConstantExpr(1);
                 var two = new ConstantExpr(2);

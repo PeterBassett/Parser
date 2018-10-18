@@ -16,7 +16,7 @@ namespace Parser.Tests
         {            
             public StatementParser SetupParser(string source)
             {
-                return new StatementParser(new StripLexer(new Scanner(source, new CSharpRegexTokeniser())));
+                return new StatementParser(new StripLexer(new RegexScanner(source, new CSharpRegexTokeniser())));
             }
 
             public Expression CreateExpression(string source)
@@ -152,7 +152,7 @@ namespace Parser.Tests
                 return n;
             }
             return a(1);
-            ", 4)]
+            ", 4, TestName = "Chained Function Calls")]
             [TestCase(@"val globalInt : int = 1024;
             function a( n : int )
             {
@@ -176,8 +176,22 @@ namespace Parser.Tests
             [TestCase(@"function IIF(c, a:int, b) => c ? a : b;
             return IIF(1==1, 3, 100) + IIF(1==0, 3059559, 2);
             ", 5)]
-            [TestCase(@"class test { var a : int = 9; } return 9;
+            [TestCase(@"class test 
+            { 
+                var a : int = 9; 
+                var b : float = 0.1; 
+            }
+            return 9;
             ", 9)]
+            [TestCase(@"function McCarthy(n : int)
+            {
+                if (n > 100)
+                    return n - 10;
+                
+                return McCarthy(McCarthy(n + 11));
+            }
+            return McCarthy(45);
+            ", 91)]
             public void EvaluateStatement(string source, object expected)
             {
                 EvaluateTest(source, expected);

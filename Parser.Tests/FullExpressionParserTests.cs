@@ -15,7 +15,7 @@ namespace Parser.Tests
         {            
             public ExpressionParser SetupParser(string source)
             {
-                return new ExpressionParser(new StripLexer(new Scanner(source, new CSharpRegexTokeniser())));
+                return new ExpressionParser(new StripLexer(new RegexScanner(source, new CSharpRegexTokeniser())));
             }
 
             public Expression CreateExpression(string source)

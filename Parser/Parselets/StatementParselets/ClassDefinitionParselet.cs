@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using AST;
 using AST.Expressions;
 using AST.Expressions.Function;
@@ -16,11 +17,25 @@ namespace Parser.Parselets.StatementParselets
             
             parser.Consume("LEFTBRACE");
 
-            var statements = parser.ParseNext();
+            var functions = new List<FunctionDefinitionExpr>();
+            var members = new List<VarDefinitionStmt>();
+
+            do
+            {
+                var statement = parser.ParseNext();
+
+                if (statement is FunctionDefinitionExpr)
+                    functions.Add(statement as FunctionDefinitionExpr);
+                else if (statement is VarDefinitionStmt)
+                    members.Add(statement as VarDefinitionStmt);
+                else
+                    throw new Exception("Unexpected statement type");
+
+            } while (parser.Peek().Type != "RIGHTBRACE");
 
             parser.Consume("RIGHTBRACE");
 
-            return new ClassDefinitionStmt(new IdentifierExpr(name), statements);
+            return new ClassDefinitionStmt(new IdentifierExpr(name), members, functions);
         }
     }
 }

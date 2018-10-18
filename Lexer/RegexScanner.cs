@@ -5,7 +5,7 @@ using Lexer.Tokeniser;
 
 namespace Lexer
 {
-    public class Scanner : ILexer
+    public class RegexScanner : ILexer
     {
         private readonly string _source;
         private int _currentPosition;
@@ -14,7 +14,7 @@ namespace Lexer
         private readonly IRegexTokeniser _tokeniser;
         private readonly Regex _endOfLineRegex;
 
-        public Scanner(string source, IRegexTokeniser tokeniser)
+        public RegexScanner(string source, IRegexTokeniser tokeniser)
         {
             if (source == null)
                 throw new ArgumentNullException("source");

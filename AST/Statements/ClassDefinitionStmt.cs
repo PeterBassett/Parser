@@ -1,4 +1,7 @@
-﻿using AST.Expressions;
+﻿using System.Collections.Generic;
+using System.Linq;
+using AST.Expressions;
+using AST.Expressions.Function;
 using AST.Visitor;
 
 namespace AST.Statements
@@ -7,11 +10,17 @@ namespace AST.Statements
     {
         private readonly IdentifierExpr _name;
         private readonly Expression _statement;
-
-        public ClassDefinitionStmt(IdentifierExpr name, Expression stmt)
+        private IdentifierExpr identifierExpr;
+        private VarDefinitionStmt [] _members;
+        private FunctionDefinitionExpr [] _functions;
+        
+        public ClassDefinitionStmt(IdentifierExpr name, 
+            IEnumerable<VarDefinitionStmt> members, 
+            IEnumerable<FunctionDefinitionExpr> functions)
         {
             _name = name;
-            _statement = stmt;
+            _members = members.ToArray();
+            _functions = functions.ToArray();
         }
 
         public T Accept<T, C>(IExpressionVisitor<T, C> visitor, C context)
@@ -20,7 +29,7 @@ namespace AST.Statements
         }
 
         public IdentifierExpr Name { get { return _name; } }
-
-        public Expression InitialValue { get { return _statement; } }
+        public IEnumerable<VarDefinitionStmt> Members { get { return _members; } }
+        public IEnumerable<FunctionDefinitionExpr> Functions { get { return _functions; } }
     }
 }
