@@ -192,6 +192,14 @@ namespace Parser.Tests
             }
             return McCarthy(45);
             ", 91)]
+            [TestCase(@"class test 
+            { 
+                var a : int = 9; 
+                var b : float = 0.1; 
+                function testfunction(a:int) => 1;
+            }
+            return 10;
+            ", 10)]
             public void EvaluateStatement(string source, object expected)
             {
                 EvaluateTest(source, expected);

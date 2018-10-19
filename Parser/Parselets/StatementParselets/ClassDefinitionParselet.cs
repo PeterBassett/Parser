@@ -17,15 +17,15 @@ namespace Parser.Parselets.StatementParselets
             
             parser.Consume("LEFTBRACE");
 
-            var functions = new List<FunctionDefinitionExpr>();
+            var functions = new List<FunctionExpr>();
             var members = new List<VarDefinitionStmt>();
 
             do
             {
                 var statement = parser.ParseNext();
 
-                if (statement is FunctionDefinitionExpr)
-                    functions.Add(statement as FunctionDefinitionExpr);
+                if (statement is FunctionExpr)
+                    functions.Add(statement as FunctionExpr);
                 else if (statement is VarDefinitionStmt)
                     members.Add(statement as VarDefinitionStmt);
                 else
