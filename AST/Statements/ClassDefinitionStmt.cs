@@ -9,14 +9,12 @@ namespace AST.Statements
     public class ClassDefinitionStmt : Statement
     {
         private readonly IdentifierExpr _name;
-        private readonly Expression _statement;
-        private IdentifierExpr identifierExpr;
         private VarDefinitionStmt [] _members;
-        private FunctionDefinitionExpr [] _functions;
+        private FunctionExpr [] _functions;
         
         public ClassDefinitionStmt(IdentifierExpr name, 
-            IEnumerable<VarDefinitionStmt> members, 
-            IEnumerable<FunctionDefinitionExpr> functions)
+            IEnumerable<VarDefinitionStmt> members,
+            IEnumerable<FunctionExpr> functions)
         {
             _name = name;
             _members = members.ToArray();
@@ -30,6 +28,6 @@ namespace AST.Statements
 
         public IdentifierExpr Name { get { return _name; } }
         public IEnumerable<VarDefinitionStmt> Members { get { return _members; } }
-        public IEnumerable<FunctionDefinitionExpr> Functions { get { return _functions; } }
+        public IEnumerable<FunctionExpr> Functions { get { return _functions; } }
     }
 }
