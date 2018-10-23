@@ -53,6 +53,7 @@
     <Compile Include="Expressions\Function\FunctionExpr.cs" />
     <Compile Include="Expressions\Function\LambdaDefinitionExpr.cs" />
     <Compile Include="Statements\ClassDefinitionStmt.cs" />
+    <Compile Include="Statements\NullStatement.cs" />
     <Compile Include="Statements\StatementList.cs" />
     <Compile Include="Statements\ReturnStmt.cs" />
     <Compile Include="Expressions\Function\FunctionDefinitionExpr.cs" />

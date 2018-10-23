@@ -39,10 +39,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Parselets\Infix\AssignmentOperatorParselet.cs" />
     <Compile Include="Parselets\Infix\FunctionCallParselet.cs" />
+    <Compile Include="Parselets\Prefix\SemiColonParselet.cs" />
     <Compile Include="Parselets\Prefix\IdentifierParselet.cs" />
     <Compile Include="Parselets\StatementParselets\BlockParselet.cs" />
     <Compile Include="Parselets\StatementParselets\ClassDefinitionParselet.cs" />
+    <Compile Include="Parselets\StatementParselets\SemiColonParselet.cs" />
     <Compile Include="Parselets\StatementParselets\VariableDeclarationParselet.cs" />
     <Compile Include="Parselets\StatementParselets\FunctionDefinitionParselet.cs" />
     <Compile Include="Parselets\StatementParselets\IfParselet.cs" />

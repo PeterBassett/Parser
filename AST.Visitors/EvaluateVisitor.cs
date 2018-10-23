@@ -67,7 +67,22 @@ namespace AST.Visitor
 
         public Value Visit(AssignmentExpr expr, Scope scope)
         {
-            return new Value(expr.Right.Accept(this, scope));
+            var name = expr.LValueExpression.Name;
+            var variable = scope.FindIdentifier(name);
+
+            if(!variable.IsDefined)
+                throw new UndefinedIdentifierException("Identifier is not defined" + expr.LValueExpression.Name);
+                
+            var rvalue = expr.Right.Accept(this, scope);
+
+            // HACK : Need to rationalise the type checking.
+            // It's either in here or it's not!
+            //if(variable.Value.Type != rvalue.Type)
+             //   throw new InvalidCastException();
+
+            scope.AssignIdentifierValue(name, rvalue);
+
+            return rvalue;
         }
 
         public Value Visit(PowExpr expr, Scope scope)
@@ -297,7 +312,8 @@ namespace AST.Visitor
 
         public Value Visit(FunctionDefinitionExpr expr, Scope scope)
         {
-            scope.DefineIdentifier(expr.Name, Value.FromObject(expr));
+            var value = Value.FromObject(expr);
+            scope.DefineIdentifier(expr.Name, value, value.Type.ToString());
             return new Value( expr );
         }
 
@@ -308,8 +324,12 @@ namespace AST.Visitor
 
         public Value Visit(VarDefinitionStmt stmt, Scope scope)
         {
-            var value = stmt.InitialValue.Accept(this, scope);
-            scope.DefineIdentifier(stmt.Name.Name, value);
+            Value value = null;
+
+            if(stmt.InitialValue != null)
+                value = stmt.InitialValue.Accept(this, scope);
+
+            scope.DefineIdentifier(stmt.Name.Name, value, stmt.Type.Name);
             return value;
         }
 
@@ -359,7 +379,7 @@ namespace AST.Visitor
         public Value Visit(LambdaDefinitionExpr lambda, Scope scope)
         {
             var value = Value.FromObject(lambda);
-            scope.DefineIdentifier(lambda.Name, value);
+            scope.DefineIdentifier(lambda.Name, value, value.Type.ToString());
             return value;
         }
 

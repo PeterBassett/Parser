@@ -395,16 +395,6 @@ namespace AST.Visitor.Tests
                 Assert.AreEqual(ValueType.Int, actual);
             }
 
-            [TestCase(ExpectedException=typeof(TypeCheckException))]
-            public void InvalidLValueAssignmentTest()
-            {
-                var target = new TypeCheckingVisitor();
-
-                var expr = new AssignmentExpr(new ConstantExpr("a"), new ConstantExpr(1));
-
-                target.Visit(expr, scope);
-            }
-
             [TestCase(1, 2, typeof(PlusExpr), ValueType.Int)]
             [TestCase(1.0, 2, typeof(PlusExpr), ValueType.Float)]
             [TestCase(1, 2.0, typeof(PlusExpr), ValueType.Float)]

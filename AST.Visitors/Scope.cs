@@ -16,7 +16,17 @@ namespace AST.Visitor
 
         public void DefineIdentifier(string name, Value value)
         {
-            _scope.DefineIdentifier(name, value);
+            _scope.DefineIdentifier(name, value, value.Type);
+        }
+
+        public void DefineIdentifier(string name, Value value, string type)
+        {
+            _scope.DefineIdentifier(name, value, type);
+        }
+
+        public void AssignIdentifierValue(string identifier, Value value)
+        {
+            _scope.AssignIdentifierValue(identifier, value);
         }
 
         public Identifier FindIdentifier(string name)
@@ -32,7 +42,7 @@ namespace AST.Visitor
             {
                 for (var i = 0; i < arguments.Length; i++)
                 {
-                    _scope.DefineIdentifier(arguments[i].Name.Name, values[i]);
+                    _scope.DefineIdentifier(arguments[i].Name.Name, values[i], values[i].Type.ToString());
                 }
             }
             catch (Exception)
@@ -76,12 +86,28 @@ namespace AST.Visitor
                 get { return _parent; }
             }
 
-            public void DefineIdentifier(string name, Value value)
+            public void DefineIdentifier(string name, Value value, ValueType type)
+            {
+                DefineIdentifier(name, value, type.ToString());
+            }
+
+            public void DefineIdentifier(string name, Value value, string type)
             {
                 if (_values.ContainsKey(name))
                     throw new IdentifierAlreadyDefinedException(name);
 
-                _values.Add(name, new Identifier(value));
+                _values.Add(name, new Identifier(value, type));
+            }
+
+            public void AssignIdentifierValue(string name, Value value)
+            {
+                if (!_values.ContainsKey(name))
+                    throw new UndefinedIdentifierException(name);
+
+                //if (_values[name].Type != value.Type)
+                //    throw new InvalidCastException();
+
+                _values[name] = new Identifier(value, _values[name].Type);
             }
 
             public Identifier FindIdentifier(string name)
@@ -95,7 +121,7 @@ namespace AST.Visitor
                 }
 
                 return Identifier.Undefined;
-            }
+            }          
         }
 
         public struct Identifier
@@ -103,23 +129,46 @@ namespace AST.Visitor
             public static Identifier Undefined = new Identifier(false);
             private readonly bool _isDefined;
             private Value _value;
+            private ValueType _type;
+            private string _typeName;            
 
             private Identifier(bool unused)
                 : this()
             {
                 _isDefined = false;
                 _value = null;
+                _type = ValueType.Unit;
             }
 
-            public Identifier(Value value)
+            public Identifier(Value value, string typeName)
             {
                 _value = value;
                 _isDefined = true;
+                _typeName = typeName;
+                _type = ValueType.Unit;
+            }
+
+            public Identifier(Value value, ValueType type)
+            {
+                _value = value;
+                _isDefined = true;
+                _typeName = null;
+                _type = type;
             }
 
             public Value Value
             {
                 get { return _value; }
+            }
+
+            public ValueType Type
+            {
+                get { return _type; }
+            }
+
+            public string TypeName
+            {
+                get { return _typeName; }
             }
 
             public bool IsDefined
@@ -141,6 +190,6 @@ namespace AST.Visitor
             {
                 _scope.PopScope();
             }
-        }
+        }        
     }
 }

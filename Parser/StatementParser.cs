@@ -10,6 +10,8 @@ namespace Parser
         public StatementParser(ILexer lexer)
             : base(lexer)
         {
+            RegisterParselet("SEMICOLON", new SemiColonParselet());
+            
             RegisterParselet("LEFTBRACE", new BlockParselet("RIGHTBRACE"));
             RegisterParselet("WHILE", new WhileParselet());
             RegisterParselet("IF", new IfParselet());
@@ -19,7 +21,8 @@ namespace Parser
             RegisterParselet("VAL", new VariableDeclarationParselet(true));
             RegisterParselet("VAR", new VariableDeclarationParselet(false));
             RegisterParselet("LEFTPAREN", new FunctionCallParselet());
-            InfixRight<AssignmentExpr>("ASSIGNMENT", Precedence.Assignment);
+            RegisterParselet("ASSIGNMENT", new AssignmentOperatorParselet());            
+            //InfixRight<AssignmentExpr>("ASSIGNMENT", Precedence.Assignment);
         }        
     }
 }

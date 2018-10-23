@@ -200,6 +200,31 @@ namespace Parser.Tests
             }
             return 10;
             ", 10)]
+            [TestCase(@"var d : int;
+            d = 5;;;;
+;;
+            return d;
+            ", 5)]
+            [TestCase(@"
+var d : int;
+            d = 5;
+            return d;
+            ", 5)]
+            [TestCase(@"function AssignmentTest(n : int)
+            {
+                val a = 0;
+                val b = 1;
+                val c = 2;
+
+                var d : int;
+                d = n;
+                d = d * 2;
+                d = d + a + b + c;
+
+                return d;
+            }
+            return AssignmentTest(5);
+            ", 13)]
             public void EvaluateStatement(string source, object expected)
             {
                 EvaluateTest(source, expected);

@@ -26,8 +26,10 @@ namespace Parser.Parselets.StatementParselets
             Expression initialValue = null;
             if (parser.ConsumeOptional("ASSIGNMENT"))
                 initialValue = parser.ParseExpression(0);
-            else if(_constVariables)
-                throw  new ParseException("Const variable declarations must have an initialiser.");
+            else if (_constVariables)
+                throw new ParseException("Const variable declarations must have an initialiser.");
+            else if (type == null)
+                throw new ParseException("Type must be specified if not assigned at point of definition.");
 
             parser.Consume("SEMICOLON");
 

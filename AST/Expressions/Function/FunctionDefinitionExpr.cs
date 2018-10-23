@@ -8,7 +8,8 @@ namespace AST.Expressions.Function
     {
         private readonly Statement _body;
 
-        public FunctionDefinitionExpr(IdentifierExpr name, VarDefinitionStmt[] arguments, Statement body, IdentifierExpr returnType) : base(name, arguments, returnType)
+        public FunctionDefinitionExpr(IdentifierExpr name, VarDefinitionStmt[] arguments, Statement body, IdentifierExpr returnType) 
+            : base(name, arguments, returnType)
         {
             if(body == null)
                 throw new ArgumentNullException("body");
