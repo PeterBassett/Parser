@@ -101,13 +101,18 @@ namespace AST.Visitor
 
             public void AssignIdentifierValue(string name, Value value)
             {
-                if (!_values.ContainsKey(name))
+                ScopeLevel scope = this;
+
+                while (scope != null && !scope._values.ContainsKey(name))
+                    scope = scope.Parent;
+
+                if(scope == null)
                     throw new UndefinedIdentifierException(name);
 
                 //if (_values[name].Type != value.Type)
                 //    throw new InvalidCastException();
 
-                _values[name] = new Identifier(value, _values[name].Type);
+                scope._values[name] = new Identifier(value, scope._values[name].Type);
             }
 
             public Identifier FindIdentifier(string name)

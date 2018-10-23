@@ -225,6 +225,14 @@ var d : int;
             }
             return AssignmentTest(5);
             ", 13)]
+            [TestCase(@"var a: int;
+            function AssignmentTest(n : int)
+            {
+                a = n;
+                return a;
+            }
+            return AssignmentTest(5);
+            ", 5)]
             public void EvaluateStatement(string source, object expected)
             {
                 EvaluateTest(source, expected);
